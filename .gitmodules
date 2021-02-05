@@ -1,0 +1,4 @@
+[submodule "snippets"]
+	path = snippets
+	url = git@github.com:Prometeo/snippets.git
+	branch = master

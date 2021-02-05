@@ -21,7 +21,7 @@
  '(custom-safe-themes
    '("77113617a0642d74767295c4408e17da3bfd9aa80aaa2b4eeb34680f6172d71a" default))
  '(package-selected-packages
-   '(aggressive-indent expand-region hungry-delete use-package)))
+   '(yasnippet aggressive-indent expand-region hungry-delete use-package)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
