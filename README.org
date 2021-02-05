@@ -48,6 +48,134 @@ Doom modeline
   :init (doom-modeline-mode 1))
 #+END_SRC
 
-** COMMENT Basic settings
-cua-mode to allow using C-c, C-v, C-z
-(cua-mode 1)
+* Basic settings
+Do not show startup message
+#+BEGIN_SRC emacs-lisp
+(setq inhibit-startup-message t)
+#+END_SRC
+
+Hide toolbar
+#+BEGIN_SRC emacs-lisp
+(tool-bar-mode -1)
+#+END_SRC
+
+Hide scrollbar
+#+BEGIN_SRC emacs-lisp
+(scroll-bar-mode -1)
+#+END_SRC
+
+Hightlight current line
+#+BEGIN_SRC emacs-lisp
+(global-hl-line-mode 1)
+#+END_SRC
+
+Replace Selection
+#+BEGIN_SRC emacs-lisp
+(delete-selection-mode 1)
+#+END_SRC
+
+Show matching parentheses
+#+BEGIN_SRC emacs-lisp
+(show-paren-mode 1)
+#+END_SRC
+
+ido-mode configuration
+- https://www.gnu.org/software/emacs/manual/html_mono/ido.html
+- https://www.masteringemacs.org/article/introduction-to-ido-mode
+#+BEGIN_SRC emacs-lisp
+(setq ido-everywhere t)
+(setq ido-enable-flex-matching t)
+(ido-mode t)
+#+END_SRC
+
+Delete all the whitespace when you hit backspace or delete
+#+BEGIN_SRC emacs-lisp
+(use-package hungry-delete
+  :ensure t
+  :config
+    (global-hungry-delete-mode))
+#+END_SRC
+
+Expand the marked region in semantic increments (negative prefix to reduce region)
+- https://github.com/magnars/expand-region.el
+#+BEGIN_SRC emacs-lisp
+(use-package expand-region
+  :ensure t
+  :config
+    (global-set-key (kbd "C-=") 'er/expand-region))
+#+END_SRC
+
+No tabs
+#+BEGIN_SRC emacs-lisp
+(setq-default indent-tabs-mode nil)
+#+END_SRC
+
+Replace TAB with 4 spaces
+#+BEGIN_SRC emacs-lisp
+(setq-default tab-width 4)
+#+END_SRC
+
+Display line numbers
+#+BEGIN_SRC emacs-lisp
+(add-hook 'prog-mode-hook 'display-line-numbers-mode)
+#+END_SRC
+
+Set aggressive idennt mode
+- https://github.com/Malabarba/aggressive-indent-mode
+#+BEGIN_SRC emacs-lisp
+(use-package aggressive-indent
+  :ensure t
+  :config
+    (add-to-list 'aggressive-indent-excluded-modes 'html-mode))
+#+END_SRC
+
+autocomplete parentheses
+#+BEGIN_SRC emacs-lisp
+(electric-pair-mode t)
+#+END_SRC
+
+autocomplete parentheses
+#+BEGIN_SRC emacs-lisp
+(electric-pair-mode t)
+#+END_SRC
+
+Remap c-z to undo
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "C-z") 'undo)
+#+END_SRC
+
+Replace selection
+#+BEGIN_SRC emacs-lisp
+(delete-selection-mode 1)
+#+END_SRC
+
+Cleanup whitespace on save
+#+BEGIN_SRC emacs-lisp
+(use-package whitespace
+  :ensure nil
+  :hook (before-save . whitespace-cleanup))
+#+END_SRC
+
+Don’t bother confirming killing processes and don’t let backup~ files scatter around
+#+BEGIN_SRC emacs-lisp
+(use-package files
+  :ensure nil
+  :config
+    (setq confirm-kill-processes nil
+        make-backup-files nil))
+#+END_SRC
+
+Ediff configuration
+#+BEGIN_SRC emacs-lisp
+(use-package ediff
+  :ensure nil
+  :config
+    (setq ediff-split-window-function 'split-window-horizontally)
+    (setq ediff-window-setup-function 'ediff-setup-windows-plain)
+    (setq ediff-diff-options "-w"))
+#+END_SRC
+
+change all prompts to y or n
+#+BEGIN_SRC emacs-lisp
+(fset 'yes-or-no-p 'y-or-n-p)
+#+END_SRC
