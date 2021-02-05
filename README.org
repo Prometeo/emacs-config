@@ -1,0 +1,181 @@
+#+STARTUP: overview
+#+PROPERTY: header-args :comments yes :results silent
+* My Emacs Configuration
+** About
+It's built using [[http://orgmode.org][Org mode]]'s [[http://orgmode.org/manual/Extracting-source-code.html#Extracting-source-code][tangling functionality]].
+
+My entire Emacs configuration is thus written in a [[https://en.wikipedia.org/wiki/Literate_programming][literate programming]] style,
+and is contained entirely in this file.
+
+*** Requirements
+- [[https://git-scm.com/]]
+- npm
+- python
+- [[https://github.com/ggreer/the_silver_searcher]]
+- https://pypi.org/project/pip/
+- [[https://virtualenv.pypa.io/en/latest/]]
+
+*** License and copyright
+
+Copyright 2021 Xairi Valdivia.
+
+Any external/third party works included in this work are licensed under
+their own licenses - refer to the submodules or packages for more
+information.
+
+* Visual
+** Themes
+all-the-icons package
+- https://github.com/domtronn/all-the-icons.el
+#+BEGIN_SRC emacs-lisp
+(use-package all-the-icons
+  :ensure t)
+#+END_SRC
+
+Doom Theme
+- https://github.com/hlissner/emacs-doom-themes
+#+BEGIN_SRC emacs-lisp
+  (use-package doom-themes
+    :ensure t
+    :config (load-theme 'doom-one))
+#+END_SRC
+
+Doom modeline
+- https://github.com/seagle0128/doom-modeline
+#+BEGIN_SRC emacs-lisp
+(use-package doom-modeline
+  :ensure t
+  :init (doom-modeline-mode 1))
+#+END_SRC
+
+* Basic settings
+Do not show startup message
+#+BEGIN_SRC emacs-lisp
+(setq inhibit-startup-message t)
+#+END_SRC
+
+Hide toolbar
+#+BEGIN_SRC emacs-lisp
+(tool-bar-mode -1)
+#+END_SRC
+
+Hide scrollbar
+#+BEGIN_SRC emacs-lisp
+(scroll-bar-mode -1)
+#+END_SRC
+
+Hightlight current line
+#+BEGIN_SRC emacs-lisp
+(global-hl-line-mode 1)
+#+END_SRC
+
+Replace Selection
+#+BEGIN_SRC emacs-lisp
+(delete-selection-mode 1)
+#+END_SRC
+
+Show matching parentheses
+#+BEGIN_SRC emacs-lisp
+(show-paren-mode 1)
+#+END_SRC
+
+ido-mode configuration
+- https://www.gnu.org/software/emacs/manual/html_mono/ido.html
+- https://www.masteringemacs.org/article/introduction-to-ido-mode
+#+BEGIN_SRC emacs-lisp
+(setq ido-everywhere t)
+(setq ido-enable-flex-matching t)
+(ido-mode t)
+#+END_SRC
+
+Delete all the whitespace when you hit backspace or delete
+#+BEGIN_SRC emacs-lisp
+(use-package hungry-delete
+  :ensure t
+  :config
+    (global-hungry-delete-mode))
+#+END_SRC
+
+Expand the marked region in semantic increments (negative prefix to reduce region)
+- https://github.com/magnars/expand-region.el
+#+BEGIN_SRC emacs-lisp
+(use-package expand-region
+  :ensure t
+  :config
+    (global-set-key (kbd "C-=") 'er/expand-region))
+#+END_SRC
+
+No tabs
+#+BEGIN_SRC emacs-lisp
+(setq-default indent-tabs-mode nil)
+#+END_SRC
+
+Replace TAB with 4 spaces
+#+BEGIN_SRC emacs-lisp
+(setq-default tab-width 4)
+#+END_SRC
+
+Display line numbers
+#+BEGIN_SRC emacs-lisp
+(add-hook 'prog-mode-hook 'display-line-numbers-mode)
+#+END_SRC
+
+Set aggressive idennt mode
+- https://github.com/Malabarba/aggressive-indent-mode
+#+BEGIN_SRC emacs-lisp
+(use-package aggressive-indent
+  :ensure t
+  :config
+    (add-to-list 'aggressive-indent-excluded-modes 'html-mode))
+#+END_SRC
+
+autocomplete parentheses
+#+BEGIN_SRC emacs-lisp
+(electric-pair-mode t)
+#+END_SRC
+
+autocomplete parentheses
+#+BEGIN_SRC emacs-lisp
+(electric-pair-mode t)
+#+END_SRC
+
+Remap c-z to undo
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "C-z") 'undo)
+#+END_SRC
+
+Replace selection
+#+BEGIN_SRC emacs-lisp
+(delete-selection-mode 1)
+#+END_SRC
+
+Cleanup whitespace on save
+#+BEGIN_SRC emacs-lisp
+(use-package whitespace
+  :ensure nil
+  :hook (before-save . whitespace-cleanup))
+#+END_SRC
+
+Don’t bother confirming killing processes and don’t let backup~ files scatter around
+#+BEGIN_SRC emacs-lisp
+(use-package files
+  :ensure nil
+  :config
+    (setq confirm-kill-processes nil
+        make-backup-files nil))
+#+END_SRC
+
+Ediff configuration
+#+BEGIN_SRC emacs-lisp
+(use-package ediff
+  :ensure nil
+  :config
+    (setq ediff-split-window-function 'split-window-horizontally)
+    (setq ediff-window-setup-function 'ediff-setup-windows-plain)
+    (setq ediff-diff-options "-w"))
+#+END_SRC
+
+change all prompts to y or n
+#+BEGIN_SRC emacs-lisp
+(fset 'yes-or-no-p 'y-or-n-p)
+#+END_SRC
