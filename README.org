@@ -47,3 +47,7 @@ Doom modeline
   :ensure t
   :init (doom-modeline-mode 1))
 #+END_SRC
+
+** COMMENT Basic settings
+cua-mode to allow using C-c, C-v, C-z
+(cua-mode 1)
