@@ -13,8 +13,37 @@ and is contained entirely in this file.
 - python
 - [[https://github.com/ggreer/the_silver_searcher]]
 - https://pypi.org/project/pip/
-  - [[https://virtualenv.pypa.io/en/latest/]]
+- [[https://virtualenv.pypa.io/en/latest/]]
 
-***  License and copyright
+*** License and copyright
 
 Copyright 2021 Xairi Valdivia.
+
+Any external/third party works included in this work are licensed under
+their own licenses - refer to the submodules or packages for more
+information.
+
+* Visual
+** Themes
+all-the-icons package
+- https://github.com/domtronn/all-the-icons.el
+#+BEGIN_SRC emacs-lisp
+(use-package all-the-icons
+  :ensure t)
+#+END_SRC
+
+Doom Theme
+- https://github.com/hlissner/emacs-doom-themes
+#+BEGIN_SRC emacs-lisp
+  (use-package doom-themes
+    :ensure t
+    :config (load-theme 'doom-one))
+#+END_SRC
+
+Doom modeline
+- https://github.com/seagle0128/doom-modeline
+#+BEGIN_SRC emacs-lisp
+(use-package doom-modeline
+  :ensure t
+  :init (doom-modeline-mode 1))
+#+END_SRC
