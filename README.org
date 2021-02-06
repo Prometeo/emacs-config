@@ -504,6 +504,32 @@ Treemacs configuration
   "List of actions for `aw-dispatch-default'.")
 #+END_SRC
 * Development
+Flycheck
+- https://www.flycheck.org/en/latest/
+#+BEGIN_SRC emacs-lisp
+(use-package flycheck
+  :ensure t
+  :init
+  (global-flycheck-mode))
+#+END_SRC
+
+Company
+- https://company-mode.github.io/
+#+BEGIN_SRC emacs-lisp
+(use-package company
+  :ensure t
+  :init
+  (add-hook 'after-init-hook 'global-company-mode))
+#+END_SRC
+
+Company box
+- https://github.com/sebastiencs/company-box
+#+BEGIN_SRC emacs-lisp
+(use-package company-box
+  :hook (company-mode . company-box-mode))
+#+END_SRC
+
+
 ** Lsp mode
 - https://emacs-lsp.github.io/lsp-mode/
 #+BEGIN_SRC emacs-lisp
