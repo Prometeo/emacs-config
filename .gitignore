@@ -56,3 +56,4 @@ ido.last
 # others
 transient
 .cache/
+elpy/

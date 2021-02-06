@@ -526,10 +526,9 @@ Company box
 - https://github.com/sebastiencs/company-box
 #+BEGIN_SRC emacs-lisp
 (use-package company-box
+  :ensure t
   :hook (company-mode . company-box-mode))
 #+END_SRC
-
-
 ** Lsp mode
 - https://emacs-lsp.github.io/lsp-mode/
 #+BEGIN_SRC emacs-lisp
@@ -538,6 +537,21 @@ Company box
   :commands (lsp lsp-deferred)
   :init
   (setq lsp-keymap-prefix "C-c l"))
+#+END_SRC
+
+** Languages
+*** Python
+#+BEGIN_SRC emacs-lisp
+(setq py-python-command "python3")
+(setq python-shell-interpreter "python3")
+(use-package elpy
+   :ensure t
+   :config
+     (elpy-enable))
+
+(use-package py-autopep8
+ :ensure t)
+(add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save)
 #+END_SRC
 * Swiper / Ivy / Counsel
 Swiper gives us a really efficient incremental search with regular expressions and Ivy / Counsel replace a lot of ido or helms completion functionality
