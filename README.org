@@ -544,6 +544,12 @@ Yaml mode
          "\\.yaml\\'"))
 #+END_SRC
 
+Ansible
+#+BEGIN_SRC emacs-lisp
+(use-package ansible
+  :ensure t)
+#+END_SRC
+
 ** Lsp mode
 - https://emacs-lsp.github.io/lsp-mode/
 #+BEGIN_SRC emacs-lisp
@@ -719,3 +725,58 @@ Configure faces for specific Org elements
 #+END_SRC
 
 * Keybindings
+Keychord
+- https://github.com/emacsorphanage/key-chord/tree/7f7fd7c5bd2b996fa054779357e1566f7989e07d
+#+BEGIN_SRC emacs-lisp
+(use-package key-chord
+  :ensure t
+  :config
+  (key-chord-mode 1))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+;; functions being used in a keybinding
+(defun duplicate-line()
+  (interactive)
+  (move-beginning-of-line 1)
+  (kill-line)
+  (yank)
+  (open-line 1)
+  (next-line 1)
+  (yank))
+
+(defun copy-line (arg)
+      "Copy lines (as many as prefix argument) in the kill ring"
+      (interactive "p")
+      (kill-ring-save (line-beginning-position)
+                      (line-beginning-position (+ 1 arg)))
+      (message "%d line%s copied" arg (if (= 1 arg) "" "s")))
+(defun get-point (symbol &optional arg)
+      "get the point"
+      (funcall symbol arg)
+      (point))
+
+(defun copy-thing (begin-of-thing end-of-thing &optional arg)
+  "copy thing between beg & end into kill ring"
+   (save-excursion
+     (let ((beg (get-point begin-of-thing 1))
+           (end (get-point end-of-thing arg)))
+      (copy-region-as-kill beg end))))
+
+(defun copy-word (&optional arg)
+      "Copy words at point into kill-ring"
+       (interactive "P")
+       (copy-thing 'backward-word 'forward-word arg)
+       (paste-to-mark arg))
+#+END_SRC
+custom Keybindings
+#+BEGIN_SRC emacs-lisp
+(key-chord-define-global "kk" 'forward-word)
+(key-chord-define-global "jj" 'backward-word)
+(key-chord-define-global "ññ" 'kill-whole-line)
+(key-chord-define-global "yy" 'copy-line)
+(key-chord-define-global "yp" 'duplicate-line)
+(key-chord-define-global "xx" 'save-buffer)
+(key-chord-define-global "qq" 'delete-other-windows)
+(key-chord-define-global "vv" 'save-buffers-kill-terminal)
+#+END_SRC
