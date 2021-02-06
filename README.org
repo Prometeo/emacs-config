@@ -503,3 +503,15 @@ Treemacs configuration
     (?? aw-show-dispatch-help))
   "List of actions for `aw-dispatch-default'.")
 #+END_SRC
+* Development
+** Lsp mode
+- https://emacs-lsp.github.io/lsp-mode/
+#+BEGIN_SRC emacs-lisp
+(use-package lsp-mode
+  :ensure t
+  :commands (lsp lsp-deferred)
+  :init
+  (setq lsp-keymap-prefix "C-c l")
+  :config
+  (lsp-enable-which-key-integration t))
+#+END_SRC
