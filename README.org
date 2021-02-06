@@ -232,6 +232,14 @@ Highlight indent guides
     (add-hook 'focus-in-hook #'highlight-indent-guides-auto-set-faces))
 #+END_SRC
 
+Avy
+- https://github.com/abo-abo/avy
+#+BEGIN_SRC emacs-lisp
+(use-package avy
+  :ensure t
+  :bind ("M-s" . avy-goto-char)) ;; changed from char as per jcs
+#+END_SRC
+
 * Yasnippet
 
 #+BEGIN_SRC emacs-lisp
