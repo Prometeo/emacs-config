@@ -52,3 +52,7 @@ README.el
 
 # idolast
 ido.last
+
+# others
+transient
+.cache/
