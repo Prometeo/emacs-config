@@ -49,3 +49,6 @@ flycheck_*.el
 
 # compiled README
 README.el
+
+# idolast
+ido.last
