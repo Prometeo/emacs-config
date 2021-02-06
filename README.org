@@ -386,6 +386,33 @@ Gitignore templates
 (use-package gitignore-templates
   :ensure t)
 #+END_SRC
+* Projectile
+- https://github.com/bbatsov/projectile
+#+BEGIN_SRC emacs-lisp
+(use-package projectile
+      :ensure t
+      :bind ("C-c p" . projectile-command-map)
+      :config
+      (projectile-global-mode)
+      (setq projectile-completion-system 'ivy)
+      (setq projectile-globally-ignored-directories
+      (cl-union projectile-globally-ignored-directories
+      '(".git"
+      "node_modules"
+      "venv")))
+      (setq projectile-globally-ignored-files
+          (cl-union projectile-globally-ignored-files
+              '(".DS_Store"
+              "*.gz"
+              "*.pyc"
+              "*.png"
+              "*.jpg"
+              "*.jar"
+              "*.svg"
+              "*.tgz"
+              "*.zip")))
+)
+#+END_SRC
 * Treemacs
 Treemacs configuration
 - https://github.com/Alexander-Miller/treemacs
