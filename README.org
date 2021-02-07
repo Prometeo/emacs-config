@@ -512,6 +512,7 @@ Treemacs configuration
   "List of actions for `aw-dispatch-default'.")
 #+END_SRC
 * Development
+** General
 Flycheck
 - https://www.flycheck.org/en/latest/
 #+BEGIN_SRC emacs-lisp
@@ -521,6 +522,14 @@ Flycheck
   (global-flycheck-mode))
 #+END_SRC
 
+Flycheck inline
+- https://github.com/flycheck/flycheck-inline
+#+BEGIN_SRC emacs-lisp
+(use-package flycheck-inline
+  :ensure t)
+(with-eval-after-load 'flycheck
+  (add-hook 'flycheck-mode-hook #'flycheck-inline-mode))
+#+END_SRC
 Company
 - https://company-mode.github.io/
 #+BEGIN_SRC emacs-lisp
@@ -557,17 +566,6 @@ Ansible
 (use-package ansible
   :ensure t)
 #+END_SRC
-
-** Lsp mode
-- https://emacs-lsp.github.io/lsp-mode/
-#+BEGIN_SRC emacs-lisp
-(use-package lsp-mode
-  :ensure t
-  :commands (lsp lsp-deferred)
-  :init
-  (setq lsp-keymap-prefix "C-c l"))
-#+END_SRC
-
 ** Languages
 *** Python
 #+BEGIN_SRC emacs-lisp
@@ -582,6 +580,55 @@ Ansible
  :ensure t)
 (add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save)
 #+END_SRC
+*** Rust
+  - https://github.com/rust-lang/rust-mode
+  #+BEGIN_SRC emacs-lisp
+    (use-package rust-mode
+      :ensure t)
+  #+END_SRC
+  Flycheck rust
+  - https://github.com/flycheck/flycheck-rust
+  #+BEGIN_SRC emacs-lisp
+    (use-package flycheck-rust
+      :ensure t)
+    (with-eval-after-load 'rust-mode
+      (add-hook 'flycheck-mode-hook #'flycheck-rust-setup))
+  #+END_SRC
+  Racer mode
+  - https://github.com/racer-rust/emacs-racer
+  #+BEGIN_SRC emacs-lisp
+  (use-package racer
+      :ensure t
+      :hook (rust-mode . racer-mode)
+      :config
+      (progn
+        ;; set racer rust source path environment variable
+        (setq racer-rust-src-path (getenv "RUST_SRC_PATH"))
+        (defun my-racer-mode-hook ()
+          (set (make-local-variable 'company-backends)
+               '((company-capf company-files))))
+
+        ;; enable company and eldoc minor modes in rust-mode
+        (add-hook 'racer-mode-hook 'company-mode)
+        (add-hook 'racer-mode-hook 'eldoc-mode)))
+  #+END_SRC
+  Cargo
+  - https://github.com/kwrooijen/cargo.el
+  #+BEGIN_SRC emacs-lisp
+  (use-package cargo
+    :ensure t
+    :hook (rust-mode . cargo-minor-mode)
+    :bind
+    ("C-c C-c C-n" . cargo-process-new))
+  #+END_SRC
+  Format rust buffer on save using rustfmt
+  #+BEGIN_SRC emacs-lisp
+  (add-hook 'before-save-hook
+    (lambda ()
+      (when (eq major-mode 'rust-mode)
+        (rust-format-buffer))))
+  #+END_SRC
+
 * Swiper / Ivy / Counsel
 Swiper gives us a really efficient incremental search with regular expressions and Ivy / Counsel replace a lot of ido or helms completion functionality
 - https://github.com/abo-abo/swiper
