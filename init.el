@@ -31,7 +31,7 @@
  '(custom-safe-themes
    '("77113617a0642d74767295c4408e17da3bfd9aa80aaa2b4eeb34680f6172d71a" default))
  '(package-selected-packages
-   '(cargo racer flycheck-inline flycheck-rust rust-mode helm-lsp avy eglot rustic key-chord ansible yaml-mode toml-mode org-bullets anzu ag company-box py-autopep8 elpy company flycheck counsel doom-modeline lsp-mode projectile treemacs-magit posframe treemacs-projectile treemacs gitignore-templates gitignore-mode git-timemachine hydra git-gutter magit highlight-indent-guides rainbow-delimiters hl-todo yasnippet aggressive-indent expand-region hungry-delete use-package)))
+   '(which-key true cargo racer flycheck-inline flycheck-rust rust-mode helm-lsp avy eglot rustic key-chord ansible yaml-mode toml-mode org-bullets anzu ag company-box py-autopep8 elpy company flycheck counsel doom-modeline lsp-mode projectile treemacs-magit posframe treemacs-projectile treemacs gitignore-templates gitignore-mode git-timemachine hydra git-gutter magit highlight-indent-guides rainbow-delimiters hl-todo yasnippet aggressive-indent expand-region hungry-delete use-package)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

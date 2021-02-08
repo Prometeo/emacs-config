@@ -65,6 +65,16 @@ Hide scrollbar
 (scroll-bar-mode -1)
 #+END_SRC
 
+Which-key
+#+BEGIN_SRC emacs-lisp
+(use-package which-key
+  :ensure t
+  :init (which-key-mode)
+  :diminish which-key-mode
+  :config
+  (setq which-key-idle-delay 0.3))
+#+END_SRC
+
 ido-mode configuration
 - https://www.gnu.org/software/emacs/manual/html_mono/ido.html
 - https://www.masteringemacs.org/article/introduction-to-ido-mode
