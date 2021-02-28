@@ -29,9 +29,9 @@
  '(anzu-replace-to-string-separator " => ")
  '(anzu-search-threshold 1000)
  '(custom-safe-themes
-   '("77113617a0642d74767295c4408e17da3bfd9aa80aaa2b4eeb34680f6172d71a" default))
+   '("8f5a7a9a3c510ef9cbb88e600c0b4c53cdcdb502cfe3eb50040b7e13c6f4e78e" "77113617a0642d74767295c4408e17da3bfd9aa80aaa2b4eeb34680f6172d71a" default))
  '(package-selected-packages
-   '(which-key true cargo racer flycheck-inline flycheck-rust rust-mode helm-lsp avy eglot rustic key-chord ansible yaml-mode toml-mode org-bullets anzu ag company-box py-autopep8 elpy company flycheck counsel doom-modeline lsp-mode projectile treemacs-magit posframe treemacs-projectile treemacs gitignore-templates gitignore-mode git-timemachine hydra git-gutter magit highlight-indent-guides rainbow-delimiters hl-todo yasnippet aggressive-indent expand-region hungry-delete use-package)))
+   '(haskell-mode which-key true cargo racer flycheck-inline flycheck-rust rust-mode helm-lsp avy eglot rustic key-chord ansible yaml-mode toml-mode org-bullets anzu ag company-box py-autopep8 elpy company flycheck counsel doom-modeline lsp-mode projectile treemacs-magit posframe treemacs-projectile treemacs gitignore-templates gitignore-mode git-timemachine hydra git-gutter magit highlight-indent-guides rainbow-delimiters hl-todo yasnippet aggressive-indent expand-region hungry-delete use-package)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
