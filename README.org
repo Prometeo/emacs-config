@@ -30,8 +30,11 @@ all-the-icons package
 #+BEGIN_SRC emacs-lisp
 (use-package all-the-icons
   :ensure t)
-((lambda () (interactive)(all-the-icons-install-fonts "y")))
+;; ((lambda () (interactive)(all-the-icons-install-fonts "y")))
 #+END_SRC
+
+Run:
+M-x: all-the-icons-install-fonts
 
 Doom Theme
 - https://github.com/hlissner/emacs-doom-themes
