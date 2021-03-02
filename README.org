@@ -30,6 +30,7 @@ all-the-icons package
 #+BEGIN_SRC emacs-lisp
 (use-package all-the-icons
   :ensure t)
+((lambda () (interactive)(all-the-icons-install-fonts "y")))
 #+END_SRC
 
 Doom Theme
