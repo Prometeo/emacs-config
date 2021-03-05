@@ -586,12 +586,14 @@ Ansible
 (setq py-python-command "python3")
 (setq python-shell-interpreter "python3")
 (use-package elpy
-   :ensure t
-   :config
-     (elpy-enable))
+  :ensure t
+  :config
+    (elpy-enable))
 
 (use-package py-autopep8
- :ensure t)
+  :ensure t)
+(use-package pyvenv
+  :ensure t)
 (add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save)
 #+END_SRC
 *** Rust
