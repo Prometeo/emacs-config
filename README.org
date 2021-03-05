@@ -614,10 +614,12 @@ Ansible
   (use-package racer
       :ensure t
       :hook (rust-mode . racer-mode)
+      :hook (racer-mode-hook . eldoc-mode)
       :config
       (progn
         ;; set racer rust source path environment variable
-        (setq racer-rust-src-path (getenv "RUST_SRC_PATH"))
+        ;; (setq racer-rust-src-path (getenv "RUST_SRC_PATH"))
+        (setq racer-rust-src-path "/home/prometeo/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library")
         (defun my-racer-mode-hook ()
           (set (make-local-variable 'company-backends)
                '((company-capf company-files))))
