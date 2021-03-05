@@ -583,18 +583,47 @@ Ansible
 ** Languages
 *** Python
 #+BEGIN_SRC emacs-lisp
-(setq py-python-command "python3")
-(setq python-shell-interpreter "python3")
-(use-package elpy
+(use-package lsp-mode
   :ensure t
   :config
-    (elpy-enable))
+  (setq lsp-idle-delay 0.5
+        lsp-enable-symbol-highlighting t
+        lsp-enable-snippet nil  ;; Not supported by company capf, which is the recommended company backend
+        lsp-pyls-plugins-flake8-enabled t)
+  (lsp-register-custom-settings
+   '(("pyls.plugins.pyls_mypy.enabled" t t)
+     ("pyls.plugins.pyls_mypy.live_mode" nil t)
+     ("pyls.plugins.pyls_black.enabled" t t)
+     ("pyls.plugins.pyls_isort.enabled" t t)
 
-(use-package py-autopep8
-  :ensure t)
+     ;; Disable these as they're duplicated by flake8
+     ("pyls.plugins.pycodestyle.enabled" nil t)
+     ("pyls.plugins.mccabe.enabled" nil t)
+     ("pyls.plugins.pyflakes.enabled" nil t)))
+  :hook
+  ((python-mode . lsp)
+   (lsp-mode . lsp-enable-which-key-integration)))
+
+(use-package lsp-ui
+  :ensure t
+  :config (setq lsp-ui-sideline-show-hover t
+                lsp-ui-sideline-delay 0.5
+                lsp-ui-doc-delay 5
+                lsp-ui-sideline-ignore-duplicates t
+                lsp-ui-doc-position 'bottom
+                lsp-ui-doc-alignment 'frame
+                lsp-ui-doc-header nil
+                lsp-ui-doc-include-signature t
+                lsp-ui-doc-use-childframe t)
+  :commands lsp-ui-mode)
+
 (use-package pyvenv
-  :ensure t)
-(add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save)
+  :diminish
+  :config
+  (setq pyvenv-mode-line-indicator
+        '(pyvenv-virtual-env-name ("[venv:" pyvenv-virtual-env-name "] ")))
+  (pyvenv-mode +1))
+;;  (pyvenv-tracking-mode 1)
 #+END_SRC
 *** Rust
   - https://github.com/rust-lang/rust-mode
