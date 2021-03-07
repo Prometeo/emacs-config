@@ -527,6 +527,17 @@ Treemacs configuration
 #+END_SRC
 * Development
 ** General
+Lsp
+#+BEGIN_SRC emacs-lisp
+ (use-package lsp-mode
+  :ensure t
+  :config
+
+  ;; change nil to 't to enable logging of packets between emacs and the LS
+  ;; this was invaluable for debugging communication with the MS Python Language Server
+  ;; and comparing this with what vs.code is doing
+  (setq lsp-print-io nil))
+#+END_SRC
 Flycheck
 - https://www.flycheck.org/en/latest/
 #+BEGIN_SRC emacs-lisp
@@ -589,47 +600,21 @@ Docker
 ** Languages
 *** Python
 #+BEGIN_SRC emacs-lisp
-(use-package lsp-mode
-  :ensure t
-  :config
-  (setq lsp-idle-delay 0.5
-        lsp-enable-symbol-highlighting t
-        lsp-enable-snippet nil  ;; Not supported by company capf, which is the recommended company backend
-        lsp-pyls-plugins-flake8-enabled t)
-  (lsp-register-custom-settings
-   '(("pyls.plugins.pyls_mypy.enabled" t t)
-     ("pyls.plugins.pyls_mypy.live_mode" nil t)
-     ("pyls.plugins.pyls_black.enabled" t t)
-     ("pyls.plugins.pyls_isort.enabled" t t)
+  (use-package lsp-python-ms
+    :ensure t
+    :init (setq lsp-python-ms-auto-install-server t)
+    :hook (python-mode . (lambda ()
+                            (require 'lsp-python-ms)
+                            (lsp))))  ; or lsp-deferred
 
-     ;; Disable these as they're duplicated by flake8
-     ("pyls.plugins.pycodestyle.enabled" nil t)
-     ("pyls.plugins.mccabe.enabled" nil t)
-     ("pyls.plugins.pyflakes.enabled" nil t)))
-  :hook
-  ((python-mode . lsp)
-   (lsp-mode . lsp-enable-which-key-integration)))
-
-(use-package lsp-ui
-  :ensure t
-  :config (setq lsp-ui-sideline-show-hover t
-                lsp-ui-sideline-delay 0.5
-                lsp-ui-doc-delay 5
-                lsp-ui-sideline-ignore-duplicates t
-                lsp-ui-doc-position 'bottom
-                lsp-ui-doc-alignment 'frame
-                lsp-ui-doc-header nil
-                lsp-ui-doc-include-signature t
-                lsp-ui-doc-use-childframe t)
-  :commands lsp-ui-mode)
-
-(use-package pyvenv
-  :diminish
-  :config
-  (setq pyvenv-mode-line-indicator
-        '(pyvenv-virtual-env-name ("[venv:" pyvenv-virtual-env-name "] ")))
-  (pyvenv-mode +1))
-;;  (pyvenv-tracking-mode 1)
+     (pyvenv-tracking-mode 1)
+  (use-package pyvenv
+    :ensure t
+    :init
+    (setenv "WORKON_HOME" "~/.pyenv/versions"))
+  (use-package py-autopep8
+    :ensure t)
+  (add-hook 'python-mode-hook 'py-autopep8-enable-on-save)
 #+END_SRC
 *** Rust
   - https://github.com/rust-lang/rust-mode
