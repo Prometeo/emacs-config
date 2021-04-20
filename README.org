@@ -599,9 +599,16 @@ Ansible
 
 Docker
 #+BEGIN_SRC emacs-lisp
-(use-package dockerfile-mode
-  :ensure t)
+    (use-package dockerfile-mode
+      :ensure t)
 #+END_SRC
+
+Multiple Cursor
+#+BEGIN_SRC emacs-lisp
+      (use-package multiple-cursors
+        :ensure t)
+#+END_SRC
+
 ** Languages
 *** Python
 #+BEGIN_SRC emacs-lisp
@@ -700,8 +707,18 @@ Docker
 
     javascript
     #+BEGIN_SRC emacs-lisp
-    (use-package js2-mode
-      :ensure t)
+      (use-package js2-mode
+        :ensure t)
+      (use-package company-tern
+        :ensure t)
+      (add-to-list 'company-backends 'company-tern)
+      (add-hook 'js2-mode-hook (lambda ()
+                                 (tern-mode)
+                                 (company-mode)))
+
+      ;; Disable completion keybindings, as we use xref-js2 instead
+      (define-key tern-mode-keymap (kbd "M-.") nil)
+      (define-key tern-mode-keymap (kbd "M-,") nil)
     #+END_SRC
 * Swiper / Ivy / Counsel
 Swiper gives us a really efficient incremental search with regular expressions and Ivy / Counsel replace a lot of ido or helms completion functionality
