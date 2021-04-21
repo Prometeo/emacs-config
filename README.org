@@ -685,7 +685,43 @@ Multiple Cursor
     (use-package haskell-mode
       :ensure t)
    #+END_SRC
-*** html-css-js
+*** Javascript
+    #+BEGIN_SRC emacs-lisp
+      ;; (use-package js2-mode
+      ;;   :ensure t)
+    #+END_SRC
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package rjsx-mode
+        :ensure t
+        :mode "\\.js\\'")
+    #+END_SRC
+
+    Tide
+    #+BEGIN_SRC emacs-lisp
+      (defun setup-tide-mode()
+              "Setup function for tide"
+             (interactive)
+             (tide-setup)
+             (flycheck-mode +1)
+             (setq flycheck-check-syntax-automatically '(save mode-enabled))
+             (tide-hl-identifier-mode +1)
+             (company-mode +1))
+
+      (use-package tide
+        :ensure t
+        :after (rjsx-mode comapny-flycheck)
+        :hook (rjsx-mode . setup-tide-mode))
+    #+END_SRC
+
+    Prettier
+    #+BEGIN_SRC emacs-lisp
+      (use-package prettier-js
+        :ensure t
+        :after (rjsx-mode)
+        :hook(rjsx-mode . prettier-js-mode))
+    #+END_SRC
+*** html-css
     web mode
     #+BEGIN_SRC emacs-lisp
     (use-package web-mode
@@ -703,22 +739,6 @@ Multiple Cursor
     (add-hook 'sgml-mode-hook 'emmet-mode) ;; Auto-start on any markup modes
     (add-hook 'css-mode-hook  'emmet-mode) ;; enable Emmet's css abbreviation.
     (add-hook 'web-mode-hook  'emmet-mode) ;; enable Emmet's css abbreviation.
-    #+END_SRC
-
-    javascript
-    #+BEGIN_SRC emacs-lisp
-      (use-package js2-mode
-        :ensure t)
-      (use-package company-tern
-        :ensure t)
-      (add-to-list 'company-backends 'company-tern)
-      (add-hook 'js2-mode-hook (lambda ()
-                                 (tern-mode)
-                                 (company-mode)))
-
-      ;; Disable completion keybindings, as we use xref-js2 instead
-      (define-key tern-mode-keymap (kbd "M-.") nil)
-      (define-key tern-mode-keymap (kbd "M-,") nil)
     #+END_SRC
 * Swiper / Ivy / Counsel
 Swiper gives us a really efficient incremental search with regular expressions and Ivy / Counsel replace a lot of ido or helms completion functionality
