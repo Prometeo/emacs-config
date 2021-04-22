@@ -58,3 +58,5 @@ transient
 .cache/
 elpy/
 projectile-bookmarks.eld
+.lsp-session*
+.mc-lists.el
