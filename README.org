@@ -527,7 +527,7 @@ Lsp
 #+END_SRC
 
 lsp-ui
-- This package contains all the higher level UI modules of lsp-mode: https://emacs-lsp.github.io/lsp-ui/
+- This package contains all the higher level UI modules of lsp-mode https://emacs-lsp.github.io/lsp-ui/
 #+BEGIN_SRC emacs-lisp
     (use-package lsp-ui
      :ensure
