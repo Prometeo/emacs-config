@@ -540,11 +540,19 @@ lsp-ui
 #+END_SRC
 
 lsp-treemacs
+- Integration between lsp-mode and treemacs https://github.com/emacs-lsp/lsp-treemacs
 #+BEGIN_SRC emacs-lisp
   (use-package lsp-treemacs
     :ensure t
     :after lsp)
 #+END_SRC
+
+lsp-ivy
+- lsp-ivy integrates Ivy with lsp-mode to make it easy to search for things by name in your code https://github.com/emacs-lsp/lsp-ivy
+  #+BEGIN_SRC emacs-lisp
+    (use-package lsp-ivy
+      :ensure t)
+  #+END_SRC
 
 Flycheck
 - https://www.flycheck.org/en/latest/
