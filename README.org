@@ -529,14 +529,21 @@ Lsp
 lsp-ui
 - This package contains all the higher level UI modules of lsp-mode https://emacs-lsp.github.io/lsp-ui/
 #+BEGIN_SRC emacs-lisp
-    (use-package lsp-ui
-     :ensure
-     :commands lsp-ui-mode
-     :custom
-     (lsp-ui-peek-always-show t)
-     (lsp-ui-sideline-show-hover t)
-     (lsp-ui-doc-enable t)
-     (lsp-ui-doc-position 'bottom))
+  (use-package lsp-ui
+   :ensure
+   :commands lsp-ui-mode
+   :custom
+   (lsp-ui-peek-always-show t)
+   (lsp-ui-sideline-show-hover t)
+   (lsp-ui-doc-enable t)
+   (lsp-ui-doc-position 'bottom))
+#+END_SRC
+
+lsp-treemacs
+#+BEGIN_SRC emacs-lisp
+  (use-package lsp-treemacs
+    :ensure t
+    :after lsp)
 #+END_SRC
 
 Flycheck
