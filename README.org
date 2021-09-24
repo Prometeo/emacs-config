@@ -630,21 +630,22 @@ Multiple Cursor
 ** Languages
 *** Python
 #+BEGIN_SRC emacs-lisp
-   (use-package lsp-python-ms
+  (use-package lsp-python-ms
      :ensure t
      :init (setq lsp-python-ms-auto-install-server t)
      :hook (python-mode . (lambda ()
                              (require 'lsp-python-ms)
                              (lsp))))  ; or lsp-deferred
 
-      (pyvenv-tracking-mode 1)
-   (use-package pyvenv
+  (pyvenv-tracking-mode 1)
+  (use-package pyvenv
      :ensure t
      :init
      (setenv "WORKON_HOME" "~/.pyenv/versions"))
    (use-package py-autopep8
      :ensure t)
   (add-hook 'python-mode-hook 'py-autopep8-enable-on-save)
+
 #+END_SRC
 *** Rust
     Install rustic package
@@ -967,7 +968,7 @@ custom Keybindings
            ;; ("programming" (or
            ;;                 (mode . python-mode)
             ("python" (mode . python-mode))
-            ("rust" (mode . rust-mode))
+            ("rust" (name . "^.*rs$"))
            ("emacs" (or
                      (name . "^\\*scratch\\*$")
                      (name . "^\\*Messages\\*$")))
