@@ -650,6 +650,7 @@ Multiple Cursor
 *** Rust
     Install rustic package
     #+BEGIN_SRC emacs-lisp
+      (add-to-list 'auto-mode-alist '("\\.rs$" . rustic-mode))
       (use-package rustic
         :ensure t
         :bind (:map rustic-mode-map
