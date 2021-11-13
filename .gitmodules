@@ -1,0 +1,3 @@
+[submodule "snippets"]
+	path = snippets
+	url = git@gitlab.com:Prometeo136/snippets.git
