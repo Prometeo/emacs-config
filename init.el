@@ -29,9 +29,9 @@
  '(anzu-replace-to-string-separator " => ")
  '(anzu-search-threshold 1000)
  '(custom-safe-themes
-   '("8f5a7a9a3c510ef9cbb88e600c0b4c53cdcdb502cfe3eb50040b7e13c6f4e78e" "77113617a0642d74767295c4408e17da3bfd9aa80aaa2b4eeb34680f6172d71a" default))
+   '("835868dcd17131ba8b9619d14c67c127aa18b90a82438c8613586331129dda63" "8f5a7a9a3c510ef9cbb88e600c0b4c53cdcdb502cfe3eb50040b7e13c6f4e78e" "77113617a0642d74767295c4408e17da3bfd9aa80aaa2b4eeb34680f6172d71a" default))
  '(package-selected-packages
-   '(lsp-ivy lsp-treemacs lsp-python-ms prettier-js rjsx-mode rjsx-mnode tide company-tern multiple-cursors indium js2-mode emmet-mode web-mode dockerfile-mode lsp-ui pyenv-mode haskell-mode which-key true cargo racer flycheck-inline flycheck-rust rust-mode helm-lsp avy eglot rustic key-chord ansible yaml-mode toml-mode org-bullets anzu ag company-box py-autopep8 elpy company flycheck counsel doom-modeline lsp-mode projectile treemacs-magit posframe treemacs-projectile treemacs gitignore-templates gitignore-mode git-timemachine hydra git-gutter magit highlight-indent-guides rainbow-delimiters hl-todo yasnippet aggressive-indent expand-region hungry-delete use-package)))
+   '(pyvenv lsp-ivy lsp-treemacs lsp-python-ms prettier-js rjsx-mode rjsx-mnode tide company-tern multiple-cursors indium js2-mode emmet-mode web-mode dockerfile-mode lsp-ui pyenv-mode haskell-mode which-key true cargo racer flycheck-inline flycheck-rust rust-mode helm-lsp avy eglot rustic key-chord ansible yaml-mode toml-mode org-bullets anzu ag company-box py-autopep8 elpy company flycheck counsel doom-modeline lsp-mode projectile treemacs-magit posframe treemacs-projectile treemacs gitignore-templates gitignore-mode git-timemachine hydra git-gutter magit highlight-indent-guides rainbow-delimiters hl-todo yasnippet aggressive-indent expand-region hungry-delete use-package)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

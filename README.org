@@ -380,8 +380,8 @@ Avy
 Gitignore mode
 - https://github.com/magit/git-modes
 #+BEGIN_SRC emacs-lisp
-(use-package gitignore-mode
-  :ensure t)
+  ;; (use-package gitignore-mode
+  ;;   :ensure t)
 #+END_SRC
 Gitignore templates
 - https://github.com/xuchunyang/gitignore-templates.el
@@ -637,7 +637,6 @@ Multiple Cursor
                              (require 'lsp-python-ms)
                              (lsp))))  ; or lsp-deferred
 
-  (pyvenv-tracking-mode 1)
   (use-package pyvenv
      :ensure t
      :init
