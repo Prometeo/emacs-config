@@ -4,19 +4,16 @@
 (require 'org)
 
 ;;; Code:
-;;(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-;; Comment/uncomment this line to enable MELPA Stable if desired.  See `package-archive-priorities`
-;; and `package-pinned-packages`. Most users will not need or want to do this.
-;;(add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
-(package-initialize)
-(add-to-list 'package-archives
-             '(("melpa-stable" . "https://stable.melpa.org/packages/")
-               ("melpa" . "https://melpa.org/packages/")
-               ("gnu" . "http://elpa.gnu.org/packages/") t))
 
+(setq package-archives '(("melpa" . "https://melpa.org/packages/")
+                         ("org" . "https://orgmode.org/elpa/")
+                         ("elpa" . "https://elpa.gnu.org/packages/")))
+
+(package-initialize)
+(unless package-archive-contents
+  (package-refresh-contents))
 
 (org-babel-load-file (expand-file-name "~/.emacs.d/README.org"))
-
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
