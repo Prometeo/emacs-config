@@ -568,102 +568,43 @@ Multiple Cursor
 #+END_SRC
 
 ** Languages
-*** Python
+*** eglot
 #+BEGIN_SRC emacs-lisp
-(use-package eglot
-  :ensure t
-  :defer t
-  :hook (python-mode . eglot-ensure))
-  (use-package pyvenv
-     :ensure t
-     :init
-     (setenv "WORKON_HOME" "~/.pyenv/versions"))
+  (use-package eglot
+    :ensure t
+    :defer t
+    :hook (python-mode . eglot-ensure)
+          (rust-mode . eglot-ensure))
+    (use-package pyvenv
+       :ensure t
+       :init
+       (setenv "WORKON_HOME" "~/.pyenv/versions"))
 
 #+END_SRC
-*** Rust
-    Install rustic package
-    #+BEGIN_SRC emacs-lisp
-      ;; (use-package rustic
-      ;;         :ensure t
-      ;;         :bind (:map rustic-mode-map
-      ;;               ("M-j" . lsp-ui-imenu)
-      ;;               ("M-?" . lsp-find-references)
-      ;;               ("C-c C-c l" . flycheck-list-errors)
-      ;;               ("C-c C-c a" . lsp-execute-code-action)
-      ;;               ("C-c C-c r" . lsp-rename)
-      ;;               ("C-c C-c q" . lsp-workspace-restart)
-      ;;               ("C-c C-c Q" . lsp-workspace-shutdown)
-      ;;               ("C-c C-c s" . lsp-rust-analyzer-status))
-      ;;         :config
-      ;;         ;;uncomment for less flashiness
-      ;;         (setq lsp-eldoc-hook nil)
-      ;;         (setq lsp-enable-symbol-highlighting nil)
-      ;;         (setq lsp-signature-auto-activate nil)
-
-      ;;         ;; comment to disable rustfmt on save
-      ;;         (setq rustic-format-on-save t))
-    #+END_SRC
-
 *** Haskell
     Haskell mode
    #+BEGIN_SRC emacs-lisp
-     ;; (use-package haskell-mode
-     ;;   :ensure t)
+     (use-package haskell-mode
+       :ensure t)
    #+END_SRC
-*** Javascript
-    #+BEGIN_SRC emacs-lisp
-      ;; (use-package js2-mode
-      ;;   :ensure t)
-    #+END_SRC
-
-    #+BEGIN_SRC emacs-lisp
-      ;; (use-package rjsx-mode
-      ;;   :ensure t
-      ;;   :mode "\\.js\\'")
-    #+END_SRC
-
-    Tide
-    #+BEGIN_SRC emacs-lisp
-      ;; (defun setup-tide-mode()
-      ;;         "Setup function for tide"
-      ;;        (interactive)
-      ;;        (tide-setup)
-      ;;        (flycheck-mode +1)
-      ;;        (setq flycheck-check-syntax-automatically '(save mode-enabled))
-      ;;        (tide-hl-identifier-mode +1)
-      ;;        (company-mode +1))
-
-      ;; (use-package tide
-      ;;   :ensure t
-      ;;   :after (rjsx-mode comapny-flycheck)
-      ;;   :hook (rjsx-mode . setup-tide-mode))
-    #+END_SRC
-
-    Prettier
-    #+BEGIN_SRC emacs-lisp
-      ;; (use-package prettier-js
-      ;;   :ensure t
-      ;;   :after (rjsx-mode)
-      ;;   :hook(rjsx-mode . prettier-js-mode))
-    #+END_SRC
 *** html-css
     web mode
     #+BEGIN_SRC emacs-lisp
-      ;; (use-package web-mode
-      ;;   :ensure t)
-      ;; (add-to-list 'auto-mode-alist '("\\.html\\'" . web-mode))
-      ;; (setq web-mode-markup-indent-offset 2)
-      ;; (setq web-mode-css-indent-offset 2)
-      ;; (setq web-mode-code-indent-offset 2)
+      (use-package web-mode
+        :ensure t)
+      (add-to-list 'auto-mode-alist '("\\.html\\'" . web-mode))
+      (setq web-mode-markup-indent-offset 2)
+      (setq web-mode-css-indent-offset 2)
+      (setq web-mode-code-indent-offset 2)
     #+END_SRC
 
     emmet mode
     #+BEGIN_SRC emacs-lisp
-      ;; (use-package emmet-mode
-      ;;   :ensure t)
-      ;; (add-hook 'sgml-mode-hook 'emmet-mode) ;; Auto-start on any markup modes
-      ;; (add-hook 'css-mode-hook  'emmet-mode) ;; enable Emmet's css abbreviation.
-      ;; (add-hook 'web-mode-hook  'emmet-mode) ;; enable Emmet's css abbreviation.
+      (use-package emmet-mode
+        :ensure t)
+      (add-hook 'sgml-mode-hook 'emmet-mode) ;; Auto-start on any markup modes
+      (add-hook 'css-mode-hook  'emmet-mode) ;; enable Emmet's css abbreviation.
+      (add-hook 'web-mode-hook  'emmet-mode) ;; enable Emmet's css abbreviation.
     #+END_SRC
 * Swiper / Ivy / Counsel
 Swiper gives us a really efficient incremental search with regular expressions and Ivy / Counsel replace a lot of ido or helms completion functionality
