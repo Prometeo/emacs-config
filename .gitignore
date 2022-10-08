@@ -60,4 +60,6 @@ elpy/
 projectile-bookmarks.eld
 .lsp-session*
 .mc-lists.el
+recentf
+eln-cache/
 /todo/

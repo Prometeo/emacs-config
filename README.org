@@ -617,171 +617,164 @@ Swiper gives us a really efficient incremental search with regular expressions a
 - https://github.com/abo-abo/swiper
 Counsel
 #+BEGIN_SRC emacs-lisp
-  ;; (use-package counsel
-  ;;   :ensure t
-  ;;   :bind
-  ;;   (("M-y" . counsel-yank-pop)
-  ;;   :map ivy-minibuffer-map
-  ;;   ("M-y" . ivy-next-line)))
+  (use-package counsel
+    :ensure t
+    :bind
+    (("M-y" . counsel-yank-pop)
+    :map ivy-minibuffer-map
+    ("M-y" . ivy-next-line)))
 #+END_SRC
 
 Ivy
 #+BEGIN_SRC emacs-lisp
-  ;; (use-package ivy
-  ;;   :ensure t
-  ;;   :diminish (ivy-mode)
-  ;;   :bind (("C-x b" . ivy-switch-buffer))
-  ;;   :config
-  ;;   (ivy-mode 1)
-  ;;   (setq ivy-use-virtual-buffers t)
-  ;;   (setq ivy-count-format "%d/%d ")
-  ;;   (setq ivy-display-style 'fancy))
+  (use-package ivy
+    :ensure t
+    :diminish (ivy-mode)
+    :bind (("C-x b" . ivy-switch-buffer))
+    :config
+    (ivy-mode 1)
+    (setq ivy-use-virtual-buffers t)
+    (setq ivy-count-format "%d/%d ")
+    (setq ivy-display-style 'fancy))
 #+END_SRC
 
 Counsel
 #+BEGIN_SRC emacs-lisp
-  ;; (use-package swiper
-  ;; :ensure t
-  ;; :bind (("C-s" . swiper)
-  ;;    ("C-r" . swiper)
-  ;;    ("C-c C-r" . ivy-resume)
-  ;;    ("M-x" . counsel-M-x)
-  ;;    ("C-x C-f" . counsel-find-file)
-  ;; )
-  ;; :config
-  ;; (progn
-  ;;   (ivy-mode 1)
-  ;;   (setq ivy-use-virtual-buffers t)
-  ;;   (setq ivy-display-style 'fancy)
-  ;;   (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
-  ;;   ))
+  (use-package swiper
+  :ensure t
+  :bind (("C-s" . swiper)
+     ("C-r" . swiper)
+     ("C-c C-r" . ivy-resume)
+     ("M-x" . counsel-M-x)
+     ("C-x C-f" . counsel-find-file)
+  )
+  :config
+  (progn
+    (ivy-mode 1)
+    (setq ivy-use-virtual-buffers t)
+    (setq ivy-display-style 'fancy)
+    (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
+    ))
 #+END_SRC
 * Searching
 Silver search
 - https://github.com/Wilfred/ag.el
 #+BEGIN_SRC emacs-lisp
-  ;; (use-package ag
-  ;;     :ensure t)
-  ;; (setq ag-highlight-search t)
+  (use-package ag
+      :ensure t)
+  (setq ag-highlight-search t)
 #+END_SRC
 
 Anzu package
 - https://github.com/emacsorphanage/anzu
 #+BEGIN_SRC emacs-lisp
-  ;; (use-package anzu
-  ;;     :ensure t)
-  ;; (global-anzu-mode +1)
-  ;; (global-set-key [remap query-replace] 'anzu-query-replace)
-  ;; (global-set-key [remap query-replace-regexp] 'anzu-query-replace-regexp)
-  ;; (set-face-attribute 'anzu-mode-line nil
-  ;;                     :foreground "yellow" :weight 'bold)
-  ;; (custom-set-variables
-  ;;  '(anzu-mode-lighter "")
-  ;;  '(anzu-deactivate-region t)
-  ;;  '(anzu-search-threshold 1000)
-  ;;  '(anzu-replace-threshold 50)
-  ;;  '(anzu-replace-to-string-separator " => "))
+  (use-package anzu
+      :ensure t)
+  (global-anzu-mode +1)
+  (global-set-key [remap query-replace] 'anzu-query-replace)
+  (global-set-key [remap query-replace-regexp] 'anzu-query-replace-regexp)
+  (set-face-attribute 'anzu-mode-line nil
+                      :foreground "yellow" :weight 'bold)
+  (custom-set-variables
+   '(anzu-mode-lighter "")
+   '(anzu-deactivate-region t)
+   '(anzu-search-threshold 1000)
+   '(anzu-replace-threshold 50)
+   '(anzu-replace-to-string-separator " => "))
 #+END_SRC
 * Keybindings
 Keychord
 - https://github.com/emacsorphanage/key-chord/tree/7f7fd7c5bd2b996fa054779357e1566f7989e07d
 #+BEGIN_SRC emacs-lisp
-  ;; (use-package key-chord
-  ;;   :ensure t
-  ;;   :config
-  ;;   (key-chord-mode 1))
+  (use-package key-chord
+    :ensure t
+    :config
+    (key-chord-mode 1))
 #+END_SRC
 
+
 #+BEGIN_SRC emacs-lisp
-  ;; functions being used in a keybinding
-  ;; (defun duplicate-line()
-  ;;   (interactive)
-  ;;   (move-beginning-of-line 1)
-  ;;   (kill-line)
-  ;;   (yank)
-  ;;   (open-line 1)
-  ;;   (next-line 1)
-  ;;   (yank))
+  (defun duplicate-line()
+    "functions being used in a keybinding"
+    (interactive)
+    (move-beginning-of-line 1)
+    (kill-line)
+    (yank)
+    (open-line 1)
+    (next-line 1)
+    (yank))
 
-  ;; (defun copy-line (arg)
-  ;;       "Copy lines (as many as prefix argument) in the kill ring"
-  ;;       (interactive "p")
-  ;;       (kill-ring-save (line-beginning-position)
-  ;;                       (line-beginning-position (+ 1 arg)))
-  ;;       (message "%d line%s copied" arg (if (= 1 arg) "" "s")))
-  ;; (defun get-point (symbol &optional arg)
-  ;;       "get the point"
-  ;;       (funcall symbol arg)
-  ;;       (point))
+  (defun copy-line (arg)
+        "Copy lines (as many as prefix argument) in the kill ring"
+        (interactive "p")
+        (kill-ring-save (line-beginning-position)
+                        (line-beginning-position (+ 1 arg)))
+        (message "%d line%s copied" arg (if (= 1 arg) "" "s")))
+  (defun get-point (symbol &optional arg)
+        "get the point"
+        (funcall symbol arg)
+        (point))
 
-  ;; (defun copy-thing (begin-of-thing end-of-thing &optional arg)
-  ;;   "copy thing between beg & end into kill ring"
-  ;;    (save-excursion
-  ;;      (let ((beg (get-point begin-of-thing 1))
-  ;;            (end (get-point end-of-thing arg)))
-  ;;       (copy-region-as-kill beg end))))
+  (defun copy-thing (begin-of-thing end-of-thing &optional arg)
+    "copy thing between beg & end into kill ring"
+     (save-excursion
+       (let ((beg (get-point begin-of-thing 1))
+             (end (get-point end-of-thing arg)))
+        (copy-region-as-kill beg end))))
 
-  ;; (defun copy-word (&optional arg)
-  ;;       "Copy words at point into kill-ring"
-  ;;        (interactive "P")
-  ;;        (copy-thing 'backward-word 'forward-word arg)
-  ;;        (paste-to-mark arg))
+  (defun copy-word (&optional arg)
+        "Copy words at point into kill-ring"
+         (interactive "P")
+         (copy-thing 'backward-word 'forward-word arg)
+         (paste-to-mark arg))
 #+END_SRC
-custom Keybindings
+
+# custom Keybindings
 #+BEGIN_SRC emacs-lisp
-  ;; (key-chord-define-global "kk" 'forward-word)
-  ;; (key-chord-define-global "jj" 'backward-word)
-  ;; (key-chord-define-global "ññ" 'kill-whole-line)
-  ;; (key-chord-define-global "yy" 'copy-line)
-  ;; (key-chord-define-global "yp" 'duplicate-line)
-  ;; (key-chord-define-global "xx" 'save-buffer)
-  ;; (key-chord-define-global "qq" 'delete-other-windows)
-  ;; (key-chord-define-global "vv" 'save-buffers-kill-terminal)
+  (key-chord-define-global "kk" 'forward-word)
+  (key-chord-define-global "jj" 'backward-word)
+  (key-chord-define-global "ññ" 'kill-whole-line)
+  (key-chord-define-global "yy" 'copy-line)
+  (key-chord-define-global "yp" 'duplicate-line)
+  (key-chord-define-global "xx" 'save-buffer)
+  (key-chord-define-global "qq" 'delete-other-windows)
+  (key-chord-define-global "vv" 'save-buffers-kill-terminal)
 #+END_SRC
 
 * Ibuffer
   #+BEGIN_SRC emacs-lisp
-    ;;   (global-set-key (kbd "C-x C-b") 'ibuffer)
-    ;;   (setq ibuffer-saved-filter-groups
-    ;;      (quote (("default"
-    ;;          ("dired" (mode . dired-mode))
-    ;;          ("org" (name . "^.*org$"))
-    ;;          ("web" (or (mode . web-mode) (mode . js2-mode)))
-    ;;          ("shell" (or (mode . eshell-mode) (mode . shell-mode)))
-    ;;          ;; ("programming" (or
-    ;;          ;;                 (mode . python-mode)
-    ;;           ("python" (mode . python-mode))
-    ;;           ("rust" (name . "^.*rs$"))
-    ;;          ("emacs" (or
-    ;;                    (name . "^\\*scratch\\*$")
-    ;;                    (name . "^\\*Messages\\*$")))
-    ;;          ))))
-    ;;   (add-hook 'ibuffer-mode-hook
-    ;;   (lambda ()
-    ;;   (ibuffer-auto-mode 1)
-    ;;   (ibuffer-switch-to-saved-filter-groups "default")))
-    ;;   ;; Don't show filter groups if there are no buffers in that group
-    ;;   (setq ibuffer-show-empty-filter-groups nil)
-    ;;   ;; Don't ask for confirmation to delete marked buffers
-    ;;   (setq ibuffer-expert t)
+    (global-set-key (kbd "C-x C-b") 'ibuffer)
+    (setq ibuffer-saved-filter-groups
+    (quote (("default"
+      ("dired" (mode . dired-mode))
+      ("org" (name . "^.*org$"))
+      ("web" (or (mode . web-mode) (mode . js2-mode)))
+      ("shell" (or (mode . eshell-mode) (mode . shell-mode)))
+      ("python" (mode . python-mode))
+      ("terraform" (mode . terraform-mode))
+      ("rust" (name . "^.*rs$"))
+      ("emacs" (or
+        (name . "^\\*scratch\\*$")
+        (name . "^\\*Messages\\*$")))
+    ))))
+    (add-hook 'ibuffer-hook
+      (lambda ()
+      (ibuffer-auto-mode 1)
+      (ibuffer-switch-to-saved-filter-groups "default")))
 
-    ;; ;; Use human readable Size column instead of original one
-    ;; (define-ibuffer-column size-h
-    ;; (:name "Size" :inline t)
-    ;; (cond
-    ;;    ((> (buffer-size) 1000000) (format "%7.1fM" (/ (buffer-size) 1000000.0)))
-    ;;    ((> (buffer-size) 100000) (format "%7.0fk" (/ (buffer-size) 1000.0)))
-    ;;    ((> (buffer-size) 1000) (format "%7.1fk" (/ (buffer-size) 1000.0)))
-    ;;    (t (format "%8d" (buffer-size)))))
+    ;; Don't show filter groups if there are no buffers in that group
+    (setq ibuffer-show-empty-filter-groups nil)
+    ;; Don't ask for confirmation to delete marked buffers
+    (setq ibuffer-expert t)
 
-    ;; ;; Modify the default ibuffer-formats
-    ;; (setq ibuffer-formats
-    ;;   '((mark modified read-only " "
-    ;;       (name 18 18 :left :elide)
-    ;;       " "
-    ;;       (size-h 9 -1 :right)
-    ;;       " "
-    ;;       (mode 16 16 :left :elide)
-    ;;       " "
-    ;;       filename-and-process)))
+    ;; Modify the default ibuffer-formats
+    (setq ibuffer-formats
+      '((mark modified read-only " "
+         (name 18 18 :left :elide)
+         " "
+         (size 9 -1 :right)
+         " "
+         (mode 16 16 :left :elide)
+         " "
+         filename-and-process)))
   #+END_SRC
