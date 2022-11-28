@@ -568,7 +568,7 @@ Multiple Cursor
 #+END_SRC
 
 ** Languages
-*** eglot
+*** Eglot
 #+BEGIN_SRC emacs-lisp
   (use-package eglot
     :ensure t
@@ -580,6 +580,14 @@ Multiple Cursor
        :init
        (setenv "WORKON_HOME" "~/.pyenv/versions"))
 
+#+END_SRC
+*** Python
+#+BEGIN_SRC emacs-lisp
+  (use-package python-black
+  :demand t
+  :ensure t
+  :after python
+  :hook (python-mode . python-black-on-save-mode-enable-dwim))
 #+END_SRC
 *** Haskell
     Haskell mode
