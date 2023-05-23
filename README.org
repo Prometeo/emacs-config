@@ -40,7 +40,7 @@ Doom Theme
 #+BEGIN_SRC emacs-lisp
   (use-package doom-themes
     :ensure t
-    :config (load-theme 'doom-one))
+    :config (load-theme 'doom-nord-aurora))
 #+END_SRC
 
 Doom modeline
@@ -167,15 +167,6 @@ Font-lock annotations like TODO in source code
 Display the current function name in the mode line
 #+BEGIN_SRC emacs-lisp
   (which-function-mode 1)
-#+END_SRC
-
-
-Delete all the whitespace when you hit backspace or delete
-#+BEGIN_SRC emacs-lisp
-  (use-package hungry-delete
-    :ensure t
-    :config
-      (global-hungry-delete-mode))
 #+END_SRC
 
 Expand the marked region in semantic increments (negative prefix to reduce region)
