@@ -40,7 +40,7 @@ Doom Theme
 #+BEGIN_SRC emacs-lisp
   (use-package doom-themes
     :ensure t
-    :config (load-theme 'doom-nord-aurora))
+    :config (load-theme 'doom-city-lights)) ;; vibrant snazzy city-lights doom-one
 #+END_SRC
 
 Doom modeline
@@ -130,6 +130,11 @@ Replace Selection
 Show matching parentheses
 #+BEGIN_SRC emacs-lisp
   (show-paren-mode 1)
+#+END_SRC
+
+Disable the electric indent mode
+#+BEGIN_SRC emacs_list
+  (electric-indent-mode -1)
 #+END_SRC
 
 Rainbow delimiters
@@ -574,14 +579,27 @@ Multiple Cursor
 #+END_SRC
 *** Org mode
 #+BEGIN_SRC emacs-lisp
+  (setq org-src-preserve-indentation t)
+
+  (setq org-ellipsis " ⤵")
+
+  (setq org-agenda-start-with-log-mode t)
+  (setq org-log-done 'time)
+  (setq org-log-into-drawer t)
+
+  ;; add all org files in this directory to org-agenda
+  (setq org-agenda-files
+        (directory-files-recursively "~/projects/org-files" "\\.org$"))
+
   (setq org-todo-keywords
-    (quote ((sequence "TODO(t)" "DOING(g)" "|" "DONE(d)"))))
+    (quote ((sequence "TODO(t)" "DOING(g)" "|" "DONE(d)" "CANCELLED(c)"))))
 
   (setq org-todo-keyword-faces
     '(
+       ("TODO" . (:foreground "coral" :weight bold))
        ("DOING" . (:foreground "GoldenRod" :weight bold))
        ("DONE" . (:foreground "Green" :weight bold))
-       ("TODO" . (:foreground "coral" :weight bold))
+       ("CANCELLED" . (:foreground "red" :weight bold))
      ))
   (setq org-log-done 'time) ;; capture timestamp when a task changes to done
 
