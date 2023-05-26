@@ -39,8 +39,15 @@ Doom Theme
 - https://github.com/hlissner/emacs-doom-themes
 #+BEGIN_SRC emacs-lisp
   (use-package doom-themes
-    :ensure t
-    :config (load-theme 'doom-city-lights)) ;; vibrant snazzy city-lights doom-one
+    :ensure t)
+    ;; :config (load-theme 'doom-city-lights)) ;; vibrant snazzy city-lights doom-one
+#+END_SRC
+
+Kaolin Theme
+#+BEGIN_SRC emacs-lisp
+    (use-package kaolin-themes
+      :ensure t
+      :config (load-theme 'kaolin-galaxy))
 #+END_SRC
 
 Doom modeline
