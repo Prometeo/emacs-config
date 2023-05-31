@@ -15,13 +15,13 @@ and is contained entirely in this file.
 - https://pypi.org/project/pip/
 - [[https://virtualenv.pypa.io/en/latest/]]
 
-*** License and copyright
+
 
 Copyright 2021 Xairi Valdivia.
 
 Any external/third party works included in this work are licensed under
 their own licenses - refer to the submodules or packages for more
-information.
+information
 
 * Visual
 ** Themes
@@ -669,10 +669,9 @@ Multiple Cursor
 *** Python
 #+BEGIN_SRC emacs-lisp
   (use-package python-black
-  :demand t
-  :ensure t
-  :after python
-  :hook (python-mode . python-black-on-save-mode-enable-dwim))
+    :ensure t
+    :demand t
+    :hook (python-mode . python-black-on-save-mode))
 #+END_SRC
 *** Haskell
     Haskell mode
