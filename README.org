@@ -382,30 +382,22 @@ Gitignore templates
 #+END_SRC
 * Projectile
 - https://github.com/bbatsov/projectile
-#+BEGIN_SRC emacs-lisp
   (use-package projectile
-        :ensure t
-        :bind ("C-c p" . projectile-command-map)
-        :config
-        (projectile-global-mode)
-        (setq projectile-completion-system 'ivy)
-        (setq projectile-globally-ignored-directories
-        (cl-union projectile-globally-ignored-directories
-        '(".git"
-        "node_modules"
-        "venv")))
-        (setq projectile-globally-ignored-files
-            (cl-union projectile-globally-ignored-files
-                '(".DS_Store"
-                "*.gz"
-                "*.pyc"
-                "*.png"
-                "*.jpg"
-                "*.jar"
-                "*.svg"
-                "*.tgz"
-                "*.zip")))
-  )
+    :ensure t
+    :diminish projectile-mode
+    :config (projectile-mode)
+    :custom ((projectile-completion-system 'ivy))
+    :bind-keymap
+    ("C-c p" . projectile-command-map)
+    :init
+    ;; NOTE: Set this to the folder where you keep your Git repos!
+    (when (file-directory-p "~/Projects")
+      (setq projectile-project-search-path '("~/Projects")))
+    (setq projectile-switch-project-action #'projectile-dired))
+
+(use-package counsel-projectile
+  :ensure t
+  :config (counsel-projectile-mode))
 #+END_SRC
 * Treemacs
 Treemacs configuration
