@@ -1,4 +1,4 @@
-#+STARTUP: overview
+ #+STARTUP: overview
 #+PROPERTY: header-args :comments yes :results silent
 * My Emacs Configuration
 ** About
@@ -324,8 +324,10 @@ Avy
     :ensure t
     :init
     (progn
-    (bind-key "C-x g" 'magit-status)
-    ))
+    (bind-key "C-x g" 'magit-status))
+    :commands (magit-status magit-get-current-branch)
+    :custom (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1)
+    )
 #+END_SRC
 
 ** git-gutter
@@ -382,6 +384,7 @@ Gitignore templates
 #+END_SRC
 * Projectile
 - https://github.com/bbatsov/projectile
+#+BEGIN_SRC emacs-lisp
   (use-package projectile
     :ensure t
     :diminish projectile-mode
