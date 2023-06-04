@@ -329,7 +329,12 @@ Avy
     :custom (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1)
     )
 #+END_SRC
-
+** Forge
+ - https://github.com/magit/forge
+   #+BEGIN_SRC emacs-lisp
+    (use-package forge
+     :ensure t)
+   #+END_SRC
 ** git-gutter
 - https://github.com/emacsorphanage/git-gutter
 #+BEGIN_SRC emacs-lisp
