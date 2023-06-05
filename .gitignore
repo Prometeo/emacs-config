@@ -64,3 +64,5 @@ recentf
 eln-cache/
 /todo/
 bookmarks
+/projects
+/forge-database.sqlite

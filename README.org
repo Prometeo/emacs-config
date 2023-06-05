@@ -333,7 +333,9 @@ Avy
  - https://github.com/magit/forge
    #+BEGIN_SRC emacs-lisp
     (use-package forge
-     :ensure t)
+     :ensure t
+     :after magit)
+    (setq auth-sources '("~/.authinfo"))
    #+END_SRC
 ** git-gutter
 - https://github.com/emacsorphanage/git-gutter
