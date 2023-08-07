@@ -625,7 +625,7 @@ Multiple Cursor
     (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
 
   (let* ((variable-tuple
-          (cond ((x-list-fonts "ETBembo")         '(:font "ETBembo"))
+          (cond ((x-list-fonts "DejaVu Sans Mono")         '(:font "DejaVu Sans Mono"))
             ((x-list-fonts "Source Sans Pro") '(:font "Source Sans Pro"))
             ((x-list-fonts "Lucida Grande")   '(:font "Lucida Grande"))
             ((x-list-fonts "Verdana")         '(:font "Verdana"))
@@ -650,7 +650,7 @@ Multiple Cursor
 
   (custom-theme-set-faces
      'user
-     '(variable-pitch ((t (:family "ETBembo" :height 140 :weight thin))))
+     '(variable-pitch ((t (:family "DejaVu Sans Mono" :height 140 :weight thin))))
      '(fixed-pitch ((t ( :family "Fira Code Retina" :height 120)))))
 
   (custom-theme-set-faces
