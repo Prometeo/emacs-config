@@ -120,9 +120,16 @@ Ediff configuration
       (setq ediff-diff-options "-w"))
 #+END_SRC
 
-change all prompts to y or n
+Change all prompts to y or n
 #+BEGIN_SRC emacs-lisp
   (fset 'yes-or-no-p 'y-or-n-p)
+#+END_SRC
+
+Set global font and size
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'default-frame-alist '(font . "FiraCode Nerd Font"))
+  (set-face-attribute 'default t :font "FiraCode Nerd Font")
+  (set-face-attribute 'default nil :height 80)
 #+END_SRC
 
 ** Code edition
