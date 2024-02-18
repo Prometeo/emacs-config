@@ -66,3 +66,4 @@ eln-cache/
 bookmarks
 /projects
 /forge-database.sqlite
+*.sqlite

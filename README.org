@@ -461,6 +461,7 @@ Treemacs configuration
               treemacs-recenter-after-project-expand 'on-distance
               treemacs-show-cursor                   nil
               treemacs-show-hidden-files             t
+              treemacs-hide-gitignored-files-mode    t
               treemacs-silent-filewatch              nil
               treemacs-silent-refresh                nil
               treemacs-sorting                       'alphabetic-asc
@@ -484,6 +485,7 @@ Treemacs configuration
   (use-package treemacs-magit
     :after (treemacs magit)
     :ensure t)
+;; (treemacs-git-mode 'deferred)
 #+END_SRC
 * Windows Management
 ** Ace-window
@@ -541,6 +543,10 @@ Company box
 #+BEGIN_SRC emacs-lisp
   (use-package company-box
     :ensure t
+    :functions (all-the-icons-faicon
+                all-the-icons-material
+                all-the-icons-octicon
+                all-the-icons-alltheicon)
     :hook (company-mode . company-box-mode))
 #+END_SRC
 
@@ -589,10 +595,6 @@ Multiple Cursor
     :defer t
     :hook (python-mode . eglot-ensure)
           (rust-mode . eglot-ensure))
-    (use-package pyvenv
-       :ensure t
-       :init
-       (setenv "WORKON_HOME" "~/.pyenv/versions"))
 
 #+END_SRC
 *** Org mode
@@ -679,10 +681,58 @@ Multiple Cursor
 #+END_SRC
 *** Python
 #+BEGIN_SRC emacs-lisp
+  (use-package pyvenv
+    :ensure t
+    :init
+    (setenv "WORKON_HOME" "~/.pyenv/versions"))
+
+  (use-package auto-virtualenv
+    :ensure t
+    :init
+    :config
+      (add-hook 'python-mode-hook 'auto-virtualenv-set-virtualenv)
+      (add-hook 'projectile-after-switch-project-hook 'auto-virtualenv-set-virtualenv)  ;; If using projectile
+  )
+
+  (use-package pydoc
+    :ensure t
+    :defer
+    :bind (:map python-mode-map
+                ("C-c C-d" . prometeo/pydoc-at-point))
+    :init
+      (add-to-list 'display-buffer-alist
+                   '("^\\*pydoc" display-buffer-in-side-window
+                     ;; (slot . 1)
+                     (side . right)
+                     (window-parameters . ((no-delete-other-windows . t)))
+                     (dedicated . t)
+                     ;; (window-width . 80)
+                     ))
+      (defun prometeo/pydoc-at-point ()
+        "Display pydoc in a dedicated frame."
+        (interactive)
+        (let ((default-directory (file-name-directory (buffer-file-name))))
+          (if (not (eq current-prefix-arg nil))
+              (when (get-buffer-window "*pydoc*")
+                (delete-window (get-buffer-window "*pydoc*")))
+            (pydoc-at-point)
+            (set-window-dedicated-p (get-buffer-window "*pydoc*") t))))
+  )
+
   (use-package python-black
     :ensure t
     :demand t
     :hook (python-mode . python-black-on-save-mode))
+
+  (use-package flymake-ruff
+    :ensure t
+    :hook (python-mode . flymake-ruff-load))
+
+  (use-package ruff-format
+    :ensure t
+    :hook (python-mode . ruff-format-on-save-mode))
+
+  (add-hook 'eglot-managed-mode-hook 'flymake-ruff-load)
 #+END_SRC
 *** Haskell
     Haskell mode
