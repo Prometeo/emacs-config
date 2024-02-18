@@ -535,7 +535,10 @@ Company
   (use-package company
     :ensure t
     :init
-    (add-hook 'after-init-hook 'global-company-mode))
+    (add-hook 'after-init-hook 'global-company-mode)
+    :config
+    (setq company-idle-delay 0.5
+          company-minimum-prefix-length 3))
 #+END_SRC
 
 Company box
@@ -599,6 +602,7 @@ Multiple Cursor
 #+END_SRC
 *** Org mode
 #+BEGIN_SRC emacs-lisp
+  (setq org-src-window-setup 'current-window)
   (setq org-src-preserve-indentation t)
 
   (setq org-ellipsis " ⤵")
