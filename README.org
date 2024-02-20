@@ -27,29 +27,28 @@ information
 ** Themes
 all-the-icons package
 - https://github.com/domtronn/all-the-icons.el
+Run:
+M-x: all-the-icons-install-fonts
+M-x: nerd-icons-install-fonts
+
 #+BEGIN_SRC emacs-lisp
 (use-package all-the-icons
   :ensure t)
 #+END_SRC
 
-Run:
-M-x: all-the-icons-install-fonts
-M-x: nerd-icons-install-fonts
-
-
 Doom Theme
 - https://github.com/hlissner/emacs-doom-themes
 #+BEGIN_SRC emacs-lisp
   (use-package doom-themes
-    :ensure t)
-    ;; :config (load-theme 'doom-city-lights)) ;; vibrant snazzy city-lights doom-one
+    :ensure t
+    :config (load-theme 'doom-city-lights)) ;; vibrant snazzy city-lights doom-one
 #+END_SRC
 
 Kaolin Theme
 #+BEGIN_SRC emacs-lisp
-    (use-package kaolin-themes
-      :ensure t
-      :config (load-theme 'kaolin-galaxy))
+    ;; (use-package kaolin-themes
+    ;;   :ensure t
+    ;;   :config (load-theme 'kaolin-galaxy))
 #+END_SRC
 
 Doom modeline
@@ -90,6 +89,17 @@ Which-key
     :diminish which-key-mode
     :config
     (setq which-key-idle-delay 0.3))
+#+END_SRC
+
+Stop creating ~ files
+#+BEGIN_SRC emacs-lisp
+  (setq make-backup-files nil)
+#+END_SRC
+
+Enable several modes globally
+#+BEGIN_SRC emacs-lisp
+  (winner-mode t)
+  (column-number-mode)
 #+END_SRC
 
 ido-mode configuration
@@ -322,8 +332,20 @@ Avy
          ("j" org-clock-goto "Clock Goto") ; global visit the clocked task
          ("c" org-capture "Capture") ; Don't forget to define the captures you want http://orgmode.org/manual/Capture.html
            ("l" (or )rg-capture-goto-last-stored "Last Capture"))
-
        ))
+
+     (defhydra hydra-zoom (global-map "<f2>")
+       "zoom"
+       ("g" text-scale-increase "in")
+       ("l" text-scale-decrease "out"))
+
+    (global-set-key
+      (kbd "C-x <f3>")
+      (defhydra
+        hydra-search (:color green)
+        "search"
+        ("s" swiper "Search regex")
+        ("l" list-matching-lines "List matching lines")))
 #+END_SRC
 * Git
 ** Magit
@@ -602,7 +624,7 @@ Multiple Cursor
 #+END_SRC
 *** Org mode
 #+BEGIN_SRC emacs-lisp
-  (setq org-src-window-setup 'current-window)
+  (setq org-src-window-setup 'split-window-right)
   (setq org-src-preserve-indentation t)
 
   (setq org-ellipsis " ⤵")
@@ -888,15 +910,14 @@ Keychord
 
 # custom Keybindings
 #+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "M-p") 'org-edit-src-code)
   (key-chord-define-global "kk" 'forward-word)
   (key-chord-define-global "jj" 'backward-word)
   (key-chord-define-global "ññ" 'kill-whole-line)
   (key-chord-define-global "yy" 'copy-line)
   (key-chord-define-global "yp" 'duplicate-line)
   (key-chord-define-global "xx" 'save-buffer)
-  (key-chord-define-global "qq" 'delete-other-windows)
-  (key-chord-define-global "vv" 'save-buffers-kill-terminal)
-#+END_SRC
+  (key-chord-define-global "qq" 'delete-other
 
 * Ibuffer
   #+BEGIN_SRC emacs-lisp
@@ -933,5 +954,5 @@ Keychord
          " "
          (mode 16 16 :left :elide)
          " "
-         filename-and-process)))
-  #+END_SRC
+         filename-and-+END_SRC)))
+  #process

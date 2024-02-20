@@ -67,3 +67,4 @@ bookmarks
 /projects
 /forge-database.sqlite
 *.sqlite
+/tree-sitter/
