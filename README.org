@@ -917,7 +917,8 @@ Keychord
   (key-chord-define-global "yy" 'copy-line)
   (key-chord-define-global "yp" 'duplicate-line)
   (key-chord-define-global "xx" 'save-buffer)
-  (key-chord-define-global "qq" 'delete-other
+  (key-chord-define-global "qq" 'delete-other-windows)
+#+END_SRC
 
 * Ibuffer
   #+BEGIN_SRC emacs-lisp
