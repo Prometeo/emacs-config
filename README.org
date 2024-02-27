@@ -618,9 +618,11 @@ Multiple Cursor
   (use-package eglot
     :ensure t
     :defer t
+    :config
+    (add-to-list 'eglot-server-programs '((sh-mode bash-ts-mode) . ("bash-language-server" "start")))
     :hook (python-mode . eglot-ensure)
-          (rust-mode . eglot-ensure))
-
+          (rust-mode . eglot-ensure)
+          (sh-mode . eglot-ensure))
 #+END_SRC
 *** Org mode
 #+BEGIN_SRC emacs-lisp
