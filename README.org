@@ -613,6 +613,10 @@ Multiple Cursor
 #+END_SRC
 
 ** Languages
+*** Bash
+#+BEGIN_SRC emacs-lis
+(add-to-list 'auto-mode-alist '("\\.sh\\'" . sh-mode))
+#+END_SRC
 *** Eglot
 #+BEGIN_SRC emacs-lisp
   (use-package eglot
