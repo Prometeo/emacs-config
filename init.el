@@ -58,3 +58,5 @@
 (org-babel-load-file (expand-file-name "~/.emacs.d/README.org"))
 
 ;;; init.el ends here
+(put 'narrow-to-region 'disabled nil)
+(put 'narrow-to-page 'disabled nil)
