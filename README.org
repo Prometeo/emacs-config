@@ -614,8 +614,9 @@ Multiple Cursor
 
 ** Languages
 *** Bash
-#+BEGIN_SRC emacs-lis
+#+BEGIN_SRC emacs-lisp
 (add-to-list 'auto-mode-alist '("\\.sh\\'" . sh-mode))
+(setq sh-basic-offset 2 sh-indentation 2)
 #+END_SRC
 *** Eglot
 #+BEGIN_SRC emacs-lisp
