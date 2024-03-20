@@ -1,3 +1,3 @@
 [submodule "snippets"]
 	path = snippets
-	url = git@gitlab.com:Prometeo136/snippets.git
+	url = git@github.com:Prometeo/emacs-snippets.git
