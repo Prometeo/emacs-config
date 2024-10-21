@@ -68,3 +68,6 @@ bookmarks
 /forge-database.sqlite
 *.sqlite
 /tree-sitter/
+
+# elpaca
+elpaca/
