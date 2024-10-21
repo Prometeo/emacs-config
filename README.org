@@ -66,10 +66,12 @@ information
 
   (setq package-enable-at-startup nil)
 
+
   ;; Install use-package support
-(elpaca elpaca-use-package
-  ;; Enable use-package :ensure support for Elpaca.
+  (elpaca elpaca-use-package
+    ;; Enable use-package :ensure support for Elpaca.
   (elpaca-use-package-mode))
+  (setq use-package-always-ensure t)
 #+END_SRC
 
 * Visual
@@ -80,18 +82,18 @@ Run:
 M-x: all-the-icons-install-fonts
 
 #+BEGIN_SRC emacs-lisp
-  (use-package all-the-icons :ensure t :demand t)
+  (use-package all-the-icons :demand t)
 #+END_SRC
 
 Doom Theme
 - https://github.com/hlissner/emacs-doom-themes
 #+BEGIN_SRC emacs-lisp
-  (use-package doom-themes :ensure t :demand t :config (load-theme 'doom-city-lights))
+  (use-package doom-themes :demand t :config (load-theme 'doom-city-lights))
 #+END_SRC
 
 Kaolin Theme
 #+BEGIN_SRC emacs-lisp
-  (use-package kaolin-themes :ensure t :demand t)
+  (use-package kaolin-themes :demand t)
 #+END_SRC
 
 Doom modeline
@@ -99,7 +101,7 @@ Doom modeline
   Run:  M-x: nerd-icons-install-fonts
  #+BEGIN_SRC emacs-lisp
    (use-package doom-modeline
-     :ensure t
+     :demand t
      :init (doom-modeline-mode 1))
    (setq doom-modeline-project-detection 'project)
    (setq doom-modeline-major-mode-color-icon t)
@@ -128,7 +130,6 @@ Hide scrollbar
 Which-key
 #+BEGIN_SRC emacs-lisp
   (use-package which-key
-    :ensure t
     :demand t
     :init (which-key-mode)
     :diminish which-key-mode
@@ -191,7 +192,6 @@ Hydra
 - https://github.com/abo-abo/hydra
 #+BEGIN_SRC emacs-lisp
   (use-package hydra
-    :ensure hydra
     :demand t
     :init
     (global-set-key
@@ -218,9 +218,150 @@ Hydra
        ("o" org-clock-out "Clock-Out") ; you might also want (setq org-log-note-clock-out t)
        ("j" org-clock-goto "Clock Goto") ; global visit the clocked task
        ("c" org-capture "Capture") ; Don't forget to define the captures you want http://orgmode.org/manual/Capture.html
-         ("l" (or )rg-capture-goto-last-stored "Last Capture"))
-     ))
+         ("l" (or )rg-capture-goto-last-stored "Last Capture")))
+    (global-set-key
+     (kbd "M-g M-g")
+     (defhydra hydra-git-gutter (:body-pre (git-gutter-mode 1)
+      :hint nil)
+    "
+    Git gutter:
+    _j_: next hunk        _s_tage hunk     _q_uit
+    _k_: previous hunk    _r_evert hunk    _Q_uit and deactivate git-gutter
+    ^ ^                   _p_opup hunk
+    _h_: first hunk
+    _l_: last hunk        set start _R_evision
+  "
+    ("j" git-gutter:next-hunk)
+    ("k" git-gutter:previous-hunk)
+    ("h" (progn (goto-char (point-min))
+                (git-gutter:next-hunk 1)))
+    ("l" (progn (goto-char (point-min))
+                (git-gutter:previous-hunk 1)))
+    ("s" git-gutter:stage-hunk)
+    ("r" git-gutter:revert-hunk)
+    ("p" git-gutter:popup-hunk)
+    ("R" git-gutter:set-start-revision)
+    ("q" nil :color blue)
+    ("Q" (progn (git-gutter-mode -1)
+                ;; git-gutter-fringe doesn't seem to
+                ;; clear the markup right away
+                (sit-for 0.1)
+                (git-gutter:clear))
+     :color blue))
+  ))
 #+END_SRC
+Projectile
+- https://github.com/bbatsov/projectile
+#+BEGIN_SRC emacs-lisp
+  (use-package projectile
+    :diminish projectile-mode
+    :config (projectile-mode)
+    :custom ((projectile-completion-system 'ivy))
+    :bind-keymap
+    ("C-c p" . projectile-command-map)
+    :init
+    ;; NOTE: Set this to the folder where you keep your Git repos!
+    (when (file-directory-p "~/Projects")
+      (setq projectile-project-search-path '("~/Projects")))
+    (setq projectile-switch-project-action #'projectile-dired))
+
+  (use-package counsel-projectile
+    :config (counsel-projectile-mode))
+#+END_SRC
+
+Treemacs
+- https://github.com/Alexander-Miller/treemacs
+#+BEGIN_SRC emacs-lisp
+  (use-package treemacs
+    :demand t
+    :defer t
+    :init
+    (with-eval-after-load 'winum
+      (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
+    :config
+    (progn
+      (setq treemacs-collapse-dirs                 (if treemacs-python-executable 3 0)
+            treemacs-deferred-git-apply-delay      0.5
+            treemacs-directory-name-transformer    #'identity
+            treemacs-display-in-side-window        t
+            treemacs-eldoc-display                 t
+            treemacs-file-event-delay              5000
+            treemacs-file-extension-regex          treemacs-last-period-regex-value
+            treemacs-file-follow-delay             0.2
+            treemacs-file-name-transformer         #'identity
+            treemacs-follow-after-init             t
+            treemacs-git-command-pipe              ""
+            treemacs-goto-tag-strategy             'refetch-index
+            treemacs-indentation                   2
+            treemacs-indentation-string            " "
+            treemacs-is-never-other-window         nil
+            treemacs-max-git-entries               5000
+            treemacs-missing-project-action        'ask
+            treemacs-move-forward-on-expand        nil
+            treemacs-no-png-images                 nil
+            treemacs-no-delete-other-windows       t
+            treemacs-project-follow-cleanup        nil
+            treemacs-persist-file                  (expand-file-name ".cache/treemacs-persist" user-emacs-directory)
+            treemacs-position                      'left
+            treemacs-read-string-input             'from-child-frame
+            treemacs-recenter-distance             0.1
+            treemacs-recenter-after-file-follow    nil
+            treemacs-recenter-after-tag-follow     nil
+            treemacs-recenter-after-project-jump   'always
+            treemacs-recenter-after-project-expand 'on-distance
+            treemacs-show-cursor                   nil
+            treemacs-show-hidden-files             t
+            treemacs-hide-gitignored-files-mode    t
+            treemacs-silent-filewatch              nil
+            treemacs-silent-refresh                nil
+            treemacs-sorting                       'alphabetic-asc
+            treemacs-space-between-root-nodes      t
+            treemacs-tag-follow-cleanup            t
+            treemacs-tag-follow-delay              1.5
+            treemacs-user-mode-line-format         nil
+            treemacs-user-header-line-format       nil
+            treemacs-width                         35
+            treemacs-workspace-switch-cleanup      nil)
+      (treemacs-follow-mode -1)
+      (treemacs-filewatch-mode t))
+
+    :bind
+    (:map global-map
+          ([f8]        . treemacs)
+          ([f9]        . treemacs-projectile)
+          ("M-0"       . treemacs-select-window)
+          ("C-c 1"     . treemacs-delete-other-windows))
+    )
+  (use-package treemacs-projectile :demand t)
+  (use-package treemacs-magit
+    :after (treemacs magit)
+    :demand t)
+#+END_SRC
+
+*** Windows Management
+Ace-window
+- https://github.com/abo-abo/ace-window
+#+BEGIN_SRC emacs-lisp
+  (use-package ace-window
+    :ensure t)
+  (global-set-key (kbd "M-o") 'ace-window)
+  (setq aw-background nil)
+  (defvar aw-dispatch-alist
+    '((?x aw-delete-window "Delete Window")
+      (?m aw-swap-window "Swap Windows")
+      (?M aw-move-window "Move Window")
+      (?c aw-copy-window "Copy Window")
+      (?j aw-switch-buffer-in-window "Select Buffer")
+      (?n aw-flip-window)
+      (?u aw-switch-buffer-other-window "Switch Buffer Other Window")
+      (?c aw-split-window-fair "Split Fair Window")
+      (?v aw-split-window-vert "Split Vert Window")
+      (?b aw-split-window-horz "Split Horz Window")
+      (?o delete-other-windows "Delete Other Windows")
+      (?? aw-show-dispatch-help))
+    "List of actions for `aw-dispatch-default'.")
+#+END_SRC
+
 *** Git
 Magit
 - https://github.com/magit/magit
@@ -228,11 +369,43 @@ Magit
   (use-package magit
     :ensure t
     :demand t
+    :after transient
     :init
     (progn
       (bind-key "C-x g" 'magit-status))
     :commands (magit-status magit-get-current-branch)
     :custom (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
+#+END_SRC
+
+Forge
+- https://github.com/magit/forge
+#+BEGIN_SRC emacs-lisp
+  ;; (use-package forge
+  ;;   :demand t
+  ;;   :after magit)
+  ;; (setq auth-sources '("~/.authinfo"))
+#+END_SRC
+
+git-gutter
+- https://github.com/emacsorphanage/git-gutter
+#+BEGIN_SRC emacs-lisp
+  (use-package git-gutter
+    :demand t
+    :init
+    (global-git-gutter-mode +1))
+#+END_SRC
+
+Time machine
+- https://github.com/emacsmirror/git-timemachine
+#+BEGIN_SRC emacs-lisp
+  ;; (use-package git-timemachine
+  ;; :demand t)
+#+END_SRC
+
+gitignore
+- https://github.com/xuchunyang/gitignore-templates.el
+#+BEGIN_SRC emacs-lisp
+  (use-package gitignore-templates)
 #+END_SRC
 
 ** Code edition
@@ -260,7 +433,6 @@ Rainbow delimiters
 - https://github.com/Fanael/rainbow-delimiters
 #+BEGIN_SRC emacs-lisp
   (use-package rainbow-delimiters
-    :ensure t
     :config
       (setq rainbow-delimiters-max-face-count 9))
   (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
@@ -281,7 +453,7 @@ Font-lock annotations like TODO in source code
           ("GOTCHA" . "#FF4500")
           ("STUB"   . "#1E90FF")))
 
-  (use-package hl-todo :ensure t :demand t)
+  (use-package hl-todo :demand t)
 
   (eval-after-load 'hl-todo '(global-hl-todo-mode 1))
 #+END_SRC
@@ -295,7 +467,7 @@ Expand the marked region in semantic increments (negative prefix to reduce regio
 - https://github.com/magnars/expand-region.el
   #+BEGIN_SRC emacs-lisp
     (use-package expand-region
-      :ensure t
+      :demand t
       :config
       (global-set-key (kbd "C-=") 'er/expand-region))
   #+END_SRC
@@ -351,7 +523,7 @@ Highlight indent guides
 - https://github.com/DarthFennec/highlight-indent-guides
 #+BEGIN_SRC emacs-lisp
   (use-package highlight-indent-guides
-  :ensure t
+  :demand t
   :hook ((prog-mode text-mode conf-mode) . highlight-indent-guides-mode)
   :init
     (setq highlight-indent-guides-method 'column)
@@ -364,7 +536,7 @@ Used jumping to visible text using a char-based decision tree
 - https://github.com/abo-abo/avy
 #+BEGIN_SRC emacs-lisp
   (use-package avy
-    :ensure t
+    :demand t
     :bind ("M-s" . avy-goto-char)) ;; changed from char as per jcs
 #+END_SRC
 
@@ -372,10 +544,442 @@ Yasnippet
 - https://github.com/joaotavora/yasnippet
 #+BEGIN_SRC emacs-lisp
   (use-package yasnippet
-    :ensure t
     :demand t
     :init
     (yas-global-mode 1))
   (setq yas-snippet-dirs
         '("~/.emacs.d/snippets"))
+#+END_SRC
+
+`* Development
+** General
+Flycheck
+- https://www.flycheck.org/en/latest/
+#+BEGIN_SRC emacs-lisp
+  (use-package flycheck
+    :demand t
+    :init
+    (global-flycheck-mode))
+#+END_SRC
+
+Flycheck inline
+- https://github.com/flycheck/flycheck-inline
+#+BEGIN_SRC emacs-lisp
+(use-package flycheck-inline :demand t)
+(with-eval-after-load 'flycheck
+  (add-hook 'flycheck-mode-hook #'flycheck-inline-mode))
+#+END_SRC
+
+Company
+- https://company-mode.github.io/
+#+BEGIN_SRC emacs-lisp
+  (use-package company
+    :demand t
+    :init
+    (add-hook 'after-init-hook 'global-company-mode)
+    :config
+    (setq company-idle-delay 0.2
+          company-minimum-prefix-length 3))
+#+END_SRC
+
+Company box
+- https://github.com/sebastiencs/company-box
+#+BEGIN_SRC emacs-lisp
+  (use-package company-box
+    :demand t
+    :functions (all-the-icons-faicon
+                all-the-icons-material
+                all-the-icons-octicon
+                all-the-icons-alltheicon)
+    :hook (company-mode . company-box-mode))
+#+END_SRC
+
+Toml/Ansible/Docker/Yaml modes
+#+BEGIN_SRC emacs-lisp
+  (use-package toml-mode :demand t)
+  (use-package yaml-mode
+    :demand t
+    :mode ("\\.yml\\'"
+           "\\.yaml\\'"))
+  (use-package ansible :demand t)
+  (use-package dockerfile-mode :demand t)
+#+END_SRC
+
+Multiple Cursor
+#+BEGIN_SRC emacs-lisp
+  (use-package multiple-cursors
+    :demand t)
+
+  (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
+  (global-set-key (kbd "C->") 'mc/mark-next-like-this)
+  (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
+  (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
+#+END_SRC
+
+** Languages
+Eglot
+#+BEGIN_SRC emaccs-lisp
+  (use-package eglot
+  :demand t
+  :defer t
+  :config
+  (add-to-list 'eglot-server-programs '((sh-mode bash-ts-mode) . ("bash-language-server" "start")))
+  :hook (python-ts-mode . eglot-ensure)
+        (rust-mode . eglot-ensure)
+        (sh-mode . eglot-ensure))
+#+END_SRC
+
+Bash
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'auto-mode-alist '("\\.sh\\'" . sh-mode))
+  (setq sh-basic-offset 2 sh-indentation 2)
+#+END_SRC
+
+Org mode
+#+BEGIN_SRC emacs-lisp
+  (setq org-src-window-setup 'split-window-right)
+  (setq org-src-preserve-indentation t)
+
+  (setq org-ellipsis " ⤵")
+
+  (setq org-agenda-start-with-log-mode t)
+  (setq org-log-done 'time)
+  (setq org-log-into-drawer t)
+
+  ;; add all org files in this directory to org-agenda
+  (setq org-agenda-files
+        (directory-files-recursively "~/projects/org-files" "\\.org$"))
+
+  (setq org-todo-keywords
+    (quote ((sequence "TODO(t)" "DOING(g)" "|" "DONE(d)" "CANCELLED(c)"))))
+
+  (setq org-todo-keyword-faces
+    '(
+       ("TODO" . (:foreground "coral" :weight bold))
+       ("DOING" . (:foreground "GoldenRod" :weight bold))
+       ("DONE" . (:foreground "Green" :weight bold))
+       ("CANCELLED" . (:foreground "red" :weight bold))
+     ))
+  (setq org-log-done 'time) ;; capture timestamp when a task changes to done
+
+  (setq org-hide-emphasis-markers t)
+
+  ;; replace list icon
+  (font-lock-add-keywords 'org-mode
+    '(("^ *\\([-]\\) "
+       (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+  ;; change org bullets
+  (use-package org-bullets
+    :ensure t
+    :config
+    (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+
+  (let* ((variable-tuple
+          (cond ((x-list-fonts "DejaVu Sans Mono")         '(:font "DejaVu Sans Mono"))
+            ((x-list-fonts "Source Sans Pro") '(:font "Source Sans Pro"))
+            ((x-list-fonts "Lucida Grande")   '(:font "Lucida Grande"))
+            ((x-list-fonts "Verdana")         '(:font "Verdana"))
+            ((x-family-fonts "Sans Serif")    '(:family "Sans Serif"))
+            (nil (warn "Cannot find a Sans Serif Font.  Install Source Sans Pro."))))
+         (base-font-color     (face-foreground 'default nil 'default))
+         (headline           `(:inherit default :weight bold :foreground ,base-font-color)))
+
+  (custom-theme-set-faces
+     'user
+     `(org-level-8 ((t (,@headline ,@variable-tuple))))
+     `(org-level-7 ((t (,@headline ,@variable-tuple))))
+     `(org-level-6 ((t (,@headline ,@variable-tuple))))
+     `(org-level-5 ((t (,@headline ,@variable-tuple))))
+     `(org-level-4 ((t (,@headline ,@variable-tuple :height 1.3))))
+     `(org-level-3 ((t (,@headline ,@variable-tuple :height 1.4))))
+     `(org-level-2 ((t (,@headline ,@variable-tuple :height 1.5))))
+     `(org-level-1 ((t (,@headline ,@variable-tuple :height 1.6))))
+     `(org-document-title ((t (,@headline ,@variable-tuple :height 2.0 :underline nil))))))
+
+  (add-hook 'org-mode-hook 'visual-line-mode)
+
+  (custom-theme-set-faces
+     'user
+     '(variable-pitch ((t (:family "DejaVu Sans Mono" :height 140 :weight thin))))
+     '(fixed-pitch ((t ( :family "Fira Code Retina" :height 120)))))
+
+  (custom-theme-set-faces
+    'user
+    '(org-block ((t (:inherit fixed-pitch))))
+    '(org-code ((t (:inherit (shadow fixed-pitch)))))
+    '(org-document-info ((t (:foreground "dark orange"))))
+    '(org-document-info-keyword ((t (:inherit (shadow fixed-pitch)))))
+    '(org-indent ((t (:inherit (org-hide fixed-pitch)))))
+    '(org-link ((t (:foreground "royal blue" :underline t))))
+    '(org-meta-line ((t (:inherit (font-lock-comment-face fixed-pitch)))))
+    '(org-property-value ((t (:inherit fixed-pitch))) t)
+    '(org-special-keyword ((t (:inherit (font-lock-comment-face fixed-pitch)))))
+    '(org-table ((t (:inherit fixed-pitch :foreground "#83a598"))))
+    '(org-tag ((t (:inherit (shadow fixed-pitch) :weight bold :height 0.8))))
+    '(org-verbatim ((t (:inherit (shadow fixed-pitch))))))
+#+END_SRC
+
+Python
+#+BEGIN_SRC emacs-lisp
+  (use-package pyvenv
+  :ensure t
+  :init
+  (setenv "WORKON_HOME" "~/.pyenv/versions"))
+
+;; (use-package auto-virtualenv
+;;   :ensure t
+;;   :init
+;;   :config
+;;     (add-hook 'python-mode-hook 'auto-virtualenv-set-virtualenv)
+;;     (add-hook 'projectile-after-switch-project-hook 'auto-virtualenv-set-virtualenv)  ;; If using projectile
+;; )
+
+(use-package pydoc
+  :ensure t
+  :defer
+  :bind (:map python-mode-map
+              ("C-c C-d" . prometeo/pydoc-at-point))
+  :init
+    (add-to-list 'display-buffer-alist
+                 '("^\\*pydoc" display-buffer-in-side-window
+                   ;; (slot . 1)
+                   (side . right)
+                   (window-parameters . ((no-delete-other-windows . t)))
+                   (dedicated . t)
+                   ;; (window-width . 80)
+                   ))
+    (defun prometeo/pydoc-at-point ()
+      "Display pydoc in a dedicated frame."
+      (interactive)
+      (let ((default-directory (file-name-directory (buffer-file-name))))
+        (if (not (eq current-prefix-arg nil))
+            (when (get-buffer-window "*pydoc*")
+              (delete-window (get-buffer-window "*pydoc*")))
+          (pydoc-at-point)
+          (set-window-dedicated-p (get-buffer-window "*pydoc*") t))))
+)
+
+(use-package python-black
+  :ensure t
+  :demand t
+  :hook (python-mode . python-black-on-save-mode))
+
+(use-package flymake-ruff
+  :ensure t
+  :hook (python-ts-mode . flymake-ruff-load))
+
+(use-package ruff-format
+  :ensure t
+  :hook (python-ts-mode . ruff-format-on-save-mode))
+
+(add-hook 'eglot-managed-mode-hook 'flymake-ruff-load)
+#+END_SRC
+
+Haskell
+#+BEGIN_SRC emacs-lisp
+  (use-package haskell-mode :demand t)
+#+END_SRC
+
+Common Lisp
+#+BEGIN_SRC emacs-lisp
+  (use-package sly :demand t)
+#+END_SRC
+
+Terraform
+#+BEGIN_SRC emacs-lisp
+  (use-package terraform-mode :demand t)
+#+END_SRC
+
+web mode
+#+BEGIN_SRC emacs-lisp
+(use-package web-mode :demand t)
+(add-to-list 'auto-mode-alist '("\\.html\\'" . web-mode))
+(setq web-mode-markup-indent-offset 2)
+(setq web-mode-css-indent-offset 2)
+(setq web-mode-code-indent-offset 2)
+#+END_SRC
+
+emmet mode
+#+BEGIN_SRC emacs-lisp
+(use-package emmet-mode :demand t)
+(add-hook 'sgml-mode-hook 'emmet-mode) ;; Auto-start on any markup modes
+(add-hook 'css-mode-hook  'emmet-mode) ;; enable Emmet's css abbreviation.
+(add-hook 'web-mode-hook  'emmet-mode) ;; enable Emmet's css abbreviation.
+#+END_SRC
+
+*** Swiper / Ivy / Counsel
+Swiper gives us a really efficient incremental search with regular expressions and Ivy / Counsel replace a lot of ido or helms completion functionality
+- https://github.com/abo-abo/swiper
+
+ Counsel
+#+BEGIN_SRC emacs-lisp
+  (use-package counsel
+    :demand t
+    :bind
+    (("M-y" . counsel-yank-pop)
+     :map ivy-minibuffer-map
+     ("M-y" . ivy-next-line)))
+#+END_SRC
+
+Ivy
+#+BEGIN_SRC emacs-lisp
+(use-package ivy
+  :demand t
+  :diminish (ivy-mode)
+  :bind (("C-x b" . ivy-switch-buffer))
+  :config
+  (ivy-mode 1)
+  (setq ivy-use-virtual-buffers t)
+  (setq ivy-count-format "%d/%d ")
+  (setq ivy-display-style 'fancy))
+#+END_SRC
+
+Swiper
+#+BEGIN_SRC emacs-lisp
+(use-package swiper
+  :demand t
+  :bind (("C-s" . swiper)
+         ("C-r" . swiper)
+         ("C-c C-r" . ivy-resume)
+         ("M-x" . counsel-M-x)
+         ("C-x C-f" . counsel-find-file)
+         )
+  :config
+  (progn
+    (ivy-mode 1)
+    (setq ivy-use-virtual-buffers t)
+    (setq ivy-display-style 'fancy)
+    (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
+    ))
+#+END_SRC
+
+*** Searching
+Silver search
+- https://github.com/Wilfred/ag.el
+#+BEGIN_SRC emacs-lisp
+  (use-package ag :demand t)
+  (setq ag-highlight-search t)
+#+END_SRC
+
+Anzu
+displays current match and total matches information in the mode-line
+ - https://github.com/emacsorphanage/anzu
+#+BEGIN_SRC emacs-lisp
+(use-package anzu :demand t :init(global-anzu-mode))
+;; (global-anzu-mode +1)
+(global-set-key [remap query-replace] 'anzu-query-replace)
+(global-set-key [remap query-replace-regexp] 'anzu-query-replace-regexp)
+
+(defun my/anzu-update-func (here total)
+  (when anzu--state
+    (let ((status (cl-case anzu--state
+                    (search (format "<%d/%d>" here total))
+                    (replace-query (format "(%d Replaces)" total))
+                    (replace (format "<%d/%d>" here total)))))
+      (propertize status 'face 'anzu-mode-line))))
+
+(custom-set-variables
+ '(anzu-mode-lighter "")
+ '(anzu-deactivate-region t)
+ '(anzu-search-threshold 1000)
+ '(anzu-replace-threshold 50)
+ '(anzu-replace-to-string-separator " => ")
+ '(anzu-mode-line-update-function #'my/anzu-update-func))
+(global-set-key [remap query-replace] 'anzu-query-replace)
+(global-set-key [remap query-replace-regexp] 'anzu-query-replace-regexp)
+#+END_SRC
+
+** Keybindings
+Keychord
+- https://github.com/emacsorphanage/key-chord/tree/7f7fd7c5bd2b996fa054779357e1566f7989e07d
+#+BEGIN_SRC emacs-lisp
+  (use-package key-chord
+    :demand t
+    :config
+    (key-chord-mode 1)
+    (key-chord-define-global "kk" 'forward-word)
+    (key-chord-define-global "jj" 'backward-word)
+    (key-chord-define-global "ññ" 'kill-whole-line)
+    (key-chord-define-global "yy" 'copy-line)
+    (key-chord-define-global "yp" 'duplicate-line)
+    (key-chord-define-global "qq" 'delete-other-windows))
+#+END_SRC
+
+Editing
+#+BEGIN_SRC emacs-lisp
+(defun duplicate-line()
+  "functions being used in a keybinding"
+  (interactive)
+  (move-beginning-of-line 1)
+  (kill-line)
+  (yank)
+  (open-line 1)
+  (next-line 1)
+  (yank))
+
+(defun copy-line (arg)
+  "Copy lines (as many as prefix argument) in the kill ring"
+  (interactive "p")
+  (kill-ring-save (line-beginning-position)
+                  (line-beginning-position (+ 1 arg)))
+  (message "%d line%s copied" arg (if (= 1 arg) "" "s")))
+(defun get-point (symbol &optional arg)
+  "get the point"
+  (funcall symbol arg)
+  (point))
+
+(defun copy-thing (begin-of-thing end-of-thing &optional arg)
+  "copy thing between beg & end into kill ring"
+  (save-excursion
+    (let ((beg (get-point begin-of-thing 1))
+          (end (get-point end-of-thing arg)))
+      (copy-region-as-kill beg end))))
+
+(defun copy-word (&optional arg)
+  "Copy words at point into kill-ring"
+  (interactive "P")
+  (copy-thing 'backward-word 'forward-word arg)
+  (paste-to-mark arg))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "M-p") 'org-edit-src-code)
+#+END_SRC
+
+Ibuffer
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "C-x C-b") 'ibuffer)
+(setq ibuffer-saved-filter-groups
+      (quote (("default"
+               ("dired" (mode . dired-mode))
+               ("org" (name . "^.*org$"))
+               ("web" (or (mode . web-mode) (mode . js2-mode)))
+               ("shell" (or (mode . eshell-mode) (mode . shell-mode)))
+               ("python" (mode . python-mode))
+               ("terraform" (mode . terraform-mode))
+               ("rust" (name . "^.*rs$"))
+               ("emacs" (or
+                         (name . "^\\*scratch\\*$")
+                         (name . "^\\*Messages\\*$")))
+               ))))
+(add-hook 'ibuffer-hook
+          (lambda ()
+            (ibuffer-auto-mode 1)
+            (ibuffer-switch-to-saved-filter-groups "default")))
+
+;; Don't show filter groups if there are no buffers in that group
+(setq ibuffer-show-empty-filter-groups nil)
+;; Don't ask for confirmation to delete marked buffers
+(setq ibuffer-expert t)
+
+;; Modify the default ibuffer-formats
+(setq ibuffer-formats
+      '((mark modified read-only " "
+              (name 18 18 :left :elide)
+              " "
+              (size 9 -1 :right)
+              " "
+              (mode 16 16 :left :elide)
+              " "
+              filename-and-process)))
 #+END_SRC
