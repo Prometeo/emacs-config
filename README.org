@@ -380,10 +380,11 @@ Magit
 Forge
 - https://github.com/magit/forge
 #+BEGIN_SRC emacs-lisp
-  ;; (use-package forge
-  ;;   :demand t
-  ;;   :after magit)
-  ;; (setq auth-sources '("~/.authinfo"))
+ (use-package transient :demand t)
+  (use-package forge
+    :demand t
+    :after magit)
+  (setq auth-sources '("~/.authinfo"))
 #+END_SRC
 
 git-gutter
@@ -408,7 +409,7 @@ gitignore
   (use-package gitignore-templates)
 #+END_SRC
 
-** Code edition
+* Code edition
 Hightlight current line
 #+BEGIN_SRC emacs-lisp
   (global-hl-line-mode 1)
@@ -487,16 +488,6 @@ Display line numbers
   (add-hook 'prog-mode-hook 'display-line-numbers-mode)
 #+END_SRC
 
-Set aggressive idennt mode
-- https://github.com/Malabarba/aggressive-indent-mode
-  #+BEGIN_SRC emacs-lisp
-    ;; (use-package aggressive-indent
-    ;;   :ensure t
-    ;;   :demand t
-    ;;   :config
-    ;;   (add-to-list 'aggressive-indent-excluded-modes 'html-mode))
-  #+END_SRC
-
 autocomplete parentheses
 #+BEGIN_SRC emacs-lisp
   (electric-pair-mode t)
@@ -515,8 +506,8 @@ Replace selection
 Cleanup whitespace on save
 #+BEGIN_SRC emacs-lisp
   (use-package whitespace
-  :ensure nil
-  :hook (before-save . whitespace-cleanup))
+    :ensure nil
+    :hook (before-save . whitespace-cleanup))
 #+END_SRC
 
 Highlight indent guides
@@ -567,7 +558,7 @@ Flycheck inline
 #+BEGIN_SRC emacs-lisp
 (use-package flycheck-inline :demand t)
 (with-eval-after-load 'flycheck
-  (add-hook 'flycheck-mode-hook #'flycheck-inline-mode))
+  (add-hook 'flycheck-mode #'flycheck-inline-mode))
 #+END_SRC
 
 Company
@@ -575,9 +566,8 @@ Company
 #+BEGIN_SRC emacs-lisp
   (use-package company
     :demand t
-    :init
-    (add-hook 'after-init-hook 'global-company-mode)
     :config
+    (global-company-mode 1)
     (setq company-idle-delay 0.2
           company-minimum-prefix-length 3))
 #+END_SRC
@@ -618,15 +608,16 @@ Multiple Cursor
 
 ** Languages
 Eglot
-#+BEGIN_SRC emaccs-lisp
+#+BEGIN_SRC emacs-lisp
+  (use-package jsonrpc :demand t) ;; required by eglot
   (use-package eglot
-  :demand t
-  :defer t
-  :config
-  (add-to-list 'eglot-server-programs '((sh-mode bash-ts-mode) . ("bash-language-server" "start")))
-  :hook (python-ts-mode . eglot-ensure)
-        (rust-mode . eglot-ensure)
-        (sh-mode . eglot-ensure))
+    :demand t
+    :defer t
+    :config
+    (add-to-list 'eglot-server-programs '((sh-mode bash-ts-mode) . ("bash-language-server" "start")))
+    :hook (python-ts-mode . eglot-ensure)
+    (rust-mode . eglot-ensure)
+    (sh-mode . eglot-ensure))
 #+END_SRC
 
 Bash
@@ -721,18 +712,13 @@ Org mode
 
 Python
 #+BEGIN_SRC emacs-lisp
+  (setq major-mode-remap-alist
+        '((python-mode . python-ts-mode)))
+
   (use-package pyvenv
   :ensure t
   :init
   (setenv "WORKON_HOME" "~/.pyenv/versions"))
-
-;; (use-package auto-virtualenv
-;;   :ensure t
-;;   :init
-;;   :config
-;;     (add-hook 'python-mode-hook 'auto-virtualenv-set-virtualenv)
-;;     (add-hook 'projectile-after-switch-project-hook 'auto-virtualenv-set-virtualenv)  ;; If using projectile
-;; )
 
 (use-package pydoc
   :ensure t
