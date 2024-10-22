@@ -542,7 +542,7 @@ Yasnippet
         '("~/.emacs.d/snippets"))
 #+END_SRC
 
-`* Development
+* Development
 ** General
 Flycheck
 - https://www.flycheck.org/en/latest/
