@@ -112,6 +112,16 @@ Doom modeline
 
 * Basic settings
 ** General
+
+Copy environment variables into emacs (When running on macos)
+#+BEGIN_SRC emacs-lisp
+
+  ;; (require 'exec-path-from-shell)
+  (when (memq window-system '(mac ns x))
+    (use-package exec-path-from-shell
+      :config (exec-path-from-shell-initialize)))
+#+END_SRC
+
 Do not show startup message
 #+BEGIN_SRC emacs-lisp
   (setq inhibit-startup-message t)
@@ -615,9 +625,15 @@ Eglot
     :defer t
     :config
     (add-to-list 'eglot-server-programs '((sh-mode bash-ts-mode) . ("bash-language-server" "start")))
-    :hook (python-ts-mode . eglot-ensure)
-    (rust-mode . eglot-ensure)
+    :hook
+    ;; (python-ts-mode . eglot-ensure)
+    ;; (rust-mode . eglot-ensure)
     (sh-mode . eglot-ensure))
+#+END_SRC
+
+LSP
+#+BEGIN_SRC emacs-lisp
+    (use-package lsp-mode)
 #+END_SRC
 
 Bash
@@ -717,15 +733,26 @@ Org mode
     '(org-verbatim ((t (:inherit (shadow fixed-pitch))))))
 #+END_SRC
 
+Direnv
+#+BEGIN_SRC emacs-lisp
+  (use-package direnv
+    :config
+    (direnv-mode))
+#+END_SRC
+
 Python
 #+BEGIN_SRC emacs-lisp
   (setq major-mode-remap-alist
         '((python-mode . python-ts-mode)))
 
+  (use-package lsp-ui :commands lsp-ui-mode)
+
+  (add-hook 'python-ts-mode-hook 'lsp-deferred)
+
   (use-package pyvenv
-  :ensure t
-  :init
-  (setenv "WORKON_HOME" "~/.pyenv/versions"))
+    :ensure t
+    :init
+    (setenv "WORKON_HOME" "~/.pyenv/versions"))
 
 (use-package pydoc
   :ensure t
@@ -752,11 +779,6 @@ Python
           (set-window-dedicated-p (get-buffer-window "*pydoc*") t))))
 )
 
-(use-package python-black
-  :ensure t
-  :demand t
-  :hook (python-mode . python-black-on-save-mode))
-
 (use-package flymake-ruff
   :ensure t
   :hook (python-ts-mode . flymake-ruff-load))
@@ -765,7 +787,24 @@ Python
   :ensure t
   :hook (python-ts-mode . ruff-format-on-save-mode))
 
-(add-hook 'eglot-managed-mode-hook 'flymake-ruff-load)
+;; (add-hook 'eglot-managed-mode-hook 'flymake-ruff-load)
+#+END_SRC
+
+Rust
+#+BEGIN_SRC emacs-lisp
+  ;; (if (eq system-type 'darwin)
+  ;;     (add-to-list 'exec-path (expand-file-name "/Users/prometeo/.local/bin//rust-analyzer")))
+
+  (use-package rust-mode
+    :init
+    (setq rust-mode-treesitter-derive t))
+
+  (add-hook 'rust-mode-hook #'lsp)
+  (use-package rustic
+    :config
+    (setq rustic-format-on-save nil)
+    :custom
+    (rustic-cargo-use-last-stored-arguments t))
 #+END_SRC
 
 Haskell
