@@ -346,6 +346,7 @@ Treemacs
   (use-package treemacs-magit
     :after (treemacs magit)
     :demand t)
+  (use-package lsp-treemacs :demand t :config (lsp-treemacs-sync-mode 1))
 #+END_SRC
 
 *** Windows Management
@@ -409,8 +410,8 @@ git-gutter
 Time machine
 - https://github.com/emacsmirror/git-timemachine
 #+BEGIN_SRC emacs-lisp
-  ;; (use-package git-timemachine
-  ;; :demand t)
+  (use-package git-timemachine
+    :demand t)
 #+END_SRC
 
 gitignore
@@ -633,7 +634,10 @@ Eglot
 
 LSP
 #+BEGIN_SRC emacs-lisp
-    (use-package lsp-mode)
+    (use-package lsp-mode
+      :demand t
+      :config
+      (setq lsp-enable-snippet t))
 #+END_SRC
 
 Bash
@@ -733,22 +737,28 @@ Org mode
     '(org-verbatim ((t (:inherit (shadow fixed-pitch))))))
 #+END_SRC
 
+Direnv
+#+BEGIN_SRC emacs-lisp
+  (use-package direnv
+    :demand t
+    :config
+    (direnv-mode))
+#+END_SRC
+
 Python
 #+BEGIN_SRC emacs-lisp
   (setq major-mode-remap-alist
         '((python-mode . python-ts-mode)))
 
   (use-package pyvenv
-    :ensure t
     :init
     (setenv "WORKON_HOME" "~/.pyenv/versions"))
 
-(use-package pydoc
-  :ensure t
-  :defer
-  :bind (:map python-mode-map
-              ("C-c C-d" . prometeo/pydoc-at-point))
-  :init
+  (use-package pydoc
+    :defer
+    :bind (:map python-mode-map
+                ("C-c C-d" . prometeo/pydoc-at-point))
+    :init
     (add-to-list 'display-buffer-alist
                  '("^\\*pydoc" display-buffer-in-side-window
                    ;; (slot . 1)
@@ -766,24 +776,19 @@ Python
               (delete-window (get-buffer-window "*pydoc*")))
           (pydoc-at-point)
           (set-window-dedicated-p (get-buffer-window "*pydoc*") t))))
-)
+    )
 
-(use-package flymake-ruff
-  :ensure t
-  :hook (python-ts-mode . flymake-ruff-load))
+  (use-package flymake-ruff
+    :hook (python-ts-mode . flymake-ruff-load))
 
-(use-package ruff-format
-  :ensure t
-  :hook (python-ts-mode . ruff-format-on-save-mode))
+  (use-package ruff-format
+    :hook (python-ts-mode . ruff-format-on-save-mode))
 
-;; (add-hook 'eglot-managed-mode-hook 'flymake-ruff-load)
+  (add-hook 'eglot-managed-mode-hook 'flymake-ruff-load)
 #+END_SRC
 
 Rust
 #+BEGIN_SRC emacs-lisp
-  ;; (if (eq system-type 'darwin)
-  ;;     (add-to-list 'exec-path (expand-file-name "/Users/prometeo/.local/bin//rust-analyzer")))
-
   (use-package rust-mode
     :init
     (setq rust-mode-treesitter-derive t))
@@ -791,7 +796,7 @@ Rust
   (add-hook 'rust-mode-hook #'lsp)
   (use-package rustic
     :config
-    (setq rustic-format-on-save nil)
+    (setq rustic-format-on-save t)
     :custom
     (rustic-cargo-use-last-stored-arguments t))
 #+END_SRC
