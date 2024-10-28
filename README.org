@@ -117,9 +117,11 @@ Copy environment variables into emacs (When running on macos)
 #+BEGIN_SRC emacs-lisp
 
   ;; (require 'exec-path-from-shell)
-  (when (memq window-system '(mac ns x))
+  ;; (when (memq window-system '(mac ns x))
+  ;;   (use-package exec-path-from-shell
+  ;;     :config (exec-path-from-shell-initialize)))
     (use-package exec-path-from-shell
-      :config (exec-path-from-shell-initialize)))
+      :config (exec-path-from-shell-initialize))
 #+END_SRC
 
 Do not show startup message
@@ -617,6 +619,14 @@ Multiple Cursor
   (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
 #+END_SRC
 
+Direnv
+#+BEGIN_SRC emacs-lisp
+  (use-package direnv
+    :demand t
+    :config
+    (direnv-mode))
+#+END_SRC
+
 ** Languages
 Eglot
 #+BEGIN_SRC emacs-lisp
@@ -735,14 +745,6 @@ Org mode
     '(org-table ((t (:inherit fixed-pitch :foreground "#83a598"))))
     '(org-tag ((t (:inherit (shadow fixed-pitch) :weight bold :height 0.8))))
     '(org-verbatim ((t (:inherit (shadow fixed-pitch))))))
-#+END_SRC
-
-Direnv
-#+BEGIN_SRC emacs-lisp
-  (use-package direnv
-    :demand t
-    :config
-    (direnv-mode))
 #+END_SRC
 
 Python
