@@ -15,10 +15,6 @@ and is contained entirely in this file.
 - https://pypi.org/project/pip/
 - [[https://virtualenv.pypa.io/en/latest/]]
 
-
-
-Copyright 2021 Xairi Valdivia.
-
 Any external/third party works included in this work are licensed under
 their own licenses - refer to the submodules or packages for more
 information
