@@ -619,6 +619,18 @@ Multiple Cursor
   (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
 #+END_SRC
 
+Repeat mode
+- Allows repeating a command via `C-x z` (press z each time you want to repet the command)
+#+BEGIN_SRC emacs-lisp
+  (use-package repeat
+    :ensure nil
+    :config
+    (repeat-mode)
+    :custom
+    (repeat-too-dangerous '(kill-this-buffer))
+    (repeat-exit-timeout 5))
+#+END_SRC
+
 Direnv
 #+BEGIN_SRC emacs-lisp
   (use-package direnv
@@ -756,29 +768,9 @@ Python
     :init
     (setenv "WORKON_HOME" "~/.pyenv/versions"))
 
-  (use-package pydoc
-    :defer
-    :bind (:map python-mode-map
-                ("C-c C-d" . prometeo/pydoc-at-point))
+  (use-package virtualenvwrapper
     :init
-    (add-to-list 'display-buffer-alist
-                 '("^\\*pydoc" display-buffer-in-side-window
-                   ;; (slot . 1)
-                   (side . right)
-                   (window-parameters . ((no-delete-other-windows . t)))
-                   (dedicated . t)
-                   ;; (window-width . 80)
-                   ))
-    (defun prometeo/pydoc-at-point ()
-      "Display pydoc in a dedicated frame."
-      (interactive)
-      (let ((default-directory (file-name-directory (buffer-file-name))))
-        (if (not (eq current-prefix-arg nil))
-            (when (get-buffer-window "*pydoc*")
-              (delete-window (get-buffer-window "*pydoc*")))
-          (pydoc-at-point)
-          (set-window-dedicated-p (get-buffer-window "*pydoc*") t))))
-    )
+    (setenv "WORKON_HOME" "~/.pyenv/versions"))
 
   (use-package flymake-ruff
     :hook (python-ts-mode . flymake-ruff-load))
@@ -926,6 +918,7 @@ Keychord
     :config
     (key-chord-mode 1)
     (key-chord-define-global "kk" 'forward-word)
+    (key-chord-define-global "xx" 'save-buffer)
     (key-chord-define-global "jj" 'backward-word)
     (key-chord-define-global "ññ" 'kill-whole-line)
     (key-chord-define-global "yy" 'copy-line)
