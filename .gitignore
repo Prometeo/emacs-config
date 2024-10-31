@@ -71,3 +71,7 @@ bookmarks
 
 # elpaca
 elpaca/
+
+# other files
+ielm-history.eld
+projectile.cache
