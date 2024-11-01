@@ -671,19 +671,6 @@ Gleam
   (add-to-list 'auto-mode-alist '("\\.gleam\\'" . gleam-ts-mode))
 #+END_SRC
 
-Org mode
-#+BEGIN_SRC emacs-lisp
-  (use-package org-modern
-    :hook
-    (org-mode . global-org-modern-mode))
-
-  ;; org-download: https://github.com/abo-abo/org-download
-  (use-package org-download
-    :hook
-    (org-mode . org-download-enable))
-  (setq-default org-download-image-dir "~/Pictures/org")
-#+END_SRC
-
 Python
 #+BEGIN_SRC emacs-lisp
   (setq major-mode-remap-alist
@@ -834,7 +821,7 @@ displays current match and total matches information in the mode-line
 (global-set-key [remap query-replace-regexp] 'anzu-query-replace-regexp)
 #+END_SRC
 
-** Keybindings
+* Keybindings
 Keychord
 - https://github.com/emacsorphanage/key-chord/tree/7f7fd7c5bd2b996fa054779357e1566f7989e07d
 #+BEGIN_SRC emacs-lisp
@@ -928,4 +915,93 @@ Ibuffer
               (mode 16 16 :left :elide)
               " "
               filename-and-process)))
+#+END_SRC
+
+* Org Mode
+Olivetti
+#+BEGIN_SRC emacs-lisp
+  (use-package olivetti
+    :init
+    (setq olivetti-body-width 80)
+    (setq olivetti-style 'fancy)
+    (setq olivetti-minimum-body-width 50))
+#+END_SRC
+
+Org mode
+#+BEGIN_SRC emacs-lisp
+  (use-package org-modern
+    :after org
+    :config (global-org-modern-mode)
+    :custom
+    (org-modern-priority t)
+    :init
+    (setq org-modern-hide-stars 'leading
+          org-modern-priority
+          (quote ((?A . " ")
+                  (?B . " ")
+                  (?C . " 󰈿")
+                  (?D . " ")
+                  (?E . " 󱗼")
+                  (?F . " 󱗾")
+                  (?G . " 󰇙")))
+          org-modern-keyword
+          (quote (("options" . "🔧")
+                  ("tag" . "")
+                  ("#+" . "➤")
+                  (t . t)))))
+   '(org-modern-list'(("+" . "➤") (?- . "✦") (?* . "•")))
+  (elpaca (org-modern-indent :host github :repo "jdtsmith/org-modern-indent")
+    :config ; add late to hook
+    (add-hook 'org-mode-hook #'org-modern-indent-mode 90))
+
+  ;; org-download: https://github.com/abo-abo/org-download
+  (use-package org-download
+    :hook
+    (org-mode . org-download-enable))
+  (setq-default org-download-image-dir "./images")
+
+  (use-package org
+    :ensure nil
+    :demand t
+    :init
+    ;; edit settings (recommended by org-modern)
+    (setq org-auto-align-tags nil
+            org-tags-column 0
+            org-catch-invisible-edits 'show-and-error
+            org-special-ctrl-a/e t ;; special navigation behaviour in headlines
+            org-insert-heading-respect-content t)
+    ;; styling, hide markup, etc. (recommended by org-modern)
+    (setq org-hide-emphasis-markers t
+          org-src-fontify-natively t ;; fontify source blocks natively
+          org-highlight-latex-and-related '(native) ;; fontify latex blocks natively
+          org-pretty-entities t)
+
+    ;; agenda styling (recommended by org-modern)
+    (setq org-agenda-tags-column 0
+          org-agenda-block-separator ?─
+          org-agenda-time-grid
+          '((daily today require-timed)
+            (800 1000 1200 1400 1600 1800 2000)
+            " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄")
+          org-agenda-current-time-string
+          "⭠ now ─────────────────────────────────────────────────")
+    (setq org-ellipsis "...")
+    (setq org-todo-keywords
+          ;; it's extremely useful to distinguish between short-term goals and long-term projects
+          '((sequence "TODO(t)" "SOMEDAY(s)" "|" "DONE(d)")
+            (sequence "TO-READ(r)" "READING(R)" "|" "HAVE-READ(d)")
+            (sequence "PROJ(p)" "|" "COMPLETED(c)")))
+    :hook
+    (org-mode . olivetti-mode)
+    (org-mode . (lambda () (electric-indent-local-mode -1)))
+  )
+#+END_SRC
+
+Org Agenda
+#+BEGIN_SRC emacs-lisp
+  (custom-set-variables
+   '(org-directory "~/Documents/org")
+   '(org-agenda-files (list org-directory)))
+
+  (define-key org-mode-map (kbd "C-c a m") 'org-agenda)
 #+END_SRC
