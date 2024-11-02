@@ -929,6 +929,7 @@ Olivetti
 
 Org mode
 #+BEGIN_SRC emacs-lisp
+  ;; https://github.com/minad/org-modern
   (use-package org-modern
     :after org
     :config (global-org-modern-mode)
@@ -939,11 +940,7 @@ Org mode
           org-modern-priority
           (quote ((?A . " ")
                   (?B . " ")
-                  (?C . " 󰈿")
-                  (?D . " ")
-                  (?E . " 󱗼")
-                  (?F . " 󱗾")
-                  (?G . " 󰇙")))
+                  (?C . " 󰈿")))
           org-modern-keyword
           (quote (("options" . "🔧")
                   ("tag" . "")
@@ -1004,4 +1001,16 @@ Org Agenda
    '(org-agenda-files (list org-directory)))
 
   (define-key org-mode-map (kbd "C-c a m") 'org-agenda)
+#+END_SRC
+
+Org-mime
+-https://github.com/org-mime/org-mime
+#+BEGIN_SRC emacs-lisp
+  (use-package org-mime)
+  (add-hook 'message-mode-hook
+            (lambda ()
+              (local-set-key (kbd "C-c M-o") 'org-mime-htmlize)))
+  (add-hook 'org-mode-hook
+            (lambda ()
+              (local-set-key (kbd "C-c M-o") 'org-mime-org-buffer-htmlize)))
 #+END_SRC

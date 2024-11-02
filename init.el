@@ -1,6 +1,5 @@
 ;; Ensure that use-package is installed.
-;;
-;;(org-babel-load-file (expand-file-name "~/.emacs.d/README.org"))
+
 (org-babel-load-file "~/.emacs.d/README.org")
 ;; If use-package isn't already installed, it's extremely likely that this is a
 ;; fresh installation! So we'll want to update the package repository and
