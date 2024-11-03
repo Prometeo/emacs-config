@@ -1013,3 +1013,13 @@ Org-mime
             (lambda ()
               (local-set-key (kbd "C-c M-o") 'org-mime-org-buffer-htmlize)))
 #+END_SRC
+
+Org-babel
+#+BEGIN_SRC emacs-lisp
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((python . t)
+     (scheme . t)
+     (sh . t)
+     (sqlite . t)))
+#+END_SRC
