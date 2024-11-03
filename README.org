@@ -946,7 +946,6 @@ Org mode
                   ("tag" . "")
                   ("#+" . "➤")
                   (t . t)))))
-   '(org-modern-list'(("+" . "➤") (?- . "✦") (?* . "•")))
   (elpaca (org-modern-indent :host github :repo "jdtsmith/org-modern-indent")
     :config ; add late to hook
     (add-hook 'org-mode-hook #'org-modern-indent-mode 90))
