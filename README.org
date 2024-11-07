@@ -108,8 +108,7 @@ Doom modeline
 
 * Basic settings
 ** General
-
-Copy environment variables into emacs (When running on macos)
+Copy environment variables into emacs
 #+BEGIN_SRC emacs-lisp
 
   ;; (require 'exec-path-from-shell)
@@ -345,6 +344,46 @@ Treemacs
     :after (treemacs magit)
     :demand t)
   (use-package lsp-treemacs :demand t :config (lsp-treemacs-sync-mode 1))
+#+END_SRC
+
+Dashboard
+- https://github.com/emacs-dashboard/emacs-dashboard
+#+BEGIN_SRC emacs-lisp
+  (use-package dashboard
+    :config
+    (add-hook 'elpaca-after-init-hook #'dashboard-insert-startupify-lists)
+    (add-hook 'elpaca-after-init-hook #'dashboard-initialize)
+    (dashboard-setup-startup-hook))
+
+  ;; to show Dashboard in frames created with emacsclient
+  (setq initial-buffer-choice (lambda () (get-buffer-create dashboard-buffer-name)))
+  ;; Content is not centered by default. To center, set
+  (setq dashboard-center-content t)
+  ;; vertically center content
+  (setq dashboard-vertically-center-content t)
+
+  (setq dashboard-items '((recents   . 5)
+                        (bookmarks . 5)
+                        (projects  . 5)
+                        (agenda    . 5)))
+
+  (setq dashboard-startupify-list '(dashboard-insert-banner
+                                  dashboard-insert-newline
+                                  dashboard-insert-banner-title
+                                  dashboard-insert-newline
+                                  dashboard-insert-navigator
+                                  dashboard-insert-newline
+                                  dashboard-insert-init-info
+                                  dashboard-insert-items
+                                  dashboard-insert-newline
+                                  dashboard-insert-footer))
+
+  (setq dashboard-icon-type 'all-the-icons)  ; use `all-the-icons' package
+  (setq dashboard-set-heading-icons t)
+  (setq dashboard-set-file-icons t)
+
+  (setq dashboard-week-agenda t)
+  (setq dashboard-filter-agenda-entry 'dashboard-no-filter-agenda)
 #+END_SRC
 
 *** Windows Management
@@ -1020,6 +1059,6 @@ Org-babel
    'org-babel-load-languages
    '((python . t)
      (scheme . t)
-     (sh . t)
+     (shell . t)
      (sqlite . t)))
 #+END_SRC
