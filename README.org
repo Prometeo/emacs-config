@@ -14,6 +14,7 @@ and is contained entirely in this file.
 - [[https://github.com/ggreer/the_silver_searcher]]
 - https://pypi.org/project/pip/
 - [[https://virtualenv.pypa.io/en/latest/]]
+- https://github.com/mermaid-js/mermaid-cli
 
 Any external/third party works included in this work are licensed under
 their own licenses - refer to the submodules or packages for more
@@ -21,7 +22,7 @@ information
 
 ** Configure Elpaca
 #+BEGIN_SRC emacs-lisp
-  (defvar elpaca-installer-version 0.7)
+  (defvar elpaca-installer-version 0.8)
   (defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
   (defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
   (defvar elpaca-repos-directory (expand-file-name "repos/" elpaca-directory))
@@ -129,8 +130,6 @@ Golden ratio
 ** General
 Copy environment variables into emacs
 #+BEGIN_SRC emacs-lisp
-
-  ;; (require 'exec-path-from-shell)
   ;; (when (memq window-system '(mac ns x))
   ;;   (use-package exec-path-from-shell
   ;;     :config (exec-path-from-shell-initialize)))
@@ -612,23 +611,6 @@ Yasnippet
 
 * Development
 ** General
-Flycheck
-- https://www.flycheck.org/en/latest/
-#+BEGIN_SRC emacs-lisp
-  (use-package flycheck
-    :demand t
-    :init
-    (global-flycheck-mode))
-#+END_SRC
-
-Flycheck inline
-- https://github.com/flycheck/flycheck-inline
-#+BEGIN_SRC emacs-lisp
-(use-package flycheck-inline :demand t)
-(with-eval-after-load 'flycheck
-  (add-hook 'flycheck-mode #'flycheck-inline-mode))
-#+END_SRC
-
 Company
 - https://company-mode.github.io/
 #+BEGIN_SRC emacs-lisp
@@ -702,7 +684,10 @@ Eglot
     :demand t
     :defer t
     :config
-    (add-to-list 'eglot-server-programs '((sh-mode bash-ts-mode) . ("bash-language-server" "start")))
+    (add-to-list 'eglot-server-programs
+               '((python-mode python-ts-mode) . ("pyright-langserver" "--stdio")))
+  (add-to-list 'eglot-server-programs
+               '((sh-mode bash-ts-mode) . ("bash-language-server" "start")))
     :hook
     (python-ts-mode . eglot-ensure)
     ;; (rust-mode . eglot-ensure)
@@ -739,17 +724,18 @@ Python
     :init
     (setenv "WORKON_HOME" "~/.pyenv/versions"))
 
-  (use-package virtualenvwrapper
-    :init
-    (setenv "WORKON_HOME" "~/.pyenv/versions"))
+    (use-package virtualenvwrapper
+      :init
+      (setenv "WORKON_HOME" "~/.pyenv/versions"))
 
-  (use-package flymake-ruff
-    :hook (python-ts-mode . flymake-ruff-load))
 
-  (use-package ruff-format
-    :hook (python-ts-mode . ruff-format-on-save-mode))
+    (use-package flymake-ruff
+      :hook (python-ts-mode . flymake-ruff-load))
 
-  (add-hook 'eglot-managed-mode-hook 'flymake-ruff-load)
+    (use-package ruff-format
+      :hook (python-ts-mode . ruff-format-on-save-mode))
+
+    (add-hook 'eglot-managed-mode-hook 'flymake-ruff-load)
 #+END_SRC
 
 Rust
@@ -768,7 +754,7 @@ Rust
 
 Haskell
 #+BEGIN_SRC emacs-lisp
-  (use-package haskell-mode :demand t)
+  (use-package haskell-mode)
 #+END_SRC
 
 Common Lisp
@@ -778,7 +764,12 @@ Common Lisp
 
 Terraform
 #+BEGIN_SRC emacs-lisp
-  (use-package terraform-mode :demand t)
+  (use-package terraform-mode
+    :custom (terraform-indent-level 4)
+    :config
+    (defun my-terraform-mode-init ()
+      (terraform-format-on-save-mode 1)))
+
 #+END_SRC
 
 web mode
@@ -1071,6 +1062,24 @@ Org-mime
   (add-hook 'org-mode-hook
             (lambda ()
               (local-set-key (kbd "C-c M-o") 'org-mime-org-buffer-htmlize)))
+#+END_SRC
+
+Ob-mermaid
+- https://github.com/arnm/ob-mermaid
+- Requires mermaid-cli: https://github.com/mermaid-js/mermaid-cli
+#+BEGIN_SRC emacs-lisp
+  (use-package ob-mermaid
+    :after org
+    :config
+    ;; Add mermaid to org-babel languages once ob-mermaid is available
+    (with-eval-after-load 'org
+      (org-babel-do-load-languages
+       'org-babel-load-languages
+       '((mermaid . t)))))
+
+  (if (memq window-system '(mac ns x))
+      (setq ob-mermaid-cli-path "/opt/homebrew/bin/mmdc")
+    (setq ob-mermaid-cli-path "/path/to//bin/mmdc"))
 #+END_SRC
 
 Org-babel

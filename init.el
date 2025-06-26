@@ -23,7 +23,21 @@
      default))
  '(org-agenda-files (list org-directory))
  '(org-directory "~/Documents/org")
- '(package-selected-packages '(evil transient)))
+ '(package-selected-packages '(evil transient))
+ '(safe-local-variable-values
+   '((eval let
+           ((src-path
+             (expand-file-name "src" (projectile-project-root))))
+           (setenv "PYTHONPATH" src-path)
+           (setq python-shell-extra-pythonpaths (list src-path)))
+     (eval progn
+           (setenv "PYTHONPATH" (concat (projectile-project-root)))
+           (setq python-shell-extra-pythonpaths
+                 (list (projectile-project-root))))
+     (eval venv-workon "prometheus")
+     (eval venv-workon "terraform-saas") (eval venv-workon "twitter")
+     (eval venv-workon "ccs-problems") (eval venv-workon "cs")
+     (projectile-project-test-cmd . "pytest"))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
