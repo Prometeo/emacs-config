@@ -25,7 +25,14 @@
  '(org-directory "~/Documents/org")
  '(package-selected-packages '(evil transient))
  '(safe-local-variable-values
-   '((eval let
+   '((eval pyvenv-activate
+           (expand-file-name ".venv"
+                             (locate-dominating-file default-directory
+                                                     ".dir-locals.el")))
+     (eval pyvenv-activate
+           (expand-file-name ".venv" (project-root (project-current))))
+     (eval pyvenv-workon "terraform-saas")
+     (eval let
            ((src-path
              (expand-file-name "src" (projectile-project-root))))
            (setenv "PYTHONPATH" src-path)

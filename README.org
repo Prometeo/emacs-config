@@ -1,4 +1,4 @@
-#+STARTUP: overview
+vi#+STARTUP: overview
 #+PROPERTY: header-args :comments yes :results silent
 * My Emacs Configuration
 ** About
@@ -724,9 +724,9 @@ Python
     :init
     (setenv "WORKON_HOME" "~/.pyenv/versions"))
 
-    (use-package virtualenvwrapper
-      :init
-      (setenv "WORKON_HOME" "~/.pyenv/versions"))
+  (use-package virtualenvwrapper
+    :init
+    (setenv "WORKON_HOME" "~/.pyenv/versions"))
 
 
     (use-package flymake-ruff
