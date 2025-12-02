@@ -107,23 +107,12 @@ Doom modeline
 #+END_SRC
 
 ** visual
-
 Solaire mode
 - https://github.com/hlissner/emacs-solaire-mode
 #+BEGIN_SRC emacs-lisp
   (use-package solaire-mode
     :demand t
     :init (solaire-global-mode +1))
-#+END_SRC
-
-Golden ratio
-- https://github.com/roman/golden-ratio.el
-#+BEGIN_SRC emacs-lisp
-  (use-package golden-ratio
-    :demand t
-    :init (golden-ratio-mode 1))
-  (setq golden-ratio-adjust-factor .8
-      golden-ratio-wide-adjust-factor .8)
 #+END_SRC
 
 * Basic settings
@@ -405,6 +394,13 @@ Dashboard
   (setq dashboard-filter-agenda-entry 'dashboard-no-filter-agenda)
 #+END_SRC
 
+Load fonts (emacs client doesn't load all the fonts in GUI mode)
+#+BEGIN_SRC emacs-lisp
+  (setq default-frame-alist '(
+                              (font . "Iosevka")
+                              (font . "Hack")
+                              (font . "Fira Code")))
+#+END_SRC
 *** Windows Management
 Ace-window
 - https://github.com/abo-abo/ace-window
@@ -972,7 +968,7 @@ Olivetti
 #+BEGIN_SRC emacs-lisp
   (use-package olivetti
     :init
-    (setq olivetti-body-width 80)
+    (setq olivetti-body-width 130)
     (setq olivetti-style 'fancy)
     (setq olivetti-minimum-body-width 50))
 #+END_SRC
@@ -1091,3 +1087,4 @@ Org-babel
      (shell . t)
      (sqlite . t)))
 #+END_SRC
+

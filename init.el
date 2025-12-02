@@ -29,9 +29,9 @@
            (expand-file-name ".venv"
                              (locate-dominating-file default-directory
                                                      ".dir-locals.el")))
+
      (eval pyvenv-activate
            (expand-file-name ".venv" (project-root (project-current))))
-     (eval pyvenv-workon "terraform-saas")
      (eval let
            ((src-path
              (expand-file-name "src" (projectile-project-root))))
@@ -41,9 +41,7 @@
            (setenv "PYTHONPATH" (concat (projectile-project-root)))
            (setq python-shell-extra-pythonpaths
                  (list (projectile-project-root))))
-     (eval venv-workon "prometheus")
-     (eval venv-workon "terraform-saas") (eval venv-workon "twitter")
-     (eval venv-workon "ccs-problems") (eval venv-workon "cs")
+     (linux-config)
      (projectile-project-test-cmd . "pytest"))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
