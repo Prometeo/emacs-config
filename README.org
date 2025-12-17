@@ -607,6 +607,21 @@ Yasnippet
 
 * Development
 ** General
+Eldoc-box
+- https://github.com/casouri/eldoc-box
+#+BEGIN_SRC emacs-lisp
+  (use-package eldoc-box)
+#+END_SRC
+
+Eldoc-mouse
+- https://github.com/huangfeiyu/eldoc-mouse
+#+BEGIN_SRC emacs-lisp
+  (use-package eldoc-mouse :ensure t
+    :bind (:map eldoc-mouse-mode-map
+         ("<f1> <f1>" . eldoc-mouse-pop-doc-at-cursor))
+  :hook eldoc-mode)
+#+END_SRC
+
 Company
 - https://company-mode.github.io/
 #+BEGIN_SRC emacs-lisp
@@ -680,14 +695,15 @@ Eglot
     :demand t
     :defer t
     :config
-    (add-to-list 'eglot-server-programs
-               '((python-mode python-ts-mode) . ("pyright-langserver" "--stdio")))
-  (add-to-list 'eglot-server-programs
-               '((sh-mode bash-ts-mode) . ("bash-language-server" "start")))
+      (add-to-list 'eglot-server-programs
+                   '((python-mode python-ts-mode) . ("pyrefly" "lsp")))
+      (add-to-list 'eglot-server-programs
+                   '((sh-mode bash-ts-mode) . ("bash-language-server" "start")))
     :hook
-    (python-ts-mode . eglot-ensure)
-    ;; (rust-mode . eglot-ensure)
-    (sh-mode . eglot-ensure))
+      (python-ts-mode . eglot-ensure)
+      (sh-mode . eglot-ensure)
+      (eglot-managed-mode-hook . eldoc-box-hover-mode)
+    )
 #+END_SRC
 
 LSP

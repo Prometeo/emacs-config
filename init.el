@@ -23,13 +23,12 @@
      default))
  '(org-agenda-files (list org-directory))
  '(org-directory "~/Documents/org")
- '(package-selected-packages '(evil transient))
+ '(package-selected-packages '(emacsql evil transient))
  '(safe-local-variable-values
    '((eval pyvenv-activate
            (expand-file-name ".venv"
                              (locate-dominating-file default-directory
                                                      ".dir-locals.el")))
-
      (eval pyvenv-activate
            (expand-file-name ".venv" (project-root (project-current))))
      (eval let
@@ -41,8 +40,7 @@
            (setenv "PYTHONPATH" (concat (projectile-project-root)))
            (setq python-shell-extra-pythonpaths
                  (list (projectile-project-root))))
-     (linux-config)
-     (projectile-project-test-cmd . "pytest"))))
+     (linux-config) (projectile-project-test-cmd . "pytest"))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
