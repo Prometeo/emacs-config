@@ -1,4 +1,4 @@
-vi#+STARTUP: overview
+#+STARTUP: overview
 #+PROPERTY: header-args :comments yes :results silent
 * My Emacs Configuration
 ** About
