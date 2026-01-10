@@ -734,7 +734,8 @@ Bash
 
 Lua
 #+BEGIN_SRC emacs-lisp
-(add-to-list 'auto-mode-alist '("\\.lua\\'" . lua-mode))
+  (use-package lua-mode)
+  (add-to-list 'auto-mode-alist '("\\.lua\\'" . lua-mode))
 #+END_SRC
 
 Python
