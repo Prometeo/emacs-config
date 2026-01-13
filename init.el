@@ -1,3 +1,4 @@
+;; custom set variables  -*- lexical-binding: t; -*-
 ;; Ensure that use-package is installed.
 
 (org-babel-load-file "~/.emacs.d/README.org")

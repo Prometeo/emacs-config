@@ -493,6 +493,12 @@ Disable the electric indent mode
   (electric-indent-mode -1)
 #+END_SRC
 
+Rainbow identifier
+#+BEGIN_SRC emacs-lisp
+  (use-package rainbow-identifiers :ensure t)
+  (add-hook 'prog-mode-hook 'rainbow-identifiers-mode)
+#+END_SRC
+
 Rainbow delimiters
 - https://github.com/Fanael/rainbow-delimiters
 #+BEGIN_SRC emacs-lisp
