@@ -119,11 +119,24 @@ Solaire mode
 ** General
 Copy environment variables into emacs
 #+BEGIN_SRC emacs-lisp
-  ;; (when (memq window-system '(mac ns x))
-  ;;   (use-package exec-path-from-shell
-  ;;     :config (exec-path-from-shell-initialize)))
   (use-package exec-path-from-shell
     :config (exec-path-from-shell-initialize))
+#+END_SRC
+
+To speed up TRAMP access, let’s disabled lock files (#files))
+#+BEGIN_SRC emacs-lisp
+  (setq remote-file-name-inhibit-locks t)
+#+END_SRC
+
+Turn off vc for remote files because it slows down git operatons
+#+BEGIN_SRC emacs-lisp
+  (defun turn-off-vc-for-remote-files ()
+    "Disable version control for remote files.
+  Use with the `find-file-hook'."
+    (when (file-remote-p (buffer-file-name))
+      (setq-local vc-handled-backends nil)))
+
+  (add-hook 'find-file-hook 'turn-off-vc-for-remote-files)
 #+END_SRC
 
 Do not show startup message
@@ -151,9 +164,11 @@ Which-key
     (setq which-key-idle-delay 0.3))
 #+END_SRC
 
-Stop creating ~ files
+ ~ and # files
 #+BEGIN_SRC emacs-lisp
-  (setq make-backup-files nil)
+  ;; (setq make-backup-files nil)
+  (setq backup-directory-alist `(("." . ,(concat user-emacs-directory "backups"))))
+  (setq create-lockfiles nil)
 #+END_SRC
 
 Enable several modes globally
@@ -255,6 +270,8 @@ Hydra
         :color blue))
      ))
 #+END_SRC
+
+
 Projectile
 - https://github.com/bbatsov/projectile
 #+BEGIN_SRC emacs-lisp
@@ -472,6 +489,24 @@ Hightlight current line
 Replace Selection
 #+BEGIN_SRC emacs-lisp
   (delete-selection-mode 1)
+#+END_SRC
+
+Invoke Hippie expand insead dabbrev
+#+BEGIN_SRC emacs-lisp
+  (global-set-key [remap dabbrev-expand] 'hippie-expand)
+  (setq hippie-expand-try-functions-list
+        '(try-complete-file-name-partially   ; complete filenames, start with /
+          try-complete-file-name
+          yas-hippie-try-expand              ; expand matching snippets
+          try-expand-all-abbrevs
+          try-expand-list                    ; help when args repeated another's args
+          try-expand-line
+          try-expand-dabbrev
+          try-expand-dabbrev-all-buffers
+          try-expand-whole-kill              ; grab text from the kill ring
+          try-expand-dabbrev-from-kill       ; as above
+          try-complete-lisp-symbol-partially
+          try-complete-lisp-symbol))
 #+END_SRC
 
 Show matching parentheses
