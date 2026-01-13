@@ -666,9 +666,24 @@ https://github.com/minad/corfu
     (corfu-history-mode t)
     ;; Allow Corfu to show help text next to suggested completion
     (corfu-popupinfo-mode t))
-
    (setq completion-category-overrides '((eglot (styles orderless))
                                       (eglot-capf (styles orderless))))
+#+END_SRC
+
+Kind icon
+https://github.com/jdtsmith/kind-icon
+#+BEGIN_SRC emacs-lisp
+  (use-package kind-icon
+    :ensure t
+    :after corfu
+    :custom
+    (kind-icon-blend-background t)
+    (kind-icon-use-icons t)
+    (kind-icon-default-face 'corfu-default)
+    (kind-icon-blend-background nil)
+    (kind-icon-blend-frac 0.08)
+    :config
+    (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
 #+END_SRC
 
 Cape
@@ -697,28 +712,7 @@ https://github.com/minad/cape
     :init
     (global-completion-preview-mode))
 #+END_SRC
-Company
-- https://company-mode.github.io/
-#+BEGIN_SRC emacs-lisp
-  ;; (use-package company
-  ;;   :demand t
-  ;;   :config
-  ;;   (global-company-mode 1)
-  ;;   (setq company-idle-delay 0.2
-  ;;         company-minimum-prefix-length 3))
-#+END_SRC
 
-Company box
-- https://github.com/sebastiencs/company-box
-#+BEGIN_SRC emacs-lisp
-  ;; (use-package company-box
-  ;;   :demand t
-  ;;   :functions (all-the-icons-faicon
-  ;;               all-the-icons-material
-  ;;               all-the-icons-octicon
-  ;;               all-the-icons-alltheicon)
-  ;;   :hook (company-mode . company-box-mode))
-#+END_SRC
 
 Toml/Ansible/Docker/Yaml modes
 #+BEGIN_SRC emacs-lisp
@@ -906,6 +900,8 @@ emmet mode
     (vertico-resize t) ;; Grow and shrink the Vertico minibuffer
     (vertico-cycle t) ;; Enable cycling for `vertico-next/previous'
     :init
+    (vertico-indexed-mode 1)
+    (vertico-buffer-mode 1)
     (vertico-mode))
 
 
@@ -947,7 +943,7 @@ emmet mode
                 ("M-DEL" . vertico-directory-delete-word))
     ;; Tidy shadowed file names
     :hook (rfn-eshadow-update-overlay . vertico-directory-tidy))
-#+END_SRC
+    #+END_SRC
 *Marginalia*
 #+BEGIN_SRC emacs-lisp
   ;; Enable rich annotations using the Marginalia package
@@ -976,7 +972,7 @@ Consult
     :init
 
     ;; ;; Tweak the register preview fo
-    r `consult-register-load',
+    ;; r `consult-register-load',
     ;; `consult-register-store' and the built-in commands.  This improves the
     ;; register formatting, adds thin separator lines, register sorting and hides
     ;; the window mode line.
