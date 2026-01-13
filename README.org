@@ -817,11 +817,6 @@ Python
     :init
     (setenv "WORKON_HOME" "~/.pyenv/versions"))
 
-  (use-package virtualenvwrapper
-    :init
-    (setenv "WORKON_HOME" "~/.pyenv/versions"))
-
-
   (use-package flymake-ruff
     :hook (python-ts-mode . flymake-ruff-load))
 
@@ -829,6 +824,15 @@ Python
     :hook (python-ts-mode . ruff-format-on-save-mode))
 
   (add-hook 'eglot-managed-mode-hook 'flymake-ruff-load)
+
+  ;; https://github.com/vale981/py-vterm-interaction.el
+  (use-package py-vterm-interaction
+    :hook (python-ts-mode . py-vterm-interaction-mode)
+    :config
+    (setq-default py-vterm-interaction-repl-program "ipython")
+    (setq-default py-vterm-interaction-silent-cells t)
+    )
+   (add-hook 'python-ts-mode-hook #'py-vterm-interaction-mode)
 #+END_SRC
 
 Rust
