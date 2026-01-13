@@ -162,15 +162,6 @@ Enable several modes globally
   (column-number-mode)
 #+END_SRC
 
-ido-mode configuration
-- https://www.gnu.org/software/emacs/manual/html_mono/ido.html
-- https://www.masteringemacs.org/article/introduction-to-ido-mode
-#+BEGIN_SRC emacs-lisp
-  (setq ido-everywhere t)
-  (setq ido-enable-flex-matching t)
-  (ido-mode t)
-#+END_SRC
-
 Don’t bother confirming killing processes and don’t let backup~ files scatter around
 #+BEGIN_SRC emacs-lisp
   (use-package files
