@@ -995,9 +995,9 @@ Olivetti
 #+BEGIN_SRC emacs-lisp
   (use-package olivetti
     :init
-    (setq olivetti-body-width 130)
+    (setq olivetti-body-width 200)
     (setq olivetti-style 'fancy)
-    (setq olivetti-minimum-body-width 50))
+    (setq olivetti-minimum-body-width 140))
 #+END_SRC
 
 Org mode
