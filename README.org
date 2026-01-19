@@ -20,7 +20,7 @@ Any external/third party works included in this work are licensed under
 their own licenses - refer to the submodules or packages for more
 information
 
-** Configure Elpaca
+** AboutConfigure Elpaca
 #+BEGIN_SRC emacs-lisp
   (defvar elpaca-installer-version 0.11)
   (defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
@@ -500,7 +500,7 @@ Invoke Hippie expand insead dabbrev
           yas-hippie-try-expand              ; expand matching snippets
           try-expand-all-abbrevs
           try-expand-list                    ; help when args repeated another's args
-          try-expand-line
+          ;; try-expand-line
           try-expand-dabbrev
           try-expand-dabbrev-all-buffers
           try-expand-whole-kill              ; grab text from the kill ring
