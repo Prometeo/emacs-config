@@ -902,16 +902,20 @@ Python
 Rust
 #+BEGIN_SRC emacs-lisp
   (use-package rustic
-    :ensure
+    :ensure t
+    :config
+    (setq rustic-lsp-client 'eglot)
     :bind (:map rustic-mode-map
-                ("M-j" . lsp-ui-imenu)
-                ("M-." . lsp-find-references)
-                ("C-c C-c l" . flycheck-list-errors)
-                ("C-c C-c a" . lsp-execute-code-action)
-                ("C-c C-c r" . lsp-rename)
-                ("C-c C-c q" . lsp-workspace-restart)
-                ("C-c C-c Q" . lsp-workspace-shutdown)
-                ("C-c C-c s" . lsp-rust-analyzer-status))
+                ;; Eglot/Built-in equivalents
+                ("M-j" . imenu)                   ; Standard Emacs imenu (replaces lsp-ui-imenu)
+                ("M-." . xref-find-definitions)   ; Built-in (replaces lsp-find-definitions)
+                ("M-?" . xref-find-references)    ; Built-in (replaces lsp-find-references)
+                ("C-c C-c l" . flymake-show-buffer-diagnostics) ; Eglot uses Flymake, not Flycheck
+                ("C-c C-c a" . eglot-code-actions)
+                ("C-c C-c r" . eglot-rename)
+                ("C-c C-c q" . eglot-reconnect)    ; Restarts the connection
+                ("C-c C-c Q" . eglot-shutdown)     ; Shuts down the server
+                ("C-c C-c s" . (lambda () (interactive) (message "Use M-x eglot-events-buffer for status"))))
     :custom-face
     ;; Faces are defined here instead of a separate custom-set-faces block
     (rustic-compilation-column ((t (:inherit compilation-column-number))))
