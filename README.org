@@ -903,8 +903,6 @@ Rust
 #+BEGIN_SRC emacs-lisp
   (use-package rustic
     :ensure t
-    :config
-    (setq rustic-lsp-client 'eglot)
     :bind (:map rustic-mode-map
                 ;; Eglot/Built-in equivalents
                 ("M-j" . imenu)                   ; Standard Emacs imenu (replaces lsp-ui-imenu)
@@ -915,7 +913,7 @@ Rust
                 ("C-c C-c r" . eglot-rename)
                 ("C-c C-c q" . eglot-reconnect)    ; Restarts the connection
                 ("C-c C-c Q" . eglot-shutdown)     ; Shuts down the server
-                ("C-c C-c s" . (lambda () (interactive) (message "Use M-x eglot-events-buffer for status"))))
+                )
     :custom-face
     ;; Faces are defined here instead of a separate custom-set-faces block
     (rustic-compilation-column ((t (:inherit compilation-column-number))))
@@ -925,7 +923,7 @@ Rust
     ;; (setq lsp-eldoc-hook nil)
     ;; (setq lsp-enable-symbol-highlighting nil)
     ;; (setq lsp-signature-auto-activate nil)
-
+    (setq rustic-lsp-client 'eglot)
     (setq rustic-format-on-save t)
     (add-hook 'rustic-mode-hook 'rk/rustic-mode-hook))
 
