@@ -100,13 +100,13 @@ Doom modeline
     :demand t
     :init (doom-modeline-mode 1)
     :config
-  (setq doom-modeline-project-detection 'project)
-  (setq doom-modeline-major-mode-color-icon t)
-  (setq doom-modeline-buffer-encoding t) ;; Whether display the buffer encoding.
-  (setq doom-modeline-lsp t)
-  (setq doom-modeline-env-version t)
-  (setq doom-modeline-support-imenu t)
-  (setq doom-modeline-time-icon t))
+    (setq doom-modeline-project-detection 'project)
+    (setq doom-modeline-major-mode-color-icon t)
+    (setq doom-modeline-buffer-encoding t) ;; Whether display the buffer encoding.
+    (setq doom-modeline-lsp t)
+    (setq doom-modeline-env-version t)
+    (setq doom-modeline-support-imenu t)
+    (setq doom-modeline-time-icon t))
 #+END_SRC
 
 ** visual
@@ -167,7 +167,7 @@ Which-key
     (setq which-key-idle-delay 0.3))
 #+END_SRC
 
- ~ and # files
+~ and # files
 #+BEGIN_SRC emacs-lisp
   ;; (setq make-backup-files nil)
   (setq backup-directory-alist `(("." . ,(concat user-emacs-directory "backups"))))
@@ -654,7 +654,7 @@ Eldoc + Eldoc-box
               (markdown-mode)
               (font-lock-ensure)
               (buffer-string)))))
-(unload-feature 'eldoc t)
+  (unload-feature 'eldoc t)
 #+END_SRC
 
 Eldoc-mouse
@@ -894,6 +894,14 @@ Python
     (setq-default py-vterm-interaction-silent-cells t)
     )
    (add-hook 'python-ts-mode-hook #'py-vterm-interaction-mode)
+
+#+END_SRC
+
+uv mode
+https://github.com/z80dev/uv-mode
+#+BEGIN_SRC emacs-lisp
+  (use-package uv-mode
+    :hook (python-mode . uv-mode-auto-activate-hook))
 #+END_SRC
 
 Rust
