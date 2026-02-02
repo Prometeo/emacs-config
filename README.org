@@ -362,6 +362,9 @@ Treemacs
     :after (treemacs magit)
     :demand t)
   (use-package lsp-treemacs :demand t :config (lsp-treemacs-sync-mode 1))
+(use-package treemacs-nerd-icons
+  :config
+  (treemacs-nerd-icons-config))
 #+END_SRC
 
 Dashboard
