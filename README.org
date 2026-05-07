@@ -362,9 +362,7 @@ Treemacs
     :after (treemacs magit)
     :demand t)
   (use-package lsp-treemacs :demand t :config (lsp-treemacs-sync-mode 1))
-(use-package treemacs-nerd-icons
-  :config
-  (treemacs-nerd-icons-config))
+
 #+END_SRC
 
 Dashboard
@@ -862,7 +860,10 @@ LSP
 
 Bash
 #+BEGIN_SRC emacs-lisp
-  (add-to-list 'auto-mode-alist '("\\.sh\\'" . sh-mode))
+  (use-package shellcop
+    :ensure)
+  (add-to-list 'auto-mode-alist '("\\.sh\\'" . bash-ts-mode))
+  (add-hook 'shell-mode-hook 'shellcop-start)
   (setq sh-basic-offset 2 sh-indentation 2)
 #+END_SRC
 

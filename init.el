@@ -24,7 +24,7 @@
      default))
  '(org-agenda-files (list org-directory))
  '(org-directory "~/Documents/org")
- '(package-selected-packages '(eglot emacsql evil flymake lua-mode transient))
+ '(package-selected-packages '(eglot emacsql evil fj flymake lua-mode transient))
  '(safe-local-variable-values
    '((eval pyvenv-activate
            (expand-file-name ".venv"
