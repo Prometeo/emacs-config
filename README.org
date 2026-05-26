@@ -422,21 +422,26 @@ Highlight indent guides
     (add-hook 'focus-in-hook #'highlight-indent-guides-auto-set-faces))
 #+END_SRC
 
-Avy
-Used jumping to visible text using a char-based decision tree
-- https://github.com/abo-abo/avy
+flash
+- https://github.com/Prgebish/flash
 #+BEGIN_SRC emacs-lisp
-  (use-package avy
-    :ensure t
-    :demand t
-    :bind ("M-s" . avy-goto-char)) ;; changed from char as per jcs
+  (use-package flash
+    :elpaca (flash :host github :repo "Prgebish/flash")
+    :commands (flash-jump flash-jump-continue
+                          flash-treesitter)
+    :bind ("M-s" . flash-jump)
+    :custom
+    (flash-multi-window t)
+    :config
+    (require 'flash-isearch)
+    (flash-isearch-mode 1))
 #+END_SRC
 
 Yasnippet
 - https://github.com/joaotavora/yasnippet
 #+BEGIN_SRC emacs-lisp
   (use-package yasnippet
-    :ensure t
+    :elpaca t
     :demand t
     :init
     (yas-global-mode 1))
@@ -521,7 +526,7 @@ Kind icon
 https://github.com/jdtsmith/kind-icon
 #+BEGIN_SRC emacs-lisp
   (use-package kind-icon
-    :ensure t
+    :elpaca t
     :after corfu
     :custom
     (kind-icon-blend-background t)

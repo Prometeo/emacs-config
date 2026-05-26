@@ -13,8 +13,8 @@
  '(org-agenda-files (list org-directory))
  '(org-directory "~/Documents/org")
  '(package-selected-packages
-   '(ace-window cape corfu eldoc-mouse embark-consult flycheck kdl-mode
-                kind-icon magit marginalia orderless
+   '(ace-window cape corfu eldoc-mouse elpaca embark-consult flycheck
+                kdl-mode kind-icon magit marginalia orderless
                 rainbow-delimiters sly yaml-mode yasnippet))
  '(safe-local-variable-values
    '((eval pyvenv-activate
