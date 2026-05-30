@@ -82,7 +82,7 @@ information
 #+END_SRC
 
 * Basic settings
-** General
+* General
 Copy environment variables into emacs
 #+BEGIN_SRC emacs-lisp
   (use-package exec-path-from-shell
@@ -303,7 +303,7 @@ Repeat mode
     (repeat-exit-timeout 5))
 #+END_SRC
 
-** Text Edition
+* Text Edition
 Hightlight current line
 #+BEGIN_SRC emacs-lisp
   (global-hl-line-mode 1)
@@ -1168,15 +1168,6 @@ Edit source code
 (global-set-key (kbd "M-p") 'org-edit-src-code)
 #+END_SRC
 
-Olivetti
-#+BEGIN_SRC emacs-lisp
-  (use-package olivetti
-    :elpaca t
-    :init
-    (setq olivetti-body-width 200)
-    (setq olivetti-style 'fancy)
-    (setq olivetti-minimum-body-width 140))
-#+END_SRC
 
 Org mode
 #+BEGIN_SRC emacs-lisp
@@ -1219,7 +1210,6 @@ Org mode
             (sequence "TO-READ(r)" "READING(R)" "|" "HAVE-READ(d)")
             (sequence "PROJ(p)" "|" "COMPLETED(c)")))
     :hook
-    (org-mode . olivetti-mode)
     (org-mode . (lambda () (electric-indent-local-mode -1)))
   )
 #+END_SRC
