@@ -1168,61 +1168,6 @@ Edit source code
 (global-set-key (kbd "M-p") 'org-edit-src-code)
 #+END_SRC
 
-
-Org mode
-#+BEGIN_SRC emacs-lisp
-  ;; org-download: https://github.com/abo-abo/org-download
-  (use-package org-download
-    :elpaca t
-    :hook
-    (org-mode . org-download-enable))
-  (setq-default org-download-image-dir "./images")
-
-  (use-package org
-    :ensure nil
-    :demand t
-    :init
-    ;; edit settings (recommended by org-modern)
-    (setq org-auto-align-tags nil
-            org-tags-column 0
-            org-catch-invisible-edits 'show-and-error
-            org-special-ctrl-a/e t ;; special navigation behaviour in headlines
-            org-insert-heading-respect-content t)
-    ;; styling, hide markup, etc. (recommended by org-modern)
-    (setq org-hide-emphasis-markers t
-          org-src-fontify-natively t ;; fontify source blocks natively
-          org-highlight-latex-and-related '(native) ;; fontify latex blocks natively
-          org-pretty-entities t)
-
-    ;; agenda styling (recommended by org-modern)
-    (setq org-agenda-tags-column 0
-          org-agenda-block-separator ?─
-          org-agenda-time-grid
-          '((daily today require-timed)
-            (800 1000 1200 1400 1600 1800 2000)
-            " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄")
-          org-agenda-current-time-string
-          "⭠ now ─────────────────────────────────────────────────")
-    (setq org-ellipsis "...")
-    (setq org-todo-keywords
-          ;; it's extremely useful to distinguish between short-term goals and long-term projects
-          '((sequence "TODO(t)" "SOMEDAY(s)" "|" "DONE(d)")
-            (sequence "TO-READ(r)" "READING(R)" "|" "HAVE-READ(d)")
-            (sequence "PROJ(p)" "|" "COMPLETED(c)")))
-    :hook
-    (org-mode . (lambda () (electric-indent-local-mode -1)))
-  )
-#+END_SRC
-
-Org Agenda
-#+BEGIN_SRC emacs-lisp
-  (custom-set-variables
-   '(org-directory "~/Documents/org")
-   '(org-agenda-files (list org-directory)))
-
-  (define-key org-mode-map (kbd "C-c a m") 'org-agenda)
-#+END_SRC
-
 Org-mime
 -https://github.com/org-mime/org-mime
 #+BEGIN_SRC emacs-lisp
@@ -1234,25 +1179,6 @@ Org-mime
   (add-hook 'org-mode-hook
             (lambda ()
               (local-set-key (kbd "C-c M-o") 'org-mime-org-buffer-htmlize)))
-#+END_SRC
-
-Ob-mermaid
-- https://github.com/arnm/ob-mermaid
-- Requires mermaid-cli: https://github.com/mermaid-js/mermaid-cli
-#+BEGIN_SRC emacs-lisp
-  (use-package ob-mermaid
-    :elpaca t
-    :after org
-    :config
-    ;; Add mermaid to org-babel languages once ob-mermaid is available
-    (with-eval-after-load 'org
-      (org-babel-do-load-languages
-       'org-babel-load-languages
-       '((mermaid . t)))))
-
-  (if (memq window-system '(mac ns x))
-      (setq ob-mermaid-cli-path "/opt/homebrew/bin/mmdc")
-    (setq ob-mermaid-cli-path "/path/to//bin/mmdc"))
 #+END_SRC
 
 Org-babel
