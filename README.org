@@ -3,7 +3,7 @@
 * About
 It's built using [[http://orgmode.org][Org mode]]'s [[http://orgmode.org/manual/Extracting-source-code.html#Extracting-source-code][tangling functionality]].
 
-My entire Emacs configuration is thus written in a [[https://en.wikipedia.org/wiki/Literate_programming][literate programming]] style,
+This Emacs configuration is written in a [[https://en.wikipedia.org/wiki/Literate_programming][literate programming]] style,
 and is contained entirely in this file.
 
 *** Requirements
@@ -1163,10 +1163,65 @@ Hydra
 #+END_SRC
 
 * Org Mode
-Edit source code
+
 #+BEGIN_SRC emacs-lisp
-(global-set-key (kbd "M-p") 'org-edit-src-code)
+  (global-set-key (kbd "M-p") 'org-edit-src-code) ;; edit source code
+
+  (setq org-return-follows-link t) ;; When at a URL, pressing the <Enter> opens the link in a browser.
+
+  ;; To prevent M-RET splitting the line.
+  ;; https://irreal.org/blog/?p=6297
+  (setq org-M-RET-may-split-line '((item . nil)))
+
+  ;; To hide drawers, e.g. PROPERTIES.
+  (setq org-startup-folded 'fold)
+
+  ;; hide the emphasis marker characters. like * (bold) and / (italic)
+  (setq org-hide-emphasis-markers t)
+
+  ;; Make invisible parts of Org elements appear visible at point.
+  ;; https://github.com/awth13/org-appear
+  (use-package org-appear
+    :elpaca t
+    :init
+    (setq org-appear-delay 0.2)
+    :hook
+    org-mode)
+
+  (use-package org-bullets
+    :elpaca t)
+  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+  (setq org-bullets-bullet-list
+        '("①" "②" "③" "④" "⑤" "⑥" "⑦" "⑧" "⑨" "⑩"))
+  ;; Indent levels.
+  (add-hook 'org-mode-hook 'org-indent-mode)
+  ;; Use this character(s) for ellipsis.
+  (setq org-ellipsis "...")
+
+  ;; Pretty fontification of source code blocks.
+  (setq org-src-fontify-natively t)
+
+  ;; Modify headers style
+  (let* ((variable-tuple (cond ((x-list-fonts "Source Sans Pro") '(:font "Source Sans Pro"))
+                               ((x-list-fonts "Lucida Grande")   '(:font "Lucida Grande"))
+                               ((x-list-fonts "Verdana")         '(:font "Verdana"))
+                               ((x-family-fonts "Sans Serif")    '(:family "Sans Serif"))
+                               (nil (warn "Cannot find a Sans Serif Font.  Install Source Sans Pro."))))
+         (base-font-color     (face-foreground 'default nil 'default))
+         (headline           `(:inherit default :weight bold :foreground ,base-font-color)))
+
+    (custom-theme-set-faces 'user
+                            `(org-level-8 ((t (,@headline ,@variable-tuple))))
+                            `(org-level-7 ((t (,@headline ,@variable-tuple))))
+                            `(org-level-6 ((t (,@headline ,@variable-tuple))))
+                            `(org-level-5 ((t (,@headline ,@variable-tuple))))
+                            `(org-level-4 ((t (,@headline ,@variable-tuple :height 1.1))))
+                            `(org-level-3 ((t (,@headline ,@variable-tuple :height 1.25))))
+                            `(org-level-2 ((t (,@headline ,@variable-tuple :height 1.5))))
+                            `(org-level-1 ((t (,@headline ,@variable-tuple :height 1.75))))
+                            `(org-document-title ((t (,@headline ,@variable-tuple :height 1.5 :underline nil))))))
 #+END_SRC
+
 
 Org-mime
 -https://github.com/org-mime/org-mime
@@ -1181,6 +1236,7 @@ Org-mime
               (local-set-key (kbd "C-c M-o") 'org-mime-org-buffer-htmlize)))
 #+END_SRC
 
+
 Org-babel
 #+BEGIN_SRC emacs-lisp
   (org-babel-do-load-languages
@@ -1189,4 +1245,7 @@ Org-babel
      (scheme . t)
      (shell . t)
      (sqlite . t)))
+
+  ;; Use `bash' instead of `sh' in the `shell' code block.
+  (setq org-babel-sh-command "bash")
 #+END_SRC
