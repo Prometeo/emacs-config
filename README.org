@@ -81,7 +81,6 @@ information
   (require 'elpaca-use-package))
 #+END_SRC
 
-* Basic settings
 * General
 Copy environment variables into emacs
 #+BEGIN_SRC emacs-lisp
