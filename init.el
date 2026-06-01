@@ -12,11 +12,7 @@
      default))
  '(org-agenda-files (list org-directory))
  '(org-directory "~/Documents/org")
- '(package-selected-packages
-   '(ace-window cape corfu eldoc-mouse elpaca embark-consult flycheck
-                kdl-mode kind-icon magit marginalia orderless
-                org-appear org-bullets rainbow-delimiters sly
-                yaml-mode yasnippet))
+ '(package-selected-packages nil)
  '(safe-local-variable-values
    '((eval pyvenv-activate
            (expand-file-name ".venv"
@@ -29,4 +25,12 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(org-document-title ((t (:inherit default :weight bold :foreground "black" :family "Sans Serif" :height 1.5 :underline nil))))
+ '(org-level-1 ((t (:inherit default :weight bold :foreground "black" :family "Sans Serif" :height 1.75))))
+ '(org-level-2 ((t (:inherit default :weight bold :foreground "black" :family "Sans Serif" :height 1.5))))
+ '(org-level-3 ((t (:inherit default :weight bold :foreground "black" :family "Sans Serif" :height 1.25))))
+ '(org-level-4 ((t (:inherit default :weight bold :foreground "black" :family "Sans Serif" :height 1.1))))
+ '(org-level-5 ((t (:inherit default :weight bold :foreground "black" :family "Sans Serif"))))
+ '(org-level-6 ((t (:inherit default :weight bold :foreground "black" :family "Sans Serif"))))
+ '(org-level-7 ((t (:inherit default :weight bold :foreground "black" :family "Sans Serif"))))
+ '(org-level-8 ((t (:inherit default :weight bold :foreground "black" :family "Sans Serif")))))
