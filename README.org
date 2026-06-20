@@ -315,7 +315,12 @@ Casual
   (keymap-set dired-mode-map "C-o" #'casual-dired-tmenu)
   (keymap-set dired-mode-map "s" #'casual-dired-sort-by-tmenu)
   (keymap-set dired-mode-map "/" #'casual-dired-search-replace-tmenu)
+
+  ;; casual with org-mode
+  (keymap-set org-mode-map "M-m" #'casual-org-tmenu)
+  (keymap-set org-table-fedit-map "M-m" #'casual-org-table-fedit-tmenu)
 #+END_SRC
+
 
 * Text Edition
 Hightlight current line
