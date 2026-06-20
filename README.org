@@ -267,19 +267,6 @@ Load fonts (emacs client doesn't load all the fonts in GUI mode)
                               (font . "Fira Code")))
 #+END_SRC
 
-Perspective
-- https://github.com/nex3/perspective-el
-#+BEGIN_SRC emacs-lisp
-  (use-package perspective
-    :elpaca t
-    :bind
-    ("C-x C-b" . persp-list-buffers)         ; or use a nicer switcher, see below
-    :custom
-    (persp-mode-prefix-key (kbd "C-c M-p"))  ; pick your own prefix key here
-    :init
-    (persp-mode))
-#+END_SRC
-
 Ace-window
 - https://github.com/abo-abo/ace-window
 #+BEGIN_SRC emacs-lisp
