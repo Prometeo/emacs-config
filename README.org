@@ -304,9 +304,18 @@ Repeat mode
 
 Casual
 - https://kickingvegas.github.io/casual/
-  #+BEGIN_SRC emacs-lisp
-    (use-package casual :ensure t)
-  #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (use-package casual :ensure t)
+  ;; casual ibuffer configuration
+  (keymap-set ibuffer-mode-map "C-o" #'casual-ibuffer-tmenu)
+  (keymap-set ibuffer-mode-map "F" #'casual-ibuffer-filter-tmenu)
+  (keymap-set ibuffer-mode-map "s" #'casual-ibuffer-sortby-tmenu)
+
+  ;; casual dired configuration
+  (keymap-set dired-mode-map "C-o" #'casual-dired-tmenu)
+  (keymap-set dired-mode-map "s" #'casual-dired-sort-by-tmenu)
+  (keymap-set dired-mode-map "/" #'casual-dired-search-replace-tmenu)
+#+END_SRC
 
 * Text Edition
 Hightlight current line
@@ -1159,11 +1168,6 @@ Ibuffer
     (ibuffer-mode . (lambda ()
                       (ibuffer-switch-to-saved-filter-groups "Main")))
   )
-
-  ;; casual-ibuffer configuration
-  (keymap-set ibuffer-mode-map "C-o" #'casual-ibuffer-tmenu)
-  (keymap-set ibuffer-mode-map "F" #'casual-ibuffer-filter-tmenu)
-  (keymap-set ibuffer-mode-map "s" #'casual-ibuffer-sortby-tmenu)
 
   (global-set-key (kbd "C-x C-b") 'ibuffer)
 #+END_SRC
