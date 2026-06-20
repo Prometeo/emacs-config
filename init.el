@@ -12,7 +12,10 @@
      default))
  '(org-agenda-files (list org-directory))
  '(org-directory "~/Documents/org")
- '(package-selected-packages nil)
+ '(package-selected-packages
+   '(ace-window cape casual corfu eldoc-mouse embark-consult flycheck
+                kind-icon magit marginalia orderless org-modern
+                rainbow-delimiters sly yaml-mode yasnippet))
  '(safe-local-variable-values
    '((eval pyvenv-activate
            (expand-file-name ".venv"

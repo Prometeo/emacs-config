@@ -142,7 +142,7 @@ Some global default configurations
 #+BEGIN_SRC emacs-lisp
   (add-to-list 'default-frame-alist '(font . "FiraCode Nerd Font"))
   (set-face-attribute 'default t :font "FiraCode Nerd Font")
-  (set-face-attribute 'default nil :height 80)
+  (set-face-attribute 'default nil :height 100)
   (winner-mode t)
   (column-number-mode)
   (fset 'yes-or-no-p 'y-or-n-p)
