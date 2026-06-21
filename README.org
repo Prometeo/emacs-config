@@ -307,11 +307,12 @@ Casual
 #+BEGIN_SRC emacs-lisp
   (use-package casual :ensure t)
   ;; casual ibuffer configuration
+  (with-eval-after-load 'ibuffer
   (keymap-set ibuffer-mode-map "C-o" #'casual-ibuffer-tmenu)
   (keymap-set ibuffer-mode-map "F" #'casual-ibuffer-filter-tmenu)
-  (keymap-set ibuffer-mode-map "s" #'casual-ibuffer-sortby-tmenu)
+  (keymap-set ibuffer-mode-map "s" #'casual-ibuffer-sortby-tmenu))
 
-  ;; casual dired configuration
+  ;;casual dired configuration
   (keymap-set dired-mode-map "C-o" #'casual-dired-tmenu)
   (keymap-set dired-mode-map "s" #'casual-dired-sort-by-tmenu)
   (keymap-set dired-mode-map "/" #'casual-dired-search-replace-tmenu)
@@ -320,7 +321,6 @@ Casual
   (keymap-set org-mode-map "M-m" #'casual-org-tmenu)
   (keymap-set org-table-fedit-map "M-m" #'casual-org-table-fedit-tmenu)
 #+END_SRC
-
 
 * Text Edition
 Hightlight current line
@@ -609,7 +609,7 @@ Doom Theme
   (use-package doom-themes
     :elpaca t
     :demand t
-    :config (load-theme 'doom-city-lights))
+    :config (load-theme 'doom-oceanic-next))
 #+END_SRC
 
 Kaolin Theme
@@ -1172,7 +1172,7 @@ Ibuffer
     :hook
     (ibuffer-mode . (lambda ()
                       (ibuffer-switch-to-saved-filter-groups "Main")))
-  )
+    )
 
   (global-set-key (kbd "C-x C-b") 'ibuffer)
 #+END_SRC
