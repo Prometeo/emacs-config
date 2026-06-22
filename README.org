@@ -313,9 +313,10 @@ Casual
   (keymap-set ibuffer-mode-map "s" #'casual-ibuffer-sortby-tmenu))
 
   ;;casual dired configuration
+  (with-eval-after-load 'dired-mode
   (keymap-set dired-mode-map "C-o" #'casual-dired-tmenu)
   (keymap-set dired-mode-map "s" #'casual-dired-sort-by-tmenu)
-  (keymap-set dired-mode-map "/" #'casual-dired-search-replace-tmenu)
+  (keymap-set dired-mode-map "/" #'casual-dired-search-replace-tmenu))
 
   ;; casual with org-mode
   (keymap-set org-mode-map "M-m" #'casual-org-tmenu)
