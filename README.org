@@ -766,6 +766,14 @@ Flycheck
   (use-package flycheck :ensure t)
 #+END_SRC
 
+Devdocs
+Documentation viewer for Emacs similar to the built-in Info browser
+- https://github.com/astoff/devdocs.el
+#+BEGIN_SRC emacs-lisp
+  (use-package devdocs
+    :elpaca t)
+#+END_SRC
+
 *** Vertico / Orderless / Marginalia / Consult / Embark
 + https://github.com/minad/vertico
 + https://github.com/oantolin/orderless
@@ -1243,7 +1251,6 @@ Hydra
 #+END_SRC
 
 * Org Mode
-
 #+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "M-p") 'org-edit-src-code) ;; edit source code
 
@@ -1311,13 +1318,37 @@ Org Roam
 #+BEGIN_SRC emacs-lisp
   (add-to-list 'load-path "~/utilitaries/org-roam/")
   (add-to-list 'load-path "~/utilitaries/org-roam/extensions/")
+  ;; Automatically update #+updated: on save
+  (defun my/org-update-updated-timestamp ()
+    "Update the #+updated: timestamp in the current Org buffer."
+    (when (derived-mode-p 'org-mode)
+      (save-excursion
+        (goto-char (point-min))
+        (let ((timestamp (format-time-string "[%Y-%m-%d %a %H:%M]")))
+          (if (re-search-forward "^#\\+updated:.*$" nil t)
+              ;; Replace existing field
+              (replace-match (concat "#+updated: " timestamp))
+            ;; Insert field after title if missing
+            (when (re-search-forward "^#\\+title:.*$" nil t)
+              (end-of-line)
+              (insert "\n#+updated: " timestamp)))))))
+
+  (add-hook 'before-save-hook #'my/org-update-updated-timestamp)
+
   (use-package org-roam
     :ensure nil
     :custom
     (org-roam-directory "~/Documents/roam-notes")
+    (org-roam-capture-templates
+     '(("d" "default" plain "%?"
+        :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+date: %U\n#+updated: %U\n")
+        :unnarrowed t)))
     :bind (("C-c n l" . org-roam-buffer-toggle)
            ("C-c n f" . org-roam-node-find)
-           ("C-c n i" . org-roam-node-insert))
+           ("C-c n i" . org-roam-node-insert)
+           ("C-c n c" . org-roam-capture)
+           ;; Dailies
+           ("C-c n j" . org-roam-dailies-capture-today))
     :config
     (org-roam-setup))
 #+END_SRC
