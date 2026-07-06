@@ -1351,3 +1351,17 @@ Org Roam
     :config
     (org-roam-setup))
 #+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  (use-package websocket
+    :elpaca t)
+
+  (use-package org-roam-ui
+                :ensure nil
+                :after org-roam
+                :config
+                (setq org-roam-ui-sync-theme t
+                      org-roam-ui-follow t
+                      org-roam-ui-update-on-save t
+                      org-roam-ui-open-on-start t))
+#+END_SRC

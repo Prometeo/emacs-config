@@ -16,7 +16,8 @@
  '(package-selected-packages
    '(ace-window cape casual corfu eldoc-mouse emacsql embark-consult
                 flycheck kind-icon magit marginalia orderless
-                org-modern rainbow-delimiters sly yaml-mode yasnippet))
+                org-modern org-roam-ui rainbow-delimiters sly
+                yaml-mode yasnippet))
  '(safe-local-variable-values
    '((eval pyvenv-activate
            (expand-file-name ".venv"
