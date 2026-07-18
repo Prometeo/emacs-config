@@ -725,42 +725,6 @@ Eglot
     )
 #+END_SRC
 
-LSP
-#+BEGIN_SRC emacs-lisp
-  (use-package lsp-mode
-    :elpaca t
-    :commands lsp
-    :custom
-    (lsp-completion-provider :none)
-    (lsp-rust-analyzer-cargo-watch-command "clippy")
-    (lsp-eldoc-render-all t)
-    (lsp-idle-delay 0.6)
-    ;; enable / disable the hints as you prefer:
-    (lsp-inlay-hint-enable t)
-    ;; These are optional configurations. See https://emacs-lsp.github.io/lsp-mode/page/lsp-rust-analyzer/#lsp-rust-analyzer-display-chaining-hints for a full list
-    (lsp-rust-analyzer-display-lifetime-elision-hints-enable "skip_trivial")
-    (lsp-rust-analyzer-display-chaining-hints t)
-    (lsp-rust-analyzer-display-closure-return-type-hints t)
-    (lsp-rust-analyzer-display-parameter-hints nil)
-    (lsp-rust-analyzer-display-reborrow-hints "never")
-    :config
-    (add-hook 'lsp-mode-hook 'lsp-ui-mode)
-    (add-hook 'lsp-mode-hook #'corfu-lsp-setup))
-
-
-  (defun corfu-lsp-setup ()
-    (setq-local completion-styles '(orderless)
-                completion-category-defaults nil))
-
-  (use-package lsp-ui
-    :elpaca t
-    :commands lsp-ui-mode
-    :custom
-    (lsp-ui-peek-always-show t)
-    (lsp-ui-sideline-show-hover t)
-    (lsp-ui-doc-enable nil))
-#+END_SRC
-
 Flycheck
 #+BEGIN_SRC emacs-lisp
   (use-package flycheck :ensure t)
@@ -1273,6 +1237,9 @@ Hydra
     (setq org-appear-delay 0.2)
     :hook
     org-mode)
+
+  ;; Show inline images
+  (setq org-startup-with-inline-images t)
 #+END_SRC
 
 Org-modern
