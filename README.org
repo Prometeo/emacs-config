@@ -404,6 +404,7 @@ Replace TAB with 4 spaces
 
 Display line numbers
 #+BEGIN_SRC emacs-lisp
+  (setq display-line-numbers-type 'relative)
   (add-hook 'prog-mode-hook 'display-line-numbers-mode)
 #+END_SRC
 
@@ -980,7 +981,7 @@ Embark
     :config
     ;; Use eglot instead of lsp-mode
     (setq rustic-lsp-client 'eglot)
-    (setq rustic-format-on-save t))
+     (setq rustic-format-on-save t))
 #+END_SRC
 
 + Haskell
