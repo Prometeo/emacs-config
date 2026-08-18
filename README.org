@@ -650,36 +650,15 @@ Solaire mode
 
 * Development
 ** GeneraL
-Eldoc + Eldoc-box
-- https://github.com/casouri/eldoc-box
-#+BEGIN_SRC emacs-lisp
-  (use-package eldoc
-    :elpaca t
-    :custom
-    (eldoc-idle-delay 0.5)
-    :hook (eglot-managed-mode . eldoc-mode))
-
-  (use-package eldoc-box
-    :elpaca (eldoc-box :host github :repo "casouri/eldoc-box")
-    :config
-    (setq eldoc-box-hover-render-function
-          (lambda (contents)
-            (with-temp-buffer
-              (insert contents)
-              (markdown-mode)
-              (font-lock-ensure)
-              (buffer-string)))))
-  (unload-feature 'eldoc t)
-#+END_SRC
 
 Eldoc-mouse
 - https://github.com/huangfeiyu/eldoc-mouse
 #+BEGIN_SRC emacs-lisp
   (use-package eldoc-mouse :ensure t
-    :bind (:map eldoc-mouse-mode-map
-                ("<f1> <f1>" . eldoc-mouse-pop-doc-at-cursor))
-    :hook eldoc-mode)
-#+END_SRC
+    :bind (:map eldoc-mouse-mode-map)
+    :hook (eglot-managed-mode emacs-lisp-mode))
+  (global-set-key (kbd "<f1> <f1>") 'eldoc-mouse-pop-doc-at-cursor)
+#+end_SRC
 
 Toml/Ansible/Docker/Yaml/Kdl modes
 #+BEGIN_SRC emacs-lisp
@@ -1086,6 +1065,9 @@ Ibuffer
                         (mode . python-ts-mode)
                         (mode . c-mode)
                         (mode . python-mode)))
+              ("Rust" (or
+                        (mode . rustic-mode)
+                        (mode . rust-ts-mode)))
              ("Build" (or
                        (mode . make-mode)
                        (mode . makefile-gmake-mode)
