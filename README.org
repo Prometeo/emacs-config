@@ -944,23 +944,28 @@ Embark
 + Rust
 #+BEGIN_SRC emacs-lisp
   (use-package rustic
-    :elpaca (rustic :host github :repo "emacs-rustic/rustic")
-    :bind (:map rustic-mode-map
-                ("M-j" . imenu)
-                ("M-." . xref-find-definitions)
-                ("M-?" . xref-find-references)
-                ("C-c C-c l" . flymake-show-buffer-diagnostics)
-                ("C-c C-c a" . eglot-code-actions)
-                ("C-c C-c r" . eglot-rename)
-                ("C-c C-c q" . eglot-reconnect)
-                ("C-c C-c Q" . eglot-shutdown))
-    :custom-face
-    (rustic-compilation-column ((t (:inherit compilation-column-number))))
-    (rustic-compilation-line ((t (:foreground "LimeGreen"))))
-    :config
-    ;; Use eglot instead of lsp-mode
-    (setq rustic-lsp-client 'eglot)
-     (setq rustic-format-on-save t))
+  :elpaca (rustic :host github :repo "emacs-rustic/rustic")
+  :bind (:map rustic-mode-map
+              ("M-j" . imenu)
+              ("M-." . xref-find-definitions)
+              ("M-?" . xref-find-references)
+              ("C-c C-c l" . flymake-show-buffer-diagnostics)
+              ("C-c C-c a" . eglot-code-actions)
+              ("C-c C-c r" . eglot-rename)
+              ("C-c C-c q" . eglot-reconnect)
+              ("C-c C-c Q" . eglot-shutdown))
+  :custom-face
+  (rustic-compilation-column ((t (:inherit compilation-column-number))))
+  (rustic-compilation-line ((t (:foreground "LimeGreen"))))
+  :init
+  (with-eval-after-load 'org
+    (require 'rustic-babel)
+    (defalias 'org-babel-execute:rust #'org-babel-execute:rustic)
+    (defalias 'org-babel-prep-session:rust #'org-babel-prep-session:rustic))
+  :config
+  ;; Use eglot instead of lsp-mode
+  (setq rustic-lsp-client 'eglot)
+  (setq rustic-format-on-save t))
 #+END_SRC
 
 + Haskell
@@ -1211,6 +1216,9 @@ Hydra
 
   ;; hide the emphasis marker characters. like * (bold) and / (italic)
   (setq org-hide-emphasis-markers t)
+
+  ;; Prevent Org from altering code indentation when saving or exiting code b
+  (setq org-src-preserve-indentation t)
 
   ;; Make invisible parts of Org elements appear visible at point.
   ;; https://github.com/awth13/org-appear
