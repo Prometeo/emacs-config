@@ -177,21 +177,27 @@ Dashboard
 Projectile
 - https://github.com/bbatsov/projectile
 #+BEGIN_SRC emacs-lisp
-  (use-package projectile
-    :diminish projectile-mode
-    :config (projectile-mode)
-    :custom ((projectile-completion-system 'ivy))
-    :bind-keymap
-    ("C-c p" . projectile-command-map)
-    :init
-    ;; NOTE: Set this to the folder where you keep your Git repos!
-    (when (file-directory-p "~/Projects")
-      (setq projectile-project-search-path '("~/Projects")))
-    (setq projectile-switch-project-action #'projectile-dired))
+(use-package projectile
+  :diminish projectile-mode
+  :config (projectile-mode)
+  :custom
+  ((projectile-completion-system 'ivy)
+   (projectile-indexing-method 'alien)
+   (projectile-enable-caching t))
+  :bind-keymap
+  ("C-c p" . projectile-command-map)
+  :init
 
-  (use-package counsel-projectile
-    :elpaca (counsel-projectile :host github :repo "ericdanan/counsel-projectile")
-    :config (counsel-projectile-mode))
+  (setq projectile-generic-command "fd . -0 --type f --color=never")
+  (setq projectile-git-command "git ls-files -zco --exclude-standard")
+  (when (file-directory-p "/Projects")
+    (setq projectile-project-search-path '("/Projects")))
+  (setq projectile-switch-project-action #'projectile-dired))
+
+;; Ignore Heavy Build and Environment Directories (.env, /target ...)
+(with-eval-after-load 'projectile
+  (dolist (dir '(".venv" "venv" "target" ".build" "node_modules" ".git"))
+    (add-to-list 'projectile-globally-ignored-directories dir)))
 #+END_SRC
 
 Treemacs
