@@ -277,7 +277,7 @@ Ace-window
 - https://github.com/abo-abo/ace-window
 #+BEGIN_SRC emacs-lisp
   (use-package ace-window
-    :ensure t)
+    :elpaca t)
   (global-set-key (kbd "M-o") 'ace-window)
   (setq aw-background nil)
   (defvar aw-dispatch-alist
@@ -300,7 +300,7 @@ Repeat mode
 - Allows repeating a command via `C-x z` (press z each time you want to repet the command)
 #+BEGIN_SRC emacs-lisp
   (use-package repeat
-    :ensure t
+    :elpaca t
     :config
     (repeat-mode)
     :custom
@@ -311,7 +311,7 @@ Repeat mode
 Casual
 - https://kickingvegas.github.io/casual/
 #+BEGIN_SRC emacs-lisp
-  (use-package casual :ensure t)
+  (use-package casual :elpaca t)
   ;; casual ibuffer configuration
   (with-eval-after-load 'ibuffer
   (keymap-set ibuffer-mode-map "C-o" #'casual-ibuffer-tmenu)
@@ -372,7 +372,7 @@ Rainbow delimiters
 - https://github.com/Fanael/rainbow-delimiters
 #+BEGIN_SRC emacs-lisp
   (use-package rainbow-delimiters
-    :ensure t
+    :elpaca t
     :config
     (setq rainbow-delimiters-max-face-count 9))
   (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
@@ -482,7 +482,7 @@ https://github.com/minad/cape
 #+BEGIN_SRC emacs-lisp
   ;; Cape
   (use-package cape
-    :ensure t
+    :elpaca t
     :after corfu
     :bind ("C-c p" . cape-prefix-map)
     :init
@@ -508,7 +508,7 @@ https://github.com/minad/corfu
 #+BEGIN_SRC emacs-lisp
   (use-package corfu
     :after eglot
-    :ensure t
+    :elpaca t
     :custom
     (corfu-auto t)
     (corfu-cycle t)
@@ -570,10 +570,10 @@ Magit
 - https://github.com/magit/magit
 #+BEGIN_SRC emacs-lisp
   ;;  (use-package transient
-  ;;    :ensure t
+  ;;    :elpaca t
   ;;    :demand t)
   (use-package magit
-    :ensure t
+    :elpaca t
     :demand t
     :init
     (progn
@@ -660,7 +660,7 @@ Solaire mode
 Eldoc-mouse
 - https://github.com/huangfeiyu/eldoc-mouse
 #+BEGIN_SRC emacs-lisp
-  (use-package eldoc-mouse :ensure t
+  (use-package eldoc-mouse :elpaca t
     :bind (:map eldoc-mouse-mode-map)
     :hook (eglot-managed-mode emacs-lisp-mode))
   (global-set-key (kbd "<f1> <f1>") 'eldoc-mouse-pop-doc-at-cursor)
@@ -713,7 +713,7 @@ Eglot
 
 Flycheck
 #+BEGIN_SRC emacs-lisp
-  (use-package flycheck :ensure t)
+  (use-package flycheck :elpaca t)
 #+END_SRC
 
 Devdocs
@@ -764,7 +764,7 @@ Documentation viewer for Emacs similar to the built-in Info browser
 
      ;; Optionally use the `orderless' completion style.
   (use-package orderless
-    :ensure t
+    :elpaca t
     :custom
     ;; Configure a custom style dispatcher (see the Consult wiki)
     ;; (orderless-style-dispatchers '(+orderless-consult-dispatch orderless-affix-dispatch))
@@ -809,7 +809,7 @@ Documentation viewer for Emacs similar to the built-in Info browser
 #+BEGIN_SRC emacs-lisp
   ;; Enable rich annotations using the Marginalia package
   (use-package marginalia
-    :ensure t
+    :elpaca t
     ;; Bind `marginalia-cycle' locally in the minibuffer.  To make the binding
     ;; available in the *Completions* buffer, add it to the
     ;; `completion-list-mode-map'.
@@ -829,7 +829,7 @@ Consult
 #+BEGIN_SRC emacs-lisp
   ;; Example configuration for Consult
   (use-package consult
-    :ensure t
+    :elpaca t
     ;; ;; The :init configuration is always executed (Not lazy)
     :init
 
@@ -878,7 +878,7 @@ Consult
 Embark
 #+BEGIN_SRC emacs-lisp
   (use-package embark
-    :ensure t
+    :elpaca t
     :bind
     (("C-." . embark-act)         ;; pick some comfortable binding
      ("C-;" . embark-dwim)        ;; good alternative: M-.
@@ -897,7 +897,7 @@ Embark
 
   ;; Consult users will also want the embark-consult package.
   (use-package embark-consult
-    :ensure t ; only need to install it, embark loads it after consult if found
+    :elpaca t ; only need to install it, embark loads it after consult if found
     :hook
     (embark-collect-mode . consult-preview-at-point-mode))
 #+END_SRC
@@ -983,9 +983,28 @@ Embark
 + Common Lisp
 #+BEGIN_SRC emacs-lisp
   (use-package sly
-    :ensure t
+    :elpaca t
     :demand t)
 #+END_SRC
+
++ D2
+  #+BEGIN_SRC emacs-lisp
+(use-package d2-mode
+  :elpaca t
+  :init
+  (setq d2-flags (list "--layout" "elk" "--theme" "200"))
+  (define-advice d2-compile
+      (:before (&rest _) setup) (save-buffer)))
+
+;; Install the Org-Babel backend for d2 via Elpaca
+(use-package ob-d2
+  :elpaca t)
+
+(defun tkj/org-babel-refresh-images ()
+  (clear-image-cache)
+  (org-redisplay-inline-images))
+(add-hook 'org-babel-after-execute-hook #'tkj/org-babel-refresh-images)
+  #+END_SRC
 
 ** Keybindings
 Keychord
@@ -1242,7 +1261,7 @@ Hydra
 Org-modern
 - https://github.com/minad/org-modern
 #+BEGIN_SRC emacs-lisp
-  (use-package org-modern :ensure t)
+  (use-package org-modern :elpaca t)
   (add-hook 'org-mode-hook #'org-modern-mode)
   (add-hook 'org-agenda-finalize-hook #'org-modern-agenda)
 #+END_SRC
@@ -1262,19 +1281,26 @@ Org-mime
 
 Org-babel
 #+BEGIN_SRC emacs-lisp
+(with-eval-after-load 'org
+  ;; Load default built-in Babel languages
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((python . t)
      (scheme . t)
-     (shell . t)
+     (shell  . t)
      (sqlite . t)))
 
-  ;; Use `bash' instead of `sh' in the `shell' code block.
-  (setq org-babel-sh-command "bash")
+  ;; Map json src blocks to json-ts-mode (Emacs 29+)
+  (add-to-list 'org-src-lang-modes '("json" . json-ts-mode)))
 
-  ;; Json syntax highlighting
-  (with-eval-after-load 'org
-  (add-to-list 'org-src-lang-modes '("json" . json-ts)))
+;; Safely register d2 as soon as ob-d2 is ready on disk
+(with-eval-after-load 'ob-d2
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   (append org-babel-load-languages '((d2 . t)))))
+
+;; Use bash instead of sh for shell blocks
+(setq org-babel-sh-command "bash")
 #+END_SRC
 
 Org Roam
