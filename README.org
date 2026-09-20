@@ -987,6 +987,23 @@ Embark
     :demand t)
 #+END_SRC
 
++ D2
+  #+BEGIN_SRC emacs-lisp
+(use-package d2-mode
+  :elpaca t
+  :init
+  (setq d2-flags (list "--layout" "elk" "--theme" "200"))
+  (define-advice d2-compile
+      (:before (&rest _) setup) (save-buffer)))
+
+
+(defun tkj/org-babel-refresh-images ()
+  (clear-image-cache)
+  (org-redisplay-inline-images))
+(add-hook 'org-babel-after-execute-hook #'tkj/org-babel-refresh-images)
+
+  #+END_SRC
+
 ** Keybindings
 Keychord
 - https://github.com/emacsorphanage/key-chord/tree/7f7fd7c5bd2b996fa054779357e1566f7989e07d
@@ -1262,19 +1279,24 @@ Org-mime
 
 Org-babel
 #+BEGIN_SRC emacs-lisp
+(with-eval-after-load 'org
+  ;; Ensure third-party Babel backend is available
+  (require 'ob-d2 nil t)
+
+  ;; Load Babel languages
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((python . t)
      (scheme . t)
-     (shell . t)
-     (sqlite . t)))
+     (shell  . t)
+     (sqlite . t)
+     (d2     . t)))
 
-  ;; Use `bash' instead of `sh' in the `shell' code block.
-  (setq org-babel-sh-command "bash")
+  ;; Map json src blocks to json-ts-mode (Emacs 29+)
+  (add-to-list 'org-src-lang-modes '("json" . json-ts-mode)))
 
-  ;; Json syntax highlighting
-  (with-eval-after-load 'org
-  (add-to-list 'org-src-lang-modes '("json" . json-ts)))
+;; Use bash instead of sh for shell blocks
+(setq org-babel-sh-command "bash")
 #+END_SRC
 
 Org Roam
