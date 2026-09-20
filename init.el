@@ -15,7 +15,7 @@
  '(org-directory "~/Documents/org")
  '(package-selected-packages
    '(ace-window cape casual corfu eldoc-mouse emacsql embark-consult
-                flycheck kind-icon magit marginalia orderless
+                flycheck kind-icon magit marginalia ob-d2 orderless
                 org-modern org-roam-ui rainbow-delimiters sly
                 yaml-mode yasnippet))
  '(safe-local-variable-values
