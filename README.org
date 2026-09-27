@@ -373,6 +373,13 @@ Ibuffer
 
   (global-set-key (kbd "C-x C-b") 'ibuffer)
 #+END_SRC
+
+Install Emacsql
+#+BEGIN_SRC emacs-lisp
+(use-package emacsql
+  :elpaca t)
+#+END_SRC
+
 ** Vertico / Orderless / Marginalia / Consult / Embark
 + https://github.com/minad/vertico
 + https://github.com/oantolin/orderless
