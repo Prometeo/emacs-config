@@ -1,6 +1,5 @@
 ;; custom set variables  -*- lexical-binding: t; -*-
 
-;; 1. Configuración e inicialización de Elpaca
 (defvar elpaca-installer-version 0.12)
 (defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
 (defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
@@ -56,7 +55,6 @@
 (elpaca elpaca-use-package
   (require 'elpaca-use-package))
 
-;; 2. Cargar dependencias críticas antes de que cualquier paquete las pida
 (elpaca compat)
 (elpaca transient)
 
