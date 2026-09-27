@@ -1,5 +1,67 @@
 ;; custom set variables  -*- lexical-binding: t; -*-
-;; Ensure that use-package is installed.
+
+;; 1. Configuración e inicialización de Elpaca
+(defvar elpaca-installer-version 0.12)
+(defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
+(defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
+(defvar elpaca-sources-directory (expand-file-name "sources/" elpaca-directory))
+
+(defvar elpaca-order
+  '(elpaca :repo "https://github.com/progfolio/elpaca.git"
+           :ref nil
+           :depth 1
+           :inherit ignore
+           :files (:defaults "elpaca-test.el" (:exclude "extensions"))
+           :build (:not elpaca-activate)))
+
+(let* ((repo  (expand-file-name "elpaca/" elpaca-sources-directory))
+       (build (expand-file-name "elpaca/" elpaca-builds-directory))
+       (order (cdr elpaca-order))
+       (default-directory repo))
+  (add-to-list 'load-path (if (file-exists-p build) build repo))
+  (unless (file-exists-p repo)
+    (make-directory repo t)
+    (when (<= emacs-major-version 28) (require 'subr-x))
+    (condition-case-unless-debug err
+        (if-let* ((buffer (pop-to-buffer-same-window "*elpaca-bootstrap*"))
+                  ((zerop (apply #'call-process
+                                 `("git" nil ,buffer t "clone"
+                                   ,@(when-let* ((depth (plist-get order :depth)))
+                                       (list (format "--depth=%d" depth)
+                                             "--no-single-branch"))
+                                   ,(plist-get order :repo)
+                                   ,repo))))
+                  ((zerop (call-process "git" nil buffer t "checkout"
+                                        (or (plist-get order :ref) "--"))))
+                  (emacs (concat invocation-directory invocation-name))
+                  ((zerop (call-process emacs nil buffer nil "-Q" "-L" "."
+                                        "--batch"
+                                        "--eval"
+                                        "(byte-recompile-directory \".\" 0 'force)")))
+                  ((require 'elpaca))
+                  ((elpaca-generate-autoloads "elpaca" repo)))
+            (progn (message "%s" (buffer-string))
+                   (kill-buffer buffer))
+          (error "%s" (with-current-buffer buffer (buffer-string))))
+      ((error) (warn "%s" err)
+               (delete-directory repo 'recursive))))
+  (unless (require 'elpaca-autoloads nil t)
+    (require 'elpaca)
+    (elpaca-generate-autoloads "elpaca" repo)
+    (let ((load-source-file-function nil))
+      (load "./elpaca-autoloads"))))
+
+(add-hook 'after-init-hook #'elpaca-process-queues)
+(elpaca `(,@elpaca-order))
+(elpaca elpaca-use-package
+  (require 'elpaca-use-package))
+
+;; 2. Cargar dependencias críticas antes de que cualquier paquete las pida
+(elpaca compat)
+(elpaca transient)
+
+(elpaca-wait)
+
 
 (org-babel-load-file "~/.emacs.d/README.org")
 (custom-set-variables
@@ -9,22 +71,7 @@
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
    '("a6920ee8b55c441ada9a19a44e9048be3bfb1338d06fc41bce3819ac22e4b5a1"
-     "7ec8fd456c0c117c99e3a3b16aaf09ed3fb91879f6601b1ea0eeaee9c6def5d9"
-     default))
- '(org-agenda-files (list org-directory))
- '(org-directory "~/Documents/org")
- '(package-selected-packages
-   '(ace-window cape casual corfu eldoc-mouse emacsql embark-consult
-                flycheck kind-icon magit marginalia ob-d2 orderless
-                org-modern org-roam-ui rainbow-delimiters sly
-                yaml-mode yasnippet))
- '(safe-local-variable-values
-   '((eval pyvenv-activate
-           (expand-file-name ".venv"
-                             (locate-dominating-file default-directory
-                                                     ".dir-locals.el"))))))
-
-
+     default)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

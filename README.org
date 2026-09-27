@@ -13,73 +13,11 @@ and is contained entirely in this file.
 - [[https://github.com/ggreer/the_silver_searcher]]
 - https://pypi.org/project/pip/
 - [[https://virtualenv.pypa.io/en/latest/]]
-- https://github.com/mermaid-js/mermaid-cli
+- https://d2lang.com/
 
 Any external/third party works included in this work are licensed under
 their own licenses - refer to the submodules or packages for more
 information
-
-* Configure Elpaca
-#+BEGIN_SRC emacs-lisp
-(defvar elpaca-installer-version 0.12)
-(defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
-(defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
-(defvar elpaca-sources-directory (expand-file-name "sources/" elpaca-directory))
-
-(defvar elpaca-order
-  '(elpaca :repo "https://github.com/progfolio/elpaca.git"
-           :ref nil
-           :depth 1
-           :inherit ignore
-           :files (:defaults "elpaca-test.el" (:exclude "extensions"))
-           :build (:not elpaca-activate)))
-
-(let* ((repo  (expand-file-name "elpaca/" elpaca-sources-directory))
-       (build (expand-file-name "elpaca/" elpaca-builds-directory))
-       (order (cdr elpaca-order))
-       (default-directory repo))
-  (add-to-list 'load-path (if (file-exists-p build) build repo))
-  (unless (file-exists-p repo)
-    (make-directory repo t)
-    (when (<= emacs-major-version 28) (require 'subr-x))
-    (condition-case-unless-debug err
-        (if-let* ((buffer (pop-to-buffer-same-window "*elpaca-bootstrap*"))
-                  ((zerop (apply #'call-process
-                                 `("git" nil ,buffer t "clone"
-                                   ,@(when-let* ((depth (plist-get order :depth)))
-                                       (list (format "--depth=%d" depth)
-                                             "--no-single-branch"))
-                                   ,(plist-get order :repo)
-                                   ,repo))))
-                  ((zerop (call-process "git" nil buffer t "checkout"
-                                        (or (plist-get order :ref) "--"))))
-                  (emacs (concat invocation-directory invocation-name))
-                  ((zerop (call-process emacs nil buffer nil "-Q" "-L" "."
-                                        "--batch"
-                                        "--eval"
-                                        "(byte-recompile-directory \".\" 0 'force)")))
-                  ((require 'elpaca))
-                  ((elpaca-generate-autoloads "elpaca" repo)))
-            (progn (message "%s" (buffer-string))
-                   (kill-buffer buffer))
-          (error "%s" (with-current-buffer buffer (buffer-string))))
-      ((error) (warn "%s" err)
-               (delete-directory repo 'recursive))))
-  (unless (require 'elpaca-autoloads nil t)
-    (require 'elpaca)
-    (elpaca-generate-autoloads "elpaca" repo)
-    (let ((load-source-file-function nil))
-      (load "./elpaca-autoloads"))))
-
-(add-hook 'after-init-hook #'elpaca-process-queues)
-
-;; Install elpaca-use-package
-(elpaca `(,@elpaca-order))
-
-;; to enable the `:elpaca` keyword in use-package
-(elpaca elpaca-use-package
-  (require 'elpaca-use-package))
-#+END_SRC
 
 * General
 Copy environment variables into emacs
@@ -88,11 +26,6 @@ Copy environment variables into emacs
     :elpaca t
     :config
     (exec-path-from-shell-initialize))
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-  (use-package cond-let
-    :elpaca t)
 #+END_SRC
 
 To speed up TRAMP access, let’s disable lock files (#files)
@@ -151,27 +84,22 @@ Some global default configurations
 Dashboard
 - https://github.com/emacs-dashboard/emacs-dashboard
 #+BEGIN_SRC emacs-lisp
-  (use-package dashboard
-    :elpaca t
-    :init
-    (setq dashboard-startup-banner 'official
-          dashboard-items '((recents  . 5)
-                            (projects . 5)
-                            (agenda   . 5)))
-    :config
-    ;; Insert dashboard on startup
-    (add-hook 'elpaca-after-init-hook #'dashboard-insert-startupify-lists)
-    (dashboard-setup-startup-hook))
-  ;; Content is not centered by default
-  (setq dashboard-center-content t)
-  ;; vertically center content
-  (setq dashboard-vertically-center-content t)
-  (setq dashboard-icon-type 'all-the-icons)  ; use `all-the-icons' package
-  (setq dashboard-set-heading-icons t)
-  (setq dashboard-set-file-icons t)
-
-  (setq dashboard-week-agenda t)
-  (setq dashboard-filter-agenda-entry 'dashboard-no-filter-agenda)
+(use-package dashboard
+  :elpaca t
+  :config
+  (setq dashboard-startup-banner 'official
+        dashboard-center-content t
+        dashboard-vertically-center-content t
+        dashboard-icon-type 'all-the-icons
+        dashboard-set-heading-icons t
+        dashboard-set-file-icons t
+        dashboard-week-agenda t
+        dashboard-filter-agenda-entry 'dashboard-no-filter-agenda
+        dashboard-items '((recents  . 5)
+                          (projects . 5)
+                          (agenda   . 5)))
+  ;; Let dashboard set up the initial buffer natively
+  (dashboard-setup-startup-hook))
 #+END_SRC
 
 Projectile
@@ -200,77 +128,114 @@ Projectile
     (add-to-list 'projectile-globally-ignored-directories dir)))
 #+END_SRC
 
-Treemacs
-- https://github.com/Alexander-Miller/treemacs
 #+BEGIN_SRC emacs-lisp
-  (use-package treemacs
-    :elpaca t
-    :defer t
-    :init
-    (with-eval-after-load 'winum
-      (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
-    :config
-    (progn
-      (setq treemacs-collapse-dirs                 (if treemacs-python-executable 3 0)
-            treemacs-deferred-git-apply-delay      0.5
-            treemacs-directory-name-transformer    #'identity
-            treemacs-display-in-side-window        t
-            treemacs-eldoc-display                 t
-            treemacs-file-event-delay              5000
-            treemacs-file-extension-regex          treemacs-last-period-regex-value
-            treemacs-file-follow-delay             0.2
-            treemacs-file-name-transformer         #'identity
-            treemacs-follow-after-init             t
-            treemacs-git-command-pipe              ""
-            treemacs-goto-tag-strategy             'refetch-index
-            treemacs-indentation                   2
-            treemacs-indentation-string            " "
-            treemacs-is-never-other-window         nil
-            treemacs-max-git-entries               5000
-            treemacs-missing-project-action        'ask
-            treemacs-move-forward-on-expand        nil
-            treemacs-no-png-images                 nil
-            treemacs-no-delete-other-windows       t
-            treemacs-project-follow-cleanup        nil
-            treemacs-persist-file                  (expand-file-name ".cache/treemacs-persist" user-emacs-directory)
-            treemacs-position                      'left
-            treemacs-read-string-input             'from-child-frame
-            treemacs-recenter-distance             0.1
-            treemacs-recenter-after-file-follow    nil
-            treemacs-recenter-after-tag-follow     nil
-            treemacs-recenter-after-project-jump   'always
-            treemacs-recenter-after-project-expand 'on-distance
-            treemacs-show-cursor                   nil
-            treemacs-show-hidden-files             t
-            treemacs-hide-gitignored-files-mode    t
-            treemacs-silent-filewatch              nil
-            treemacs-silent-refresh                nil
-            treemacs-sorting                       'alphabetic-asc
-            treemacs-space-between-root-nodes      t
-            treemacs-tag-follow-cleanup            t
-            treemacs-tag-follow-delay              1.5
-            treemacs-user-mode-line-format         nil
-            treemacs-user-header-line-format       nil
-            treemacs-width                         35
-            treemacs-workspace-switch-cleanup      nil)
-      (treemacs-follow-mode -1)
-      (treemacs-filewatch-mode t))
+(use-package treemacs
+  :elpaca t
+  :defer t
+  :init
+  (with-eval-after-load 'winum
+    (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
+  :config
+  (progn
+    (setq treemacs-buffer-name-function            #'treemacs-default-buffer-name
+          treemacs-buffer-name-prefix              " *Treemacs-Buffer-"
+          treemacs-collapse-dirs                   (if treemacs-python-executable 3 0)
+          treemacs-deferred-git-apply-delay        0.5
+          treemacs-directory-name-transformer      #'identity
+          treemacs-display-in-side-window          t
+          treemacs-eldoc-display                   'simple
+          treemacs-file-event-delay                2000
+          treemacs-file-extension-regex            treemacs-last-period-regex-value
+          treemacs-file-follow-delay               0.2
+          treemacs-file-name-transformer           #'identity
+          treemacs-follow-after-init               t
+          treemacs-expand-after-init               t
+          treemacs-find-workspace-method           'find-for-file-or-pick-first
+          treemacs-git-command-pipe                ""
+          treemacs-goto-tag-strategy               'refetch-index
+          treemacs-header-scroll-indicators        '(nil . "^^^^^^")
+          treemacs-hide-dot-git-directory          t
+          treemacs-hide-dot-jj-directory           t
+          treemacs-indentation                     2
+          treemacs-indentation-string              " "
+          treemacs-is-never-other-window           nil
+          treemacs-max-git-entries                 5000
+          treemacs-missing-project-action          'ask
+          treemacs-move-files-by-mouse-dragging    t
+          treemacs-move-forward-on-expand          nil
+          treemacs-no-png-images                   nil
+          treemacs-no-delete-other-windows         t
+          treemacs-project-follow-cleanup          nil
+          treemacs-persist-file                    (expand-file-name ".cache/treemacs-persist" user-emacs-directory)
+          treemacs-position                        'left
+          treemacs-read-string-input               'from-child-frame
+          treemacs-recenter-distance               0.1
+          treemacs-recenter-after-file-follow      nil
+          treemacs-recenter-after-tag-follow       nil
+          treemacs-recenter-after-project-jump     'always
+          treemacs-recenter-after-project-expand   'on-distance
+          treemacs-litter-directories              '("/node_modules" "/.venv" "/.cask")
+          treemacs-project-follow-into-home        nil
+          treemacs-show-cursor                     nil
+          treemacs-show-hidden-files               t
+          treemacs-silent-filewatch                nil
+          treemacs-silent-refresh                  nil
+          treemacs-sorting                         'alphabetic-asc
+          treemacs-select-when-already-in-treemacs 'move-back
+          treemacs-space-between-root-nodes        t
+          treemacs-tag-follow-cleanup              t
+          treemacs-tag-follow-delay                1.5
+          treemacs-text-scale                      nil
+          treemacs-user-mode-line-format           nil
+          treemacs-user-header-line-format         nil
+          treemacs-wide-toggle-width               70
+          treemacs-width                           35
+          treemacs-width-increment                 1
+          treemacs-width-is-initially-locked       t
+          treemacs-workspace-switch-cleanup        nil)
 
-    :bind
-    (:map global-map
-          ([f8]        . treemacs)
-          ([f9]        . treemacs-projectile)
-          ("M-0"       . treemacs-select-window)
-          ("C-c 1"     . treemacs-delete-other-windows))
-    )
-#+END_SRC
+    (treemacs-follow-mode t)
+    (treemacs-filewatch-mode t)
+    (treemacs-fringe-indicator-mode 'always)
+    (when treemacs-python-executable
+      (treemacs-git-commit-diff-mode t))
 
-Load fonts (emacs client doesn't load all the fonts in GUI mode)
-#+BEGIN_SRC emacs-lisp
-  (setq default-frame-alist '(
-                              (font . "Iosevka")
-                              (font . "Hack")
-                              (font . "Fira Code")))
+    (pcase (cons (not (null (executable-find "git")))
+                 (not (null treemacs-python-executable)))
+      (`(t . t)
+       (treemacs-git-mode 'deferred))
+      (`(t . _)
+       (treemacs-git-mode 'simple)))
+
+    (treemacs-hide-gitignored-files-mode nil))
+  :bind
+  (:map global-map
+        ("M-0"       . treemacs-select-window)
+        ("C-x t 1"   . treemacs-delete-other-windows)
+        ("C-x t t"   . treemacs)
+        ("C-x t d"   . treemacs-select-directory)
+        ("C-x t B"   . treemacs-bookmark)
+        ("C-x t C-t" . treemacs-find-file)
+        ("C-x t M-t" . treemacs-find-tag)))
+
+(use-package treemacs-projectile
+  :after (treemacs projectile)
+  :elpaca t)
+
+(use-package treemacs-icons-dired
+  :hook (dired-mode . treemacs-icons-dired-enable-once)
+  :elpaca t)
+
+(defun my/layout-dashboard-treemacs ()
+  "Ensure single full-size dashboard window alongside treemacs."
+  (when-let ((buf (get-buffer "*dashboard*")))
+    (set-window-buffer (selected-window) buf))
+  (treemacs)
+  (delete-other-windows)
+  (treemacs-select-window))
+
+;; Hook at depth 100 on emacs-startup-hook to run strictly after dashboard finishes rendering
+(add-hook 'emacs-startup-hook #'my/layout-dashboard-treemacs 100)
 #+END_SRC
 
 Ace-window
@@ -300,7 +265,7 @@ Repeat mode
 - Allows repeating a command via `C-x z` (press z each time you want to repet the command)
 #+BEGIN_SRC emacs-lisp
   (use-package repeat
-    :elpaca t
+    :ensure nil
     :config
     (repeat-mode)
     :custom
@@ -308,423 +273,107 @@ Repeat mode
     (repeat-exit-timeout 5))
 #+END_SRC
 
-Casual
-- https://kickingvegas.github.io/casual/
+Ibuffer
 #+BEGIN_SRC emacs-lisp
-  (use-package casual :elpaca t)
-  ;; casual ibuffer configuration
-  (with-eval-after-load 'ibuffer
-  (keymap-set ibuffer-mode-map "C-o" #'casual-ibuffer-tmenu)
-  (keymap-set ibuffer-mode-map "F" #'casual-ibuffer-filter-tmenu)
-  (keymap-set ibuffer-mode-map "s" #'casual-ibuffer-sortby-tmenu))
-
-  ;;casual dired configuration
-  (with-eval-after-load 'dired-mode
-  (keymap-set dired-mode-map "C-o" #'casual-dired-tmenu)
-  (keymap-set dired-mode-map "s" #'casual-dired-sort-by-tmenu)
-  (keymap-set dired-mode-map "/" #'casual-dired-search-replace-tmenu))
-
-  ;; casual with org-mode
-  (keymap-set org-mode-map "M-m" #'casual-org-tmenu)
-  (keymap-set org-table-fedit-map "M-m" #'casual-org-table-fedit-tmenu)
-#+END_SRC
-
-* Text Edition
-Hightlight current line
-#+BEGIN_SRC emacs-lisp
-  (global-hl-line-mode 1)
-#+END_SRC
-
-Replace Selection
-#+BEGIN_SRC emacs-lisp
-  (delete-selection-mode 1)
-#+END_SRC
-
-Invoke Hippie expand insead dabbrev
-#+BEGIN_SRC emacs-lisp
-  (global-set-key [remap dabbrev-expand] 'hippie-expand)
-  (setq hippie-expand-try-functions-list
-        '(try-complete-file-name-partially   ; complete filenames, start with /
-          try-complete-file-name
-          yas-hippie-try-expand              ; expand matching snippets
-          try-expand-all-abbrevs
-          try-expand-list                    ; help when args repeated another's args
-          ;; try-expand-line
-          try-expand-dabbrev
-          try-expand-dabbrev-all-buffers
-          try-expand-whole-kill              ; grab text from the kill ring
-          try-expand-dabbrev-from-kill       ; as above
-          try-complete-lisp-symbol-partially
-          try-complete-lisp-symbol))
-#+END_SRC
-
-Show matching parentheses
-#+BEGIN_SRC emacs-lisp
-  (show-paren-mode 1)
-#+END_SRC
-
-Disable the electric indent mode
-#+BEGIN_SRC emacs_list
-  (electric-indent-mode -1)
-#+END_SRC
-
-Rainbow delimiters
-- https://github.com/Fanael/rainbow-delimiters
-#+BEGIN_SRC emacs-lisp
-  (use-package rainbow-delimiters
+  (use-package all-the-icons-ibuffer
     :elpaca t
+    :hook (ibuffer-mode . all-the-icons-ibuffer-mode))
+
+  (use-package ibuffer :ensure nil
     :config
-    (setq rainbow-delimiters-max-face-count 9))
-  (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
-#+END_SRC
-
-Replace keywords with symbols
-#+BEGIN_SRC emacs-lisp
-  (global-prettify-symbols-mode 1)
-#+END_SRC
-
-Display the current function name in the mode line
-#+BEGIN_SRC emacs-lisp
-  (which-function-mode 1)
-#+END_SRC
-
-Expand the marked region in semantic increments (negative prefix to reduce region)
-- https://github.com/magnars/expand-region.el
-  #+BEGIN_SRC emacs-lisp
-    (use-package expand-region
-      :elpaca t
-      :demand t
-      :config
-      (global-set-key (kbd "C-=") 'er/expand-region))
-  #+END_SRC
-
-No tabs
-#+BEGIN_SRC emacs-lisp
-  (setq-default indent-tabs-mode nil)
-#+END_SRC
-
-Replace TAB with 4 spaces
-#+BEGIN_SRC emacs-lisp
-  (setq-default tab-width 4)
-#+END_SRC
-
-Display line numbers
-#+BEGIN_SRC emacs-lisp
-  (setq display-line-numbers-type 'relative)
-  (add-hook 'prog-mode-hook 'display-line-numbers-mode)
-#+END_SRC
-
-autocomplete parentheses
-#+BEGIN_SRC emacs-lisp
-  (electric-pair-mode t)
-#+END_SRC
-
-Remap c-z to undo
-#+BEGIN_SRC emacs-lisp
-  (global-set-key (kbd "C-z") 'undo)
-#+END_SRC
-
-Replace selection
-#+BEGIN_SRC emacs-lisp
-  (delete-selection-mode 1)
-#+END_SRC
-
-Cleanup whitespace on save
-#+BEGIN_SRC emacs-lisp
-  (use-package whitespace
-    :ensure nil
-    :hook (before-save . whitespace-cleanup))
-#+END_SRC
-
-Highlight indent guides
-- https://github.com/DarthFennec/highlight-indent-guides
-#+BEGIN_SRC emacs-lisp
-  (use-package highlight-indent-guides
-    :elpaca t
-    :demand t
-    :hook ((prog-mode text-mode conf-mode) . highlight-indent-guides-mode)
-    :init
-    (setq highlight-indent-guides-method 'column)
-    :config
-    (add-hook 'focus-in-hook #'highlight-indent-guides-auto-set-faces))
-#+END_SRC
-
-flash
-- https://github.com/Prgebish/flash
-#+BEGIN_SRC emacs-lisp
-  (use-package flash
-    :elpaca (flash :host github :repo "Prgebish/flash")
-    :commands (flash-jump flash-jump-continue
-                          flash-treesitter)
-    :bind ("M-s" . flash-jump)
-    :custom
-    (flash-multi-window t)
-    :config
-    (require 'flash-isearch)
-    (flash-isearch-mode 1))
-#+END_SRC
-
-Yasnippet
-- https://github.com/joaotavora/yasnippet
-#+BEGIN_SRC emacs-lisp
-  (use-package yasnippet
-    :elpaca t
-    :demand t
-    :init
-    (yas-global-mode 1))
-  (setq yas-snippet-dirs
-        '("~/.emacs.d/snippets"))
-#+END_SRC
-
-Cape
-https://github.com/minad/cape
-
-#+BEGIN_SRC emacs-lisp
-  ;; Cape
-  (use-package cape
-    :elpaca t
-    :after corfu
-    :bind ("C-c p" . cape-prefix-map)
-    :init
-    (add-hook 'completion-at-point-functions #'cape-dabbrev)
-    (add-hook 'completion-at-point-functions #'cape-file)
-    (add-hook 'completion-at-point-functions #'cape-elisp-block)
-    (add-hook 'completion-at-point-functions #'yasnippet-capf)
-    (add-hook 'completion-at-point-functions #'eglot-completion-at-point))
-
-  (use-package completion-preview
-    :ensure nil
-    :bind (:map completion-preview-active-mode-map
-                ("M-f" . #'completion-preview-insert-word)
-                ("C-M-f" . #'completion-preview-insert-sexp))
-    :custom
-    (completion-preview-minimum-symbol-length 2)
-    :init
-    (global-completion-preview-mode))
-#+END_SRC
-
-Corfu
-https://github.com/minad/corfu
-#+BEGIN_SRC emacs-lisp
-  (use-package corfu
-    :after eglot
-    :elpaca t
-    :custom
-    (corfu-auto t)
-    (corfu-cycle t)
-    (corfu-quit-no-match t)
-    ;; Make the popup appear quicker
-    (corfu-popupinfo-delay '(0.5 . 0.5))
-    ;; Always have the same width
-    (corfu-min-width 80)
-    (corfu-max-width corfu-min-width)
-    (corfu-count 14)
-    (corfu-scroll-margin 4)
-    ;; Have Corfu wrap around when going up
-    (corfu-cycle t)
-    (corfu-preselect-first t)
-    :bind (:map corfu-map
-                ;; Match `corfu-quick-complete' keybinding to `avy-goto-line'
-                ("s-j" . corfu-quick-complete))
-    :init
-    ;; Enable Corfu
-    (global-corfu-mode t)
-    ;; Enable Corfu history mode to act like `prescient'
-    (corfu-history-mode t)
-    ;; Allow Corfu to show help text next to suggested completion
-    (corfu-popupinfo-mode t))
-  (setq completion-category-overrides '((eglot (styles orderless))
-                                        (eglot-capf (styles orderless))))
-#+END_SRC
-
-Multiple Cursor
-#+BEGIN_SRC emacs-lisp
-  (use-package multiple-cursors
-    :elpaca t
-    :demand t)
-
-  (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
-  (global-set-key (kbd "C->") 'mc/mark-next-like-this)
-  (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
-  (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
-#+END_SRC
-
-Kind icon
-https://github.com/jdtsmith/kind-icon
-#+BEGIN_SRC emacs-lisp
-  (use-package kind-icon
-    :elpaca t
-    :after corfu
-    :custom
-    (kind-icon-blend-background t)
-    (kind-icon-use-icons t)
-    (kind-icon-default-face 'corfu-default)
-    (kind-icon-blend-background nil)
-    (kind-icon-blend-frac 0.08)
-    :config
-    (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
-#+END_SRC
-
-** Git
-Magit
-- https://github.com/magit/magit
-#+BEGIN_SRC emacs-lisp
-  ;;  (use-package transient
-  ;;    :elpaca t
-  ;;    :demand t)
-  (use-package magit
-    :elpaca t
-    :demand t
-    :init
-    (progn
-      (bind-key "C-x g" 'magit-status))
-    :commands (magit-status magit-get-current-branch)
-    :custom (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
-#+END_SRC
-
-git-gutter
-- https://github.com/emacsorphanage/git-gutter
-#+BEGIN_SRC emacs-lisp
-  (use-package git-gutter
-    :elpaca t
-    :demand t
-    :init
-    (global-git-gutter-mode +1))
-#+END_SRC
-
-gitignore
-- https://github.com/xuchunyang/gitignore-templates.el
-#+BEGIN_SRC emacs-lisp
-  (use-package gitignore-templates
-    :elpaca t)
-#+end_SRC
-
-* Visual
-** Themes
-all-the-icons package
-- https://github.com/domtronn/all-the-icons.el
-Run:
-M-x: all-the-icons-install-fonts
-#+BEGIN_SRC emacs-lisp
-  (use-package all-the-icons
-    :elpaca t
-    :demand t)
-#+END_SRC
-
-Doom Theme
-- https://github.com/hlissner/emacs-doom-themes
-#+BEGIN_SRC emacs-lisp
-  (use-package doom-themes
-    :elpaca t
-    :demand t
-    :config (load-theme 'doom-oceanic-next))
-#+END_SRC
-
-Kaolin Theme
-#+BEGIN_SRC emacs-lisp
-  (use-package kaolin-themes
-    :elpaca t
-    :demand t)
-#+END_SRC
-
-Doom modeline
-- https://github.com/hlissner/emacs-doom-themes
-- Run: M-x: nerd-icons-install-fonts
-#+BEGIN_SRC emacs-lisp
-  (use-package doom-modeline
-    :elpaca t
-    :demand t
-    :init (doom-modeline-mode 1)
-    :config
-    (setq doom-modeline-project-detection 'project)
-    (setq doom-modeline-major-mode-color-icon t)
-    (setq doom-modeline-buffer-encoding t) ;; Whether display the buffer encoding.
-    (setq doom-modeline-lsp t)
-    (setq doom-modeline-env-version t)
-    (setq doom-modeline-support-imenu t)
-    (setq doom-modeline-time-icon t))
-#+END_SRC
-
-Solaire mode
-- https://github.com/hlissner/emacs-solaire-mode
-#+BEGIN_SRC emacs-lisp
-  (use-package solaire-mode
-    :elpaca t
-    :demand t
-    :init (solaire-global-mode +1))
-#+END_SRC
-
-* Development
-** GeneraL
-
-Eldoc-mouse
-- https://github.com/huangfeiyu/eldoc-mouse
-#+BEGIN_SRC emacs-lisp
-  (use-package eldoc-mouse :elpaca t
-    :bind (:map eldoc-mouse-mode-map)
-    :hook (eglot-managed-mode emacs-lisp-mode))
-  (global-set-key (kbd "<f1> <f1>") 'eldoc-mouse-pop-doc-at-cursor)
-#+end_SRC
-
-Toml/Ansible/Docker/Yaml/Kdl modes
-#+BEGIN_SRC emacs-lisp
-  (use-package toml-mode
-    :elpaca t
-    :demand t)
-  (use-package yaml-mode
-    :elpaca t
-    :demand t
-    :mode ("\\.yml\\'"
-           "\\.yaml\\'"))
-  (use-package ansible
-    :elpaca t
-    :demand t)
-  (use-package dockerfile-mode
-    :elpaca t
-    :demand t)
-  (use-package kdl-mode
-    :elpaca (kdl-mode :host github :repo "taquangtrung/emacs-kdl-mode"))
-  (add-to-list 'auto-mode-alist '("\\.kdl\\'" . kdl-mode))
-#+END_SRC
-
-Eglot
-#+BEGIN_SRC emacs-lisp
-  (use-package jsonrpc :demand t) ;; required by eglot
-  (use-package eglot
-    :demand t
-    :defer t
-    :ensure nil
-    :custom
-    (eglot-sync-connect 1)
-    (eglot-autoshutdown t)
-    (eglot-ignored-server-capabilities '(:documentHighlightProvider))
-    :config
-    (add-to-list 'eglot-server-programs
-                 '((python-mode python-ts-mode) . ("pyrefly" "lsp")))
-    (add-to-list 'eglot-server-programs
-                 '((sh-mode bash-ts-mode) . ("bash-language-server" "start")))
-
+    (setq ibuffer-expert t)
+    (setq ibuffer-display-summary nil)
+    (setq ibuffer-use-other-window nil)
+    (setq ibuffer-show-empty-filter-groups nil)
+    (setq ibuffer-default-sorting-mode 'filename/process)
+    (setq ibuffer-title-face 'font-lock-doc-face)
+    (setq ibuffer-use-header-line t)
+    (setq ibuffer-default-shrink-to-minimum-size nil)
+    (setq ibuffer-formats
+          '((mark modified read-only locked " "
+                  (name 30 30 :left :elide)
+                  " "
+                  (size 9 -1 :right)
+                  " "
+                  (mode 16 16 :left :elide)
+                  " " filename-and-process)
+            (mark " "
+                  (name 16 -1)
+                  " " filename)))
+    (setq ibuffer-saved-filter-groups
+          '(("Main"
+             ("Directories" (mode . dired-mode))
+             ("Python" (or
+                        (mode . python-ts-mode)
+                        (mode . c-mode)
+                        (mode . python-mode)))
+              ("Rust" (or
+                        (mode . rustic-mode)
+                        (mode . rust-ts-mode)))
+             ("Build" (or
+                       (mode . make-mode)
+                       (mode . makefile-gmake-mode)
+                       (name . "^Makefile$")
+                       (mode . change-log-mode)))
+             ("Scripts" (or
+                         (mode . shell-script-mode)
+                         (mode . shell-mode)
+                         (mode . sh-mode)))
+             ("Config" (or
+                        (mode . conf-mode)
+                        (mode . conf-toml-mode)
+                        (mode . toml-ts-mode)
+                        (mode . conf-windows-mode)
+                        (name . "^\\.clangd$")
+                        (name . "^\\.gitignore$")
+                        (name . "^Doxyfile$")
+                        (name . "^config\\.toml$")
+                        (mode . yaml-mode)))
+             ("Web" (or
+                     (mode . mhtml-mode)
+                     (mode . html-mode)
+                     (mode . web-mode)
+                     (mode . nxml-mode)))
+             ("CSS" (or
+                     (mode . css-mode)
+                     (mode . sass-mode)))
+             ("JS" (or
+                    (mode . js-mode)
+                    (mode . rjsx-mode)))
+             ("Markup" (or
+                        (mode . markdown-mode)
+                        (mode . adoc-mode)))
+             ("Org" (mode . org-mode))
+             ("Magit" (or
+                       (mode . magit-blame-mode)
+                       (mode . magit-cherry-mode)
+                       (mode . magit-diff-mode)
+                       (mode . magit-log-mode)
+                       (mode . magit-process-mode)
+                       (mode . magit-status-mode)))
+             ("Apps" (or
+                      (mode . elfeed-search-mode)
+                      (mode . elfeed-show-mode)))
+             ("Fundamental" (or
+                             (mode . fundamental-mode)
+                             (mode . text-mode)))
+             ("Emacs" (or
+                       (mode . emacs-lisp-mode)
+                       (name . "^\\*Help\\*$")
+                       (name . "^\\*Custom.*")
+                       (name . "^\\*Org Agenda\\*$")
+                       (name . "^\\*info\\*$")
+                       (name . "^\\*scratch\\*$")
+                       (name . "^\\*Backtrace\\*$")
+                       (name . "^\\*Messages\\*$"))))))
     :hook
-    (python-ts-mode . eglot-ensure)
-    (sh-mode . eglot-ensure)
-    ;; (eglot-managed-mode-hook . eldoc-box-hover-mode)
+    (ibuffer-mode . (lambda ()
+                      (ibuffer-switch-to-saved-filter-groups "Main")))
     )
-#+END_SRC
 
-Flycheck
-#+BEGIN_SRC emacs-lisp
-  (use-package flycheck :elpaca t)
+  (global-set-key (kbd "C-x C-b") 'ibuffer)
 #+END_SRC
-
-Devdocs
-Documentation viewer for Emacs similar to the built-in Info browser
-- https://github.com/astoff/devdocs.el
-#+BEGIN_SRC emacs-lisp
-  (use-package devdocs
-    :elpaca t)
-#+END_SRC
-
-*** Vertico / Orderless / Marginalia / Consult / Embark
+** Vertico / Orderless / Marginalia / Consult / Embark
 + https://github.com/minad/vertico
 + https://github.com/oantolin/orderless
 + https://github.com/minad/consult
@@ -902,8 +551,406 @@ Embark
     (embark-collect-mode . consult-preview-at-point-mode))
 #+END_SRC
 
+* Text Edition
+Hightlight current line
+#+BEGIN_SRC emacs-lisp
+  (global-hl-line-mode 1)
+#+END_SRC
+
+Replace Selection
+#+BEGIN_SRC emacs-lisp
+  (delete-selection-mode 1)
+#+END_SRC
+
+Invoke Hippie expand insead dabbrev
+#+BEGIN_SRC emacs-lisp
+  (global-set-key [remap dabbrev-expand] 'hippie-expand)
+  (setq hippie-expand-try-functions-list
+        '(try-complete-file-name-partially   ; complete filenames, start with /
+          try-complete-file-name
+          yas-hippie-try-expand              ; expand matching snippets
+          try-expand-all-abbrevs
+          try-expand-list                    ; help when args repeated another's args
+          ;; try-expand-line
+          try-expand-dabbrev
+          try-expand-dabbrev-all-buffers
+          try-expand-whole-kill              ; grab text from the kill ring
+          try-expand-dabbrev-from-kill       ; as above
+          try-complete-lisp-symbol-partially
+          try-complete-lisp-symbol))
+#+END_SRC
+
+Show matching parentheses
+#+BEGIN_SRC emacs-lisp
+  (show-paren-mode 1)
+#+END_SRC
+
+Disable the electric indent mode
+#+BEGIN_SRC emacs_list
+  (electric-indent-mode -1)
+#+END_SRC
+
+Rainbow delimiters
+- https://github.com/Fanael/rainbow-delimiters
+#+BEGIN_SRC emacs-lisp
+  (use-package rainbow-delimiters
+    :elpaca t
+    :config
+    (setq rainbow-delimiters-max-face-count 9))
+  (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
+#+END_SRC
+
+Replace keywords with symbols
+#+BEGIN_SRC emacs-lisp
+  (global-prettify-symbols-mode 1)
+#+END_SRC
+
+Display the current function name in the mode line
+#+BEGIN_SRC emacs-lisp
+  (which-function-mode 1)
+#+END_SRC
+
+Expand the marked region in semantic increments (negative prefix to reduce region)
+- https://github.com/magnars/expand-region.el
+#+BEGIN_SRC emacs-lisp
+(use-package expand-region
+  :elpaca t
+  :demand t
+  :config
+  (global-set-key (kbd "C-=") 'er/expand-region))
+#+END_SRC
+
+No tabs
+#+BEGIN_SRC emacs-lisp
+  (setq-default indent-tabs-mode nil)
+#+END_SRC
+
+Replace TAB with 4 spaces
+#+BEGIN_SRC emacs-lisp
+  (setq-default tab-width 4)
+#+END_SRC
+
+Display line numbers
+#+BEGIN_SRC emacs-lisp
+  (setq display-line-numbers-type 'relative)
+  (add-hook 'prog-mode-hook 'display-line-numbers-mode)
+#+END_SRC
+
+autocomplete parentheses
+#+BEGIN_SRC emacs-lisp
+  (electric-pair-mode t)
+#+END_SRC
+
+Remap c-z to undo
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-z") 'undo)
+#+END_SRC
+
+Replace selection
+#+BEGIN_SRC emacs-lisp
+  (delete-selection-mode 1)
+#+END_SRC
+
+Cleanup whitespace on save
+#+BEGIN_SRC emacs-lisp
+  (use-package whitespace
+    :ensure nil
+    :hook (before-save . whitespace-cleanup))
+#+END_SRC
+
+Highlight indent guides
+- https://github.com/DarthFennec/highlight-indent-guides
+#+BEGIN_SRC emacs-lisp
+  (use-package highlight-indent-guides
+    :elpaca t
+    :demand t
+    :hook ((prog-mode text-mode conf-mode) . highlight-indent-guides-mode)
+    :init
+    (setq highlight-indent-guides-method 'column)
+    :config
+    (add-hook 'focus-in-hook #'highlight-indent-guides-auto-set-faces))
+#+END_SRC
+
+flash
+- https://github.com/Prgebish/flash
+#+BEGIN_SRC emacs-lisp
+  (use-package flash
+    :elpaca (flash :host github :repo "Prgebish/flash")
+    :commands (flash-jump flash-jump-continue
+                          flash-treesitter)
+    :bind ("M-s" . flash-jump)
+    :custom
+    (flash-multi-window t)
+    :config
+    (require 'flash-isearch)
+    (flash-isearch-mode 1))
+#+END_SRC
+
+Yasnippet
+- https://github.com/joaotavora/yasnippet
+#+BEGIN_SRC emacs-lisp
+  (use-package yasnippet
+    :elpaca t
+    :demand t
+    :init
+    (yas-global-mode 1))
+  (setq yas-snippet-dirs
+        '("~/.emacs.d/snippets"))
+#+END_SRC
+
+Cape
+https://github.com/minad/cape
+
+#+BEGIN_SRC emacs-lisp
+  ;; Cape
+  (use-package cape
+    :elpaca t
+    :after corfu
+    :bind ("C-c p" . cape-prefix-map)
+    :init
+    (add-hook 'completion-at-point-functions #'cape-dabbrev)
+    (add-hook 'completion-at-point-functions #'cape-file)
+    (add-hook 'completion-at-point-functions #'cape-elisp-block)
+    (add-hook 'completion-at-point-functions #'yasnippet-capf)
+    (add-hook 'completion-at-point-functions #'eglot-completion-at-point))
+
+  (use-package completion-preview
+    :ensure nil
+    :bind (:map completion-preview-active-mode-map
+                ("M-f" . #'completion-preview-insert-word)
+                ("C-M-f" . #'completion-preview-insert-sexp))
+    :custom
+    (completion-preview-minimum-symbol-length 2)
+    :init
+    (global-completion-preview-mode))
+#+END_SRC
+
+Corfu
+https://github.com/minad/corfu
+#+BEGIN_SRC emacs-lisp
+  (use-package corfu
+    :after eglot
+    :elpaca t
+    :custom
+    (corfu-auto t)
+    (corfu-cycle t)
+    (corfu-quit-no-match t)
+    ;; Make the popup appear quicker
+    (corfu-popupinfo-delay '(0.5 . 0.5))
+    ;; Always have the same width
+    (corfu-min-width 80)
+    (corfu-max-width corfu-min-width)
+    (corfu-count 14)
+    (corfu-scroll-margin 4)
+    ;; Have Corfu wrap around when going up
+    (corfu-cycle t)
+    (corfu-preselect-first t)
+    :bind (:map corfu-map
+                ;; Match `corfu-quick-complete' keybinding to `avy-goto-line'
+                ("s-j" . corfu-quick-complete))
+    :init
+    ;; Enable Corfu
+    (global-corfu-mode t)
+    ;; Enable Corfu history mode to act like `prescient'
+    (corfu-history-mode t)
+    ;; Allow Corfu to show help text next to suggested completion
+    (corfu-popupinfo-mode t))
+  (setq completion-category-overrides '((eglot (styles orderless))
+                                        (eglot-capf (styles orderless))))
+#+END_SRC
+
+Multiple Cursor
+#+BEGIN_SRC emacs-lisp
+  (use-package multiple-cursors
+    :elpaca t
+    :demand t)
+
+  (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
+  (global-set-key (kbd "C->") 'mc/mark-next-like-this)
+  (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
+  (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
+#+END_SRC
+
+Kind icon
+https://github.com/jdtsmith/kind-icon
+#+BEGIN_SRC emacs-lisp
+  (use-package kind-icon
+    :elpaca t
+    :after corfu
+    :custom
+    (kind-icon-blend-background t)
+    (kind-icon-use-icons t)
+    (kind-icon-default-face 'corfu-default)
+    (kind-icon-blend-background nil)
+    (kind-icon-blend-frac 0.08)
+    :config
+    (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
+#+END_SRC
+* Git
+Magit
+- https://github.com/magit/magit
+#+BEGIN_SRC emacs-lisp
+  ;; (use-package transient
+  ;; :elpaca t)
+
+  (use-package magit
+    :elpaca t
+    :after transient
+    :demand t
+    :init
+    (progn
+      (bind-key "C-x g" 'magit-status))
+    :commands (magit-status magit-get-current-branch)
+    :custom (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
+
+  ;; integration with treemacs
+  (use-package treemacs-magit
+  :after (treemacs magit)
+  :elpaca t)
+#+END_SRC
+
+git-gutter
+- https://github.com/emacsorphanage/git-gutter
+#+BEGIN_SRC emacs-lisp
+  (use-package git-gutter
+    :elpaca t
+    :demand t
+    :init
+    (global-git-gutter-mode +1))
+#+END_SRC
+
+gitignore
+- https://github.com/xuchunyang/gitignore-templates.el
+#+BEGIN_SRC emacs-lisp
+  (use-package gitignore-templates
+    :elpaca t)
+#+end_SRC
+* Visual
+** Themes
+all-the-icons package
+- https://github.com/domtronn/all-the-icons.el
+Run:
+M-x: all-the-icons-install-fonts
+#+BEGIN_SRC emacs-lisp
+  (use-package all-the-icons
+    :elpaca t
+    :demand t)
+#+END_SRC
+
+Doom Theme
+- https://github.com/hlissner/emacs-doom-themes
+#+BEGIN_SRC emacs-lisp
+  (use-package doom-themes
+    :elpaca t
+    :demand t
+    :config (load-theme 'doom-oceanic-next))
+#+END_SRC
+
+Kaolin Theme
+#+BEGIN_SRC emacs-lisp
+  (use-package kaolin-themes
+    :elpaca t
+    :demand t)
+#+END_SRC
+
+Doom modeline
+- https://github.com/hlissner/emacs-doom-themes
+- Run: M-x: nerd-icons-install-fonts
+#+BEGIN_SRC emacs-lisp
+  (use-package doom-modeline
+    :elpaca t
+    :demand t
+    :init (doom-modeline-mode 1)
+    :config
+    (setq doom-modeline-project-detection 'project)
+    (setq doom-modeline-major-mode-color-icon t)
+    (setq doom-modeline-buffer-encoding t) ;; Whether display the buffer encoding.
+    (setq doom-modeline-lsp t)
+    (setq doom-modeline-env-version t)
+    (setq doom-modeline-support-imenu t)
+    (setq doom-modeline-time-icon t))
+#+END_SRC
+
+Solaire mode
+- https://github.com/hlissner/emacs-solaire-mode
+#+BEGIN_SRC emacs-lisp
+  (use-package solaire-mode
+    :elpaca t
+    :demand t
+    :init (solaire-global-mode +1))
+#+END_SRC
+
+* Development
+** GeneraL
+Eldoc-mouse
+- https://github.com/huangfeiyu/eldoc-mouse
+#+BEGIN_SRC emacs-lisp
+  ;; (use-package eldoc-mouse :elpaca t
+  ;;   :bind (:map eldoc-mouse-mode-map)
+  ;;   :hook (eglot-managed-mode emacs-lisp-mode))
+  ;; (global-set-key (kbd "<f1> <f1>") 'eldoc-mouse-pop-doc-at-cursor)
+#+end_SRC
+
+Toml/Ansible/Docker/Yaml/Kdl modes
+#+BEGIN_SRC emacs-lisp
+  (use-package toml-mode
+    :elpaca t
+    :demand t)
+  (use-package yaml-mode
+    :elpaca t
+    :demand t
+    :mode ("\\.yml\\'"
+           "\\.yaml\\'"))
+  (use-package ansible
+    :elpaca t
+    :demand t)
+  (use-package dockerfile-mode
+    :elpaca t
+    :demand t)
+  (use-package kdl-mode
+    :elpaca (kdl-mode :host github :repo "taquangtrung/emacs-kdl-mode"))
+  (add-to-list 'auto-mode-alist '("\\.kdl\\'" . kdl-mode))
+#+END_SRC
+
+Eglot
+#+BEGIN_SRC emacs-lisp
+  (use-package jsonrpc :demand t) ;; required by eglot
+  (use-package eglot
+    :demand t
+    :defer t
+    :ensure nil
+    :custom
+    (eglot-sync-connect 1)
+    (eglot-autoshutdown t)
+    (eglot-ignored-server-capabilities '(:documentHighlightProvider))
+    :config
+    (add-to-list 'eglot-server-programs
+                 '((python-mode python-ts-mode) . ("pyrefly" "lsp")))
+    (add-to-list 'eglot-server-programs
+                 '((sh-mode bash-ts-mode) . ("bash-language-server" "start")))
+
+    :hook
+    (python-ts-mode . eglot-ensure)
+    (sh-mode . eglot-ensure)
+    ;; (eglot-managed-mode-hook . eldoc-box-hover-mode)
+    )
+#+END_SRC
+
+Flycheck
+#+BEGIN_SRC emacs-lisp
+  (use-package flycheck :elpaca t)
+#+END_SRC
+
+Devdocs
+Documentation viewer for Emacs similar to the built-in Info browser
+- https://github.com/astoff/devdocs.el
+#+BEGIN_SRC emacs-lisp
+  (use-package devdocs
+    :elpaca t)
+#+END_SRC
+
 ** Languages
-+ Bash
+Bash
 #+BEGIN_SRC emacs-lisp
   (use-package shellcop
     :elpaca t)
@@ -912,7 +959,7 @@ Embark
   (setq sh-basic-offset 2 sh-indentation 2)
 #+END_SRC
 
-+ Python
+Python
 #+BEGIN_SRC emacs-lisp
   (setq major-mode-remap-alist
         '((python-mode . python-ts-mode)))
@@ -932,22 +979,12 @@ Embark
 
   (add-hook 'eglot-managed-mode-hook 'flymake-ruff-load)
 
-  ;; https://github.com/vale981/py-vterm-interaction.el
-  (use-package py-vterm-interaction
-    :elpaca t
-    :hook (python-ts-mode . py-vterm-interaction-mode)
-    :config
-    (setq-default py-vterm-interaction-repl-program "ipython")
-    (setq-default py-vterm-interaction-silent-cells t)
-    )
-   (add-hook 'python-ts-mode-hook #'py-vterm-interaction-mode)
-
   ; https://github.com/z80dev/uv-mode
   (use-package uv-mode
     :hook (python-mode . uv-mode-auto-activate-hook))
 #+END_SRC
 
-+ Rust
+Rust
 #+BEGIN_SRC emacs-lisp
   (use-package rustic
   :elpaca (rustic :host github :repo "emacs-rustic/rustic")
@@ -980,15 +1017,15 @@ Embark
     :elpaca t)
 #+END_SRC
 
-+ Common Lisp
+Common Lisp
 #+BEGIN_SRC emacs-lisp
   (use-package sly
     :elpaca t
     :demand t)
 #+END_SRC
 
-+ D2
-  #+BEGIN_SRC emacs-lisp
+D2
+#+BEGIN_SRC emacs-lisp
 (use-package d2-mode
   :elpaca t
   :init
@@ -1004,11 +1041,11 @@ Embark
   (clear-image-cache)
   (org-redisplay-inline-images))
 (add-hook 'org-babel-after-execute-hook #'tkj/org-babel-refresh-images)
-  #+END_SRC
+#+END_SRC
 
 ** Keybindings
 Keychord
-- https://github.com/emacsorphanage/key-chord/tree/7f7fd7c5bd2b996fa054779357e1566f7989e07d
+- https://github.com/emacsorphanage/key-chord
 #+BEGIN_SRC emacs-lisp
   (use-package key-chord
     :elpaca t
@@ -1059,107 +1096,6 @@ Editing
   (interactive "P")
   (copy-thing 'backward-word 'forward-word arg)
   (paste-to-mark arg))
-#+END_SRC
-
-Ibuffer
-#+BEGIN_SRC emacs-lisp
-  (use-package all-the-icons-ibuffer
-    :elpaca t
-    :hook (ibuffer-mode . all-the-icons-ibuffer-mode))
-
-  (use-package ibuffer :ensure nil
-    :config
-    (setq ibuffer-expert t)
-    (setq ibuffer-display-summary nil)
-    (setq ibuffer-use-other-window nil)
-    (setq ibuffer-show-empty-filter-groups nil)
-    (setq ibuffer-default-sorting-mode 'filename/process)
-    (setq ibuffer-title-face 'font-lock-doc-face)
-    (setq ibuffer-use-header-line t)
-    (setq ibuffer-default-shrink-to-minimum-size nil)
-    (setq ibuffer-formats
-          '((mark modified read-only locked " "
-                  (name 30 30 :left :elide)
-                  " "
-                  (size 9 -1 :right)
-                  " "
-                  (mode 16 16 :left :elide)
-                  " " filename-and-process)
-            (mark " "
-                  (name 16 -1)
-                  " " filename)))
-    (setq ibuffer-saved-filter-groups
-          '(("Main"
-             ("Directories" (mode . dired-mode))
-             ("Python" (or
-                        (mode . python-ts-mode)
-                        (mode . c-mode)
-                        (mode . python-mode)))
-              ("Rust" (or
-                        (mode . rustic-mode)
-                        (mode . rust-ts-mode)))
-             ("Build" (or
-                       (mode . make-mode)
-                       (mode . makefile-gmake-mode)
-                       (name . "^Makefile$")
-                       (mode . change-log-mode)))
-             ("Scripts" (or
-                         (mode . shell-script-mode)
-                         (mode . shell-mode)
-                         (mode . sh-mode)))
-             ("Config" (or
-                        (mode . conf-mode)
-                        (mode . conf-toml-mode)
-                        (mode . toml-ts-mode)
-                        (mode . conf-windows-mode)
-                        (name . "^\\.clangd$")
-                        (name . "^\\.gitignore$")
-                        (name . "^Doxyfile$")
-                        (name . "^config\\.toml$")
-                        (mode . yaml-mode)))
-             ("Web" (or
-                     (mode . mhtml-mode)
-                     (mode . html-mode)
-                     (mode . web-mode)
-                     (mode . nxml-mode)))
-             ("CSS" (or
-                     (mode . css-mode)
-                     (mode . sass-mode)))
-             ("JS" (or
-                    (mode . js-mode)
-                    (mode . rjsx-mode)))
-             ("Markup" (or
-                        (mode . markdown-mode)
-                        (mode . adoc-mode)))
-             ("Org" (mode . org-mode))
-             ("Magit" (or
-                       (mode . magit-blame-mode)
-                       (mode . magit-cherry-mode)
-                       (mode . magit-diff-mode)
-                       (mode . magit-log-mode)
-                       (mode . magit-process-mode)
-                       (mode . magit-status-mode)))
-             ("Apps" (or
-                      (mode . elfeed-search-mode)
-                      (mode . elfeed-show-mode)))
-             ("Fundamental" (or
-                             (mode . fundamental-mode)
-                             (mode . text-mode)))
-             ("Emacs" (or
-                       (mode . emacs-lisp-mode)
-                       (name . "^\\*Help\\*$")
-                       (name . "^\\*Custom.*")
-                       (name . "^\\*Org Agenda\\*$")
-                       (name . "^\\*info\\*$")
-                       (name . "^\\*scratch\\*$")
-                       (name . "^\\*Backtrace\\*$")
-                       (name . "^\\*Messages\\*$"))))))
-    :hook
-    (ibuffer-mode . (lambda ()
-                      (ibuffer-switch-to-saved-filter-groups "Main")))
-    )
-
-  (global-set-key (kbd "C-x C-b") 'ibuffer)
 #+END_SRC
 
 Hydra
