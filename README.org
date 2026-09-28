@@ -1050,6 +1050,13 @@ D2
 (add-hook 'org-babel-after-execute-hook #'tkj/org-babel-refresh-images)
 #+END_SRC
 
+Terraform
+#+BEGIN_SRC emacs-lisp
+(use-package terraform-mode
+  :elpaca t)
+(add-hook 'terraform-mode-hook #'outline-minor-mode)
+#+END_SRC
+
 ** Keybindings
 Keychord
 - https://github.com/emacsorphanage/key-chord
