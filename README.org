@@ -849,8 +849,8 @@ Doom Theme
 #+BEGIN_SRC emacs-lisp
   (use-package doom-themes
     :elpaca t
-    :demand t
-    :config (load-theme 'doom-oceanic-next))
+    :demand t)
+    ;; :config (load-theme 'doom-oceanic-next))
 #+END_SRC
 
 Kaolin Theme
@@ -858,6 +858,13 @@ Kaolin Theme
   (use-package kaolin-themes
     :elpaca t
     :demand t)
+#+END_SRC
+
+Atom one dark
+#+BEGIN_SRC emacs-lisp
+(use-package atom-one-dark-theme
+  :elpaca t
+  :config (load-theme 'atom-one-dark t))
 #+END_SRC
 
 Doom modeline
