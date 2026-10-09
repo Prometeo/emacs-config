@@ -238,6 +238,22 @@ Projectile
 (add-hook 'emacs-startup-hook #'my/layout-dashboard-treemacs 100)
 #+END_SRC
 
+Dirvish
+https://github.com/alexluigit/dirvish
+#+BEGIN_SRC emacs-lisp
+(use-package dirvish
+  :elpaca t
+  :init
+  :custom
+  ;; Configure icons and layout attributes
+  (dirvish-attributes '(nerd-icons file-size collapse subtree-state vc-state git-msg))
+  :config
+  (keymap-set global-map "C-c t" #'dirvish-side))
+
+(dirvish-side-follow-mode)
+#+END_SRC
+
+
 Ace-window
 - https://github.com/abo-abo/ace-window
 #+BEGIN_SRC emacs-lisp
@@ -718,7 +734,7 @@ https://github.com/minad/cape
     (add-hook 'completion-at-point-functions #'cape-dabbrev)
     (add-hook 'completion-at-point-functions #'cape-file)
     (add-hook 'completion-at-point-functions #'cape-elisp-block)
-    (add-hook 'completion-at-point-functions #'yasnippet-capf)
+    (add-hook 'completion-at-point-functions #'cape-yasnipet)
     (add-hook 'completion-at-point-functions #'eglot-completion-at-point))
 
   (use-package completion-preview
@@ -895,7 +911,7 @@ Solaire mode
 #+END_SRC
 
 * Development
-** GeneraL
+** General
 Eldoc-mouse
 - https://github.com/huangfeiyu/eldoc-mouse
 #+BEGIN_SRC emacs-lisp
