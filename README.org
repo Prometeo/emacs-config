@@ -1248,7 +1248,7 @@ Org-babel
      (sqlite . t)))
 
   ;; Map json src blocks to json-ts-mode (Emacs 29+)
-  (add-to-list 'org-src-lang-modes '("json" . json-ts-mode)))
+  (add-to-list 'org-src-lang-modes '("json" . json-ts)))
 
 ;; Safely register d2 as soon as ob-d2 is ready on disk
 (with-eval-after-load 'ob-d2
