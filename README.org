@@ -722,14 +722,14 @@ Yasnippet
 #+END_SRC
 
 Cape
-https://github.com/minad/cape
+https://github.com/\minad/cape
 
 #+BEGIN_SRC emacs-lisp
   ;; Cape
   (use-package cape
     :elpaca t
     :after corfu
-    :bind ("C-c p" . cape-prefix-map)
+    :bind ("C-c c" . cape-prefix-map)
     :init
     (add-hook 'completion-at-point-functions #'cape-dabbrev)
     (add-hook 'completion-at-point-functions #'cape-file)
