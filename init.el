@@ -73,7 +73,13 @@
  '(package-selected-packages
    '(ace-window cape casual corfu eldoc-mouse emacsql embark-consult
                 flycheck magit marginalia orderless org-modern
-                rainbow-delimiters sly)))
+                rainbow-delimiters sly))
+ '(safe-local-variable-values
+   '((eval pyvenv-activate
+           (expand-file-name ".venv"
+                             (locate-dominating-file default-directory
+                                                     ".dir-locals.el")))
+     (projectile-project-test-cmd . "pytest"))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
