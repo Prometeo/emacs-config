@@ -74,8 +74,10 @@ Ediff configuration
 Some global default configurations
 #+BEGIN_SRC emacs-lisp
   (add-to-list 'default-frame-alist '(font . "FiraCode Nerd Font"))
-  (set-face-attribute 'default t :font "FiraCode Nerd Font")
-  (set-face-attribute 'default nil :height 100)
+  (set-face-attribute 'default nil :font "FiraCode Nerd Font" :height 95)
+  ;;(set-face-attribute 'default t :font "FiraCode Nerd Font")
+  (set-face-attribute 'default nil :height 95)
+  (add-to-list 'default-frame-alist '(font . "FiraCode Nerd Font-9.5"))
   (winner-mode t)
   (column-number-mode)
   (fset 'yes-or-no-p 'y-or-n-p)
@@ -175,10 +177,10 @@ Projectile
 
 (defun my/layout-dashboard-treemacs ()
   "Ensure single full-size dashboard window alongside treemacs."
+  (delete-other-windows)
   (when-let ((buf (get-buffer "*dashboard*")))
     (set-window-buffer (selected-window) buf))
   (treemacs)
-  (delete-other-windows)
   (treemacs-select-window))
 
 ;; Hook at depth 100 on emacs-startup-hook to run strictly after dashboard finishes rendering
@@ -562,7 +564,8 @@ Replace keywords with symbols
 
 Display the current function name in the mode line
 #+BEGIN_SRC emacs-lisp
-  (which-function-mode 1)
+(setq which-func-modes '(prog-mode))
+(which-function-mode 1)
 #+END_SRC
 
 Expand the marked region in semantic increments (negative prefix to reduce region)
@@ -644,74 +647,72 @@ flash
 Yasnippet
 - https://github.com/joaotavora/yasnippet
 #+BEGIN_SRC emacs-lisp
-  (use-package yasnippet
-    :elpaca t
-    :demand t
-    :init
-    (yas-global-mode 1))
-  (setq yas-snippet-dirs
-        '("~/.emacs.d/snippets"))
+(use-package yasnippet
+  :elpaca t
+  :demand t
+  :init
+  (setq yas-verbosity 1)
+  (yas-global-mode 1))
+(setq yas-snippet-dirs
+      '("~/.emacs.d/snippets"))
 #+END_SRC
 
 Cape
 https://github.com/\minad/cape
 
 #+BEGIN_SRC emacs-lisp
-  ;; Cape
-  (use-package cape
-    :elpaca t
-    :after corfu
-    :bind ("C-c c" . cape-prefix-map)
-    :init
-    (add-hook 'completion-at-point-functions #'cape-dabbrev)
-    (add-hook 'completion-at-point-functions #'cape-file)
-    (add-hook 'completion-at-point-functions #'cape-elisp-block)
-    (add-hook 'completion-at-point-functions #'cape-yasnipet)
-    (add-hook 'completion-at-point-functions #'eglot-completion-at-point))
+;; Cape
+(use-package cape
+  :elpaca t
+  :after corfu
+  :bind ("C-c c" . cape-prefix-map)
+  :init
+  (add-hook 'completion-at-point-functions #'cape-file)
+  (add-hook 'completion-at-point-functions #'cape-dabbrev)
+  (when (fboundp 'cape-yasnippet)
+    (add-hook 'completion-at-point-functions #'cape-yasnippet)))
 
-  (use-package completion-preview
-    :ensure nil
-    :bind (:map completion-preview-active-mode-map
-                ("M-f" . #'completion-preview-insert-word)
-                ("C-M-f" . #'completion-preview-insert-sexp))
-    :custom
-    (completion-preview-minimum-symbol-length 2)
-    :init
-    (global-completion-preview-mode))
+(with-eval-after-load 'org
+  (add-hook 'org-mode-hook
+            (lambda ()
+              (add-hook 'completion-at-point-functions #'cape-elisp-block nil t))))
 #+END_SRC
 
 Corfu
 https://github.com/minad/corfu
 #+BEGIN_SRC emacs-lisp
-  (use-package corfu
-    :after eglot
-    :elpaca t
-    :custom
-    (corfu-auto t)
-    (corfu-cycle t)
-    (corfu-quit-no-match t)
-    ;; Make the popup appear quicker
-    (corfu-popupinfo-delay '(0.5 . 0.5))
-    ;; Always have the same width
-    (corfu-min-width 80)
-    (corfu-max-width corfu-min-width)
-    (corfu-count 14)
-    (corfu-scroll-margin 4)
-    ;; Have Corfu wrap around when going up
-    (corfu-cycle t)
-    (corfu-preselect-first t)
-    :bind (:map corfu-map
-                ;; Match `corfu-quick-complete' keybinding to `avy-goto-line'
-                ("s-j" . corfu-quick-complete))
-    :init
-    ;; Enable Corfu
-    (global-corfu-mode t)
-    ;; Enable Corfu history mode to act like `prescient'
-    (corfu-history-mode t)
-    ;; Allow Corfu to show help text next to suggested completion
-    (corfu-popupinfo-mode t))
-  (setq completion-category-overrides '((eglot (styles orderless))
-                                        (eglot-capf (styles orderless))))
+(use-package corfu
+  :elpaca t
+  :custom
+  (corfu-auto t)
+  (corfu-cycle t)
+  (corfu-quit-no-match t)
+  (corfu-auto-delay 0.1)
+  ;; Make the popup appear quicker
+  (corfu-popupinfo-delay '(0.5 . 0.5))
+  ;; Always have the same width
+  (corfu-min-width 80)
+  (corfu-max-width corfu-min-width)
+  (corfu-count 14)
+  (corfu-scroll-margin 4)
+  ;; Have Corfu wrap around when going up
+  (corfu-cycle t)
+  (corfu-preselect 'first)
+  :bind (:map corfu-map
+              ;; Match `corfu-quick-complete' keybinding to `avy-goto-line'
+              ("s-j" . corfu-quick-complete))
+  :init
+  ;; Enable Corfu
+  (global-corfu-mode t)
+  ;; Enable Corfu history mode to act like `prescient'
+  (corfu-history-mode t)
+  ;; Allow Corfu to show help text next to suggested completion
+  (corfu-popupinfo-mode t))
+
+;; rust-analyzer requires 'basic' to match prefix completions properly
+(setq completion-category-overrides
+      '((eglot (styles orderless basic))
+        (eglot-capf (styles orderless basic))))
 #+END_SRC
 
 Multiple Cursor
@@ -898,17 +899,22 @@ Eglot
     )
 #+END_SRC
 
-Flycheck
-#+BEGIN_SRC emacs-lisp
-  (use-package flycheck :elpaca t)
-#+END_SRC
-
 Devdocs
 Documentation viewer for Emacs similar to the built-in Info browser
 - https://github.com/astoff/devdocs.el
 #+BEGIN_SRC emacs-lisp
   (use-package devdocs
     :elpaca t)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(use-package flymake
+  :ensure nil
+  :bind (:map flymake-mode-map
+              ("M-n" . flymake-goto-next-error)
+              ("M-p" . flymake-goto-prev-error)
+              ("C-c ! l" . flymake-show-buffer-diagnostics)
+              ("C-c ! L" . flymake-show-project-diagnostics)))
 #+END_SRC
 
 ** Languages
@@ -948,7 +954,7 @@ Python
 
 Rust
 #+BEGIN_SRC emacs-lisp
-  (use-package rustic
+(use-package rustic
   :elpaca (rustic :host github :repo "emacs-rustic/rustic")
   :bind (:map rustic-mode-map
               ("M-j" . imenu)
@@ -959,6 +965,10 @@ Rust
               ("C-c C-c r" . eglot-rename)
               ("C-c C-c q" . eglot-reconnect)
               ("C-c C-c Q" . eglot-shutdown))
+  :custom
+  (rustic-lsp-client 'eglot)
+  (rustic-flycheck-setup-mode nil)
+  (rustic-format-on-save t)
   :custom-face
   (rustic-compilation-column ((t (:inherit compilation-column-number))))
   (rustic-compilation-line ((t (:foreground "LimeGreen"))))
@@ -968,9 +978,7 @@ Rust
     (defalias 'org-babel-execute:rust #'org-babel-execute:rustic)
     (defalias 'org-babel-prep-session:rust #'org-babel-prep-session:rustic))
   :config
-  ;; Use eglot instead of lsp-mode
-  (setq rustic-lsp-client 'eglot)
-  (setq rustic-format-on-save t))
+  (remove-hook 'rustic-mode-hook #'rustic-flycheck-setup))
 #+END_SRC
 
 + Haskell
